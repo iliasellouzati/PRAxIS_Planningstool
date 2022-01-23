@@ -1,0 +1,103 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="B3544919-2ADF-925A-2562-10F84ABEA4EE" name="SHIFT">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>034E8846-0DA0-6599-6B41-207EF5E0F207</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<abbreviation>S</abbreviation>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="545C5F31-25D2-345A-EFC8-8E0C06E7E26F">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>495D8FA5-CF8E-E186-7A1C-B2205E5DD94C</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DATUM" id="2A65C50A-733A-572B-1796-18A3E972777A">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>9A117CCB-888B-831B-8642-4463C50A4533</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 CHAR</dataTypeSize>
+<ownDataTypeParameters>100 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SHIFTTYPES_NAAM" id="E42F6414-190D-B1BE-8C07-DAD847996E27">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>A7058CDC-04D8-EDF1-8B59-A608A79A64A4</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="AACEAF67-4162-D273-0933-2D6383845A28" referredColumn="E0B7CE5B-76E3-E5F3-334C-6ABCD342ABFF"/>
+</associations>
+</Column>
+<Column name="WERKNEMERS_ID" id="AA278828-DD58-0FC3-2145-51F12585080E">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>B0DF2FCE-0785-F3A6-DF10-02DF6D972847</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="533266EA-E344-766D-81AC-111ABF9EE786" referredColumn="5198B5F8-5F14-BE23-021B-259D7D1608E3"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="A4F6F22D-5B2C-7240-4BA5-0D202C89077E" name="SHIFT_PK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>F76F6217-C758-0C7F-02DF-0A5F610A0016</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="545C5F31-25D2-345A-EFC8-8E0C06E7E26F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="F6084661-B459-31C4-A6BB-68948907F203" name="SHIFT_SHIFTTYPES_FK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>5187B787-89B5-B73B-38C4-CD91B5CEE08D</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="E42F6414-190D-B1BE-8C07-DAD847996E27"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="3E60FAFE-CB0C-EFF4-E41C-F2A9712C52B0" name="SHIFT_WERKNEMERS_FK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>B9911FAA-9165-1778-9235-0F2754471AF1</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="AA278828-DD58-0FC3-2145-51F12585080E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

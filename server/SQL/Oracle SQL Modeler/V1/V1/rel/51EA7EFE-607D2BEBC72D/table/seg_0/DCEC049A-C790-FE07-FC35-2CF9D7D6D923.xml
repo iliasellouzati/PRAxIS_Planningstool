@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="DCEC049A-C790-FE07-FC35-2CF9D7D6D923" name="WERKNEMERS">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>6481E596-77DE-B33F-DCF6-1724D4DD0787</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<abbreviation>WN</abbreviation>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="5198B5F8-5F14-BE23-021B-259D7D1608E3">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>FFEB33FC-EFF5-1A77-2BDF-05DF59111A19</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NAAM" id="F87E9D7D-5DFC-F37C-2821-DE9C6468EF2D">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>BC6F6614-B859-5185-C1F3-B55C769B6053</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 CHAR</dataTypeSize>
+<ownDataTypeParameters>100 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EMAIL" id="62024E60-2F21-45EF-E0E2-8228C3D1547E">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>DD6337D7-EEE7-321B-0FA1-AF8043868E78</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 CHAR</dataTypeSize>
+<ownDataTypeParameters>100 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="A60239C5-48CF-1961-2CCF-5E42DB7F5325" name="WERKNEMERS_PK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>15E6EC68-E6AF-9173-D641-F5A6BC4BB3EF</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="5198B5F8-5F14-BE23-021B-259D7D1608E3"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,116 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="DDCEAFD6-D01D-759A-EA5A-08A4671D972A" name="SHIFTTYPES">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 21:42:13 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<shortName>ST</shortName>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="NAAM" id="CC6986F2-A629-CAC3-D676-CB8DCB284338">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:00:12 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100</dataTypeSize>
+<ownDataTypeParameters>100,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="BEGINUUR" id="BB9C89CD-BB65-C82C-15F5-14A69B6AA80F">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:05:58 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="EINDUUR" id="2F996BED-EF7D-BA3A-0684-982790AE6D2A">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:07:52 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="VARIABELE_UREN" id="6878FD80-2E5C-991F-A45F-9A024B1CEECB">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:08:08 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="VASTE_UREN" id="8928238D-73AC-621C-FC28-86CFE5661FD9">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:08:36 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="KLEURCODE" id="8F2F6E86-002C-1B62-A0F0-DF44B3C66990">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:09:02 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="92339802-6286-036E-052D-DF36A88474B7" name="SHIFTTYPES PK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:00:46 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>CC6986F2-A629-CAC3-D676-CB8DCB284338</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

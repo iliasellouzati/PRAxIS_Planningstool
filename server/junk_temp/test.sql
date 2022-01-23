@@ -1,0 +1,9 @@
+CREATE PROCEDURE TEST
+AS 
+SELECT * 
+FROM werknemers;
+
+exec test @id=10;
+
+CREATE PROCEDURE TEMP_TEST
+

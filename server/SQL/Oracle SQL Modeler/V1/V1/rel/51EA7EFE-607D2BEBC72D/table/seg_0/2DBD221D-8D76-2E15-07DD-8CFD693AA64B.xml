@@ -1,0 +1,103 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="2DBD221D-8D76-2E15-07DD-8CFD693AA64B" name="SHIFTTYPES">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>DDCEAFD6-D01D-759A-EA5A-08A4671D972A</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<abbreviation>ST</abbreviation>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="NAAM" id="E0B7CE5B-76E3-E5F3-334C-6ABCD342ABFF">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>CC6986F2-A629-CAC3-D676-CB8DCB284338</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100</dataTypeSize>
+<ownDataTypeParameters>100,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="BEGINUUR" id="BEA330EB-3E2A-35D7-EC34-6E9D465B165D">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>BB9C89CD-BB65-C82C-15F5-14A69B6AA80F</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EINDUUR" id="70656809-16FB-FEE4-2733-7E972CC6E9CA">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>2F996BED-EF7D-BA3A-0684-982790AE6D2A</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="VARIABELE_UREN" id="D4BACBF0-4A82-F536-7336-F560187A365A">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>6878FD80-2E5C-991F-A45F-9A024B1CEECB</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="VASTE_UREN" id="464D5017-4D13-41EA-5C0E-B0ECE3383A6A">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>8928238D-73AC-621C-FC28-86CFE5661FD9</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="KLEURCODE" id="91BB552D-96E8-BABB-F289-B03375AFB5C5">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>8F2F6E86-002C-1B62-A0F0-DF44B3C66990</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>25 CHAR</dataTypeSize>
+<ownDataTypeParameters>25 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="6782D40A-0E8E-33C4-F208-F1B0F1E0AAA9" name="SHIFTTYPES_PK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>92339802-6286-036E-052D-DF36A88474B7</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="E0B7CE5B-76E3-E5F3-334C-6ABCD342ABFF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle.dbtools.crest.model.design.logical.LogicalDesign>
+   <object objectType="Entity" objectID="034E8846-0DA0-6599-6B41-207EF5E0F207" name="SHIFT" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="D5958F17-DDAC-D311-F93D-1EF6F5A0DF0B" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Entity" objectID="DDCEAFD6-D01D-759A-EA5A-08A4671D972A" name="SHIFTTYPES" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="D5958F17-DDAC-D311-F93D-1EF6F5A0DF0B" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Entity" objectID="6481E596-77DE-B33F-DCF6-1724D4DD0787" name="WERKNEMERS" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="D5958F17-DDAC-D311-F93D-1EF6F5A0DF0B" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Relation" objectID="5187B787-89B5-B73B-38C4-CD91B5CEE08D" name="Relation_3" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Relation" propertyParentId="D5958F17-DDAC-D311-F93D-1EF6F5A0DF0B" propertySourceId="DDCEAFD6-D01D-759A-EA5A-08A4671D972A" propertyTargetId="034E8846-0DA0-6599-6B41-207EF5E0F207"/>
+   <object objectType="Relation" objectID="B9911FAA-9165-1778-9235-0F2754471AF1" name="Relation_6" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Relation" propertyParentId="D5958F17-DDAC-D311-F93D-1EF6F5A0DF0B" propertySourceId="6481E596-77DE-B33F-DCF6-1724D4DD0787" propertyTargetId="034E8846-0DA0-6599-6B41-207EF5E0F207"/>
+</oracle.dbtools.crest.model.design.logical.LogicalDesign>

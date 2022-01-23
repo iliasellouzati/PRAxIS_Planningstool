@@ -1,0 +1,81 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="6481E596-77DE-B33F-DCF6-1724D4DD0787" name="WERKNEMERS">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:10:31 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<shortName>WN</shortName>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="ID" id="FFEB33FC-EFF5-1A77-2BDF-05DF59111A19">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:11:04 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NAAM" id="BC6F6614-B859-5185-C1F3-B55C769B6053">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:11:24 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 CHAR</dataTypeSize>
+<ownDataTypeParameters>100 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="EMAIL" id="DD6337D7-EEE7-321B-0FA1-AF8043868E78">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:11:42 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 CHAR</dataTypeSize>
+<ownDataTypeParameters>100 CHAR,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="15E6EC68-E6AF-9173-D641-F5A6BC4BB3EF" name="WERKNEMERS PK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:11:22 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>FFEB33FC-EFF5-1A77-2BDF-05DF59111A19</attributeRef>
+</usedAttributes>
+</identifier>
+<identifier id="5ED1BB2C-790E-139E-C825-95CEFF936D7D" name="WN_EMAIL_UK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:12:00 UTC</createdTime>
+<ownerDesignName>V1</ownerDesignName>
+<engineerTo>
+<item key="51EA7EFE-0C66-A05F-B91A-607D2BEBC72D" value="true"/>
+</engineerTo>
+<newElementsIDs>DD6337D7-EEE7-321B-0FA1-AF8043868E78</newElementsIDs>
+</identifier>
+</identifiers>
+</Entity>

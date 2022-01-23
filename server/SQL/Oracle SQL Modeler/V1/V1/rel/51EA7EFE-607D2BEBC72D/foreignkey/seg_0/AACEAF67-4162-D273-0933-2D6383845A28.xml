@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="AACEAF67-4162-D273-0933-2D6383845A28" containerWithKeyObject="B3544919-2ADF-925A-2562-10F84ABEA4EE" localFKIndex="F6084661-B459-31C4-A6BB-68948907F203" name="SHIFT_SHIFTTYPES_FK">
+<createdBy>User</createdBy>
+<createdTime>2021-09-20 22:41:31 UTC</createdTime>
+<generatorID>5187B787-89B5-B73B-38C4-CD91B5CEE08D</generatorID>
+<ownerDesignName>V1</ownerDesignName>
+<referredTableLongName>SHIFTTYPES</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>2DBD221D-8D76-2E15-07DD-8CFD693AA64B</referredTableID>
+<keyObject>6782D40A-0E8E-33C4-F208-F1B0F1E0AAA9</keyObject>
+<referredKeyID>6782D40A-0E8E-33C4-F208-F1B0F1E0AAA9</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>NAAM</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>
