@@ -58,6 +58,9 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
     const [Express, setExpress] = useState(true);
 
     const [FeedBackWorkers, setFeedBackWorkers] = useState(0);
+
+    const [SelectedCombos, setSelectedCombos] = useState(0);
+
     let i = 0;
 
     const [Progressie, setProgressie] = useState(0);
@@ -71,7 +74,8 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
 
     worker1.onmessage = (message) => {
         if (message) {
-            console.log("------- Message in MAIN THREAD from web worker 1");
+            console.log("------- Message in MAIN THREAD from web worker 1: ");
+            console.log(message.data);
             handleWorkerResponse(message.data);
 
         }
@@ -79,12 +83,14 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
     worker2.onmessage = (message) => {
         if (message) {
             console.log("------- Message in MAIN THREAD from web worker 2");
+            console.log(message.data);
             handleWorkerResponse(message.data);
         }
     };
     worker3.onmessage = (message) => {
         if (message) {
             console.log("------- Message in MAIN THREAD from web worker 3");
+            console.log(message.data);
             handleWorkerResponse(message.data);
         }
     };
@@ -92,6 +98,7 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
     worker4.onmessage = (message) => {
         if (message) {
             console.log("------- Message in MAIN THREAD from web worker 4");
+            console.log(message.data);
             handleWorkerResponse(message.data);
         }
     };
@@ -99,12 +106,14 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
     worker5.onmessage = (message) => {
         if (message) {
             console.log("------- Message in MAIN THREAD from web worker 5");
+            console.log(message.data);
             handleWorkerResponse(message.data);
         }
     };
     worker6.onmessage = (message) => {
         if (message) {
             console.log("------- Message in MAIN THREAD from web worker 6");
+            console.log(message.data);
             handleWorkerResponse(message.data);
         }
     };
@@ -113,6 +122,8 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
 
     const handleWorkerResponse = (respons) => {
 
+        console.log("combos voor responss behandeling : ")
+        console.log(mogelijkeCombinaties);
 
         respons.forEach(element => {
 
@@ -123,7 +134,7 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
 
                 let hulpIndex = mogelijkeCombinaties.findIndex(x => x.nietIngevuldeShiften === element.nietIngevuldeShiften);
 
-                mogelijkeCombinaties[hulpIndex].combinaties += element.combinaties;
+                mogelijkeCombinaties[hulpIndex].combinaties.push(...element.combinaties);
             }
 
 
@@ -132,7 +143,7 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
         let som = 0;
 
         for (let index = 0; index < mogelijkeCombinaties.length; index++) {
-            som += mogelijkeCombinaties[index].combinaties;
+            som += mogelijkeCombinaties[index].combinaties.length;
 
         }
 
@@ -149,35 +160,88 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
 
     }
 
-    const filter = (filter)=>{
+    const filter = (filter) => {
         switch (filter[0]) {
-            case "FILTER_WEEKEND_EN_NACHT_INGEVULD" :
-                worker1.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD",{
-                    "weekNummer":(TeAutomatiserenWeek-2),
-                    "OntbrekendeShiften": OntbrekendeShiften
+            // eslint-disable-next-line no-lone-blocks
+            case "FILTER_WEEKEND_EN_NACHT_INGEVULD": {
+                let totaalAantal = EffectieveWeekStructuren.length;
+                let aantalPerWorker = Math.floor(totaalAantal / 6);
+                let restPerWorker = (totaalAantal % 6);
+                let startIndex = 0;
+                let endIndex = 0;
+
+
+
+
+                endIndex = restPerWorker !== 0 ? startIndex + aantalPerWorker + 1 : startIndex + aantalPerWorker;
+                worker1.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD", {
+                    "weekNummer": (TeAutomatiserenWeek - 2),
+                    "OntbrekendeShiften": OntbrekendeShiften,
+                    "weekStructuren": weekStructuren,
+                    "mogelijkeCombinaties": [...EffectieveWeekStructuren].slice(startIndex, endIndex)
                 }]);
-                worker2.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD",{
-                    "weekNummer":(TeAutomatiserenWeek-2),
-                    "OntbrekendeShiften": OntbrekendeShiften
+                restPerWorker !== 0 && restPerWorker--;
+
+                startIndex = endIndex;
+                endIndex = restPerWorker !== 0 ? startIndex + aantalPerWorker + 1 : startIndex + aantalPerWorker;
+                worker2.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD", {
+                    "weekNummer": (TeAutomatiserenWeek - 2),
+                    "weekStructuren": weekStructuren,
+                    "OntbrekendeShiften": OntbrekendeShiften,
+                    "mogelijkeCombinaties": [...EffectieveWeekStructuren].slice(startIndex, endIndex)
                 }]);
-                worker3.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD",{
-                    "weekNummer":(TeAutomatiserenWeek-2),
-                    "OntbrekendeShiften": OntbrekendeShiften
+                restPerWorker !== 0 && restPerWorker--;
+
+                startIndex = endIndex;
+                endIndex = restPerWorker !== 0 ? startIndex + aantalPerWorker + 1 : startIndex + aantalPerWorker;
+                worker3.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD", {
+                    "weekNummer": (TeAutomatiserenWeek - 2),
+                    "weekStructuren": weekStructuren,
+                    "OntbrekendeShiften": OntbrekendeShiften,
+                    "mogelijkeCombinaties": [...EffectieveWeekStructuren].slice(startIndex, endIndex)
                 }]);
-                worker4.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD",{
-                    "weekNummer":(TeAutomatiserenWeek-2),
-                    "OntbrekendeShiften": OntbrekendeShiften
+                restPerWorker !== 0 && restPerWorker--;
+
+
+                startIndex = endIndex;
+                endIndex = restPerWorker !== 0 ? startIndex + aantalPerWorker + 1 : startIndex + aantalPerWorker;
+                worker4.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD", {
+                    "weekNummer": (TeAutomatiserenWeek - 2),
+                    "weekStructuren": weekStructuren,
+                    "OntbrekendeShiften": OntbrekendeShiften,
+                    "mogelijkeCombinaties": [...EffectieveWeekStructuren].slice(startIndex, endIndex)
                 }]);
-                worker5.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD",{
-                    "weekNummer":(TeAutomatiserenWeek-2),
-                    "OntbrekendeShiften": OntbrekendeShiften
+                restPerWorker !== 0 && restPerWorker--;
+
+
+                startIndex = endIndex;
+                endIndex = restPerWorker !== 0 ? startIndex + aantalPerWorker + 1 : startIndex + aantalPerWorker;
+                worker5.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD", {
+                    "weekNummer": (TeAutomatiserenWeek - 2),
+                    "weekStructuren": weekStructuren,
+                    "OntbrekendeShiften": OntbrekendeShiften,
+                    "mogelijkeCombinaties": [...EffectieveWeekStructuren].slice(startIndex, endIndex)
                 }]);
-                worker6.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD",{
-                    "weekNummer":(TeAutomatiserenWeek-2),
-                    "OntbrekendeShiften": OntbrekendeShiften
+                restPerWorker !== 0 && restPerWorker--;
+
+                startIndex = endIndex;
+                endIndex = restPerWorker !== 0 ? startIndex + aantalPerWorker + 1 : startIndex + aantalPerWorker;
+                worker6.postMessage(["FILTER_WEEKEND_EN_NACHT_INGEVULD", {
+                    "weekNummer": (TeAutomatiserenWeek - 2),
+                    "weekStructuren": weekStructuren,
+                    "OntbrekendeShiften": OntbrekendeShiften,
+                    "mogelijkeCombinaties": [...EffectieveWeekStructuren].slice(startIndex, endIndex)
                 }]);
+                restPerWorker !== 0 && restPerWorker--;
+
+                mogelijkeCombinaties = [];
+                setEffectieveWeekStructuren([]);
+                console.log("combos voor responss behandeling : ")
+                console.log(mogelijkeCombinaties);
+
+            }
                 break;
-        
+
             default:
                 break;
         }
@@ -1162,20 +1226,81 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
 
 
                 {Progressie === 1 &&
-                    <div className="col-md-5" style={{ textAlign: 'left' }}>
-                        <p>Totaal aantal planningen:{EffectieveWeekStructuren.reduce((old, curr) => old + curr.combinaties, 0).toLocaleString()}</p>
-                        {FeedBackWorkers === 6 ? EffectieveWeekStructuren.sort((a, b) => a.nietIngevuldeShiften < b.nietIngevuldeShiften ? -1 : 1).map(el =>
-                            <p>{el.nietIngevuldeShiften} lege shiften heeft {el.combinaties.toLocaleString()} weekplanningen   </p>) : ""}
+                    <div className="col-md-3" style={{ textAlign: 'left' }}>
+
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#Lege shiften</th>
+                                    <th>#Combos</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {EffectieveWeekStructuren.sort((a, b) => a.nietIngevuldeShiften < b.nietIngevuldeShiften ? -1 : 1).map(combo => (
+
+                                    <tr>
+                                        <td>{combo.nietIngevuldeShiften}</td>
+                                        <td>{combo.combinaties.length.toLocaleString()}</td>
+                                        <td onClick={() => setSelectedCombos(combo.combinaties)}>
+                                            <i class="fas fa-edit"></i>
+                                        </td>
+                                    </tr>
+
+                                ))}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan="3" >
+                                        TOTAAL: {EffectieveWeekStructuren.reduce((old, curr) => old + curr.combinaties.length, 0).toLocaleString()}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
 
                     </div>
                 }
 
                 {Progressie === 1 &&
-                    <div className="col-md-5" style={{ textAlign: 'left' }}>
-                        <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>Weergeef enkel combos met ingevulde nacht en weekend</button>
+                    <div className="col-md-7" style={{ textAlign: 'left' }}>
+
+                        {SelectedCombos ===0 ?"Geen lijst geselecteerd" :
+
+
+
+
+                    
+                                <table className="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            {OperatorConfig.map(conf => 
+                                                <th >
+                                                    {employees.find(emp=>emp.id==conf.id).naam.substring(0,8)}
+                                                </th>
+
+
+                                            )}
+                                            <th>Select</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {SelectedCombos.map(combo => 
+
+                                            <tr key={combo.join()}>
+                                                {combo.map(comb=><td>{comb}</td>)}
+                                                <td onClick={() =>  dispatchWeek(TeAutomatiserenWeek-2,combo )}>
+                                                    <i class="fas fa-edit"></i>
+                                                </td>
+                                            </tr>
+
+                                        )}
+                                    </tbody>
+
+                                </table>
+
+                            }
                     </div>
                 }
-
                 <div className="col-md-2" style={{ textAlign: 'center' }}>
                     <b># ontbrekende shifts</b>
 
@@ -1197,6 +1322,8 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
                             Week 5: {AantalDagenWeek5}
                         </div>}
                     {LOADING ? <div style={{ backgroundColor: "red" }}>OCCUPIED</div> : <div style={{ backgroundColor: "green" }}>SYSTEM STANDBY</div>}
+                    {Progressie === 1 && <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>Weergeef enkel combos met ingevulde nacht en weekend</button>}
+
 
                 </div>
 

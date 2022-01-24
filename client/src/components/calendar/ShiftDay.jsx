@@ -64,6 +64,7 @@ const ShiftDay = ({ shiftDay, employeeId }) => {
             out(e);
             calculeerUren();
 
+
         }
 
     }
@@ -79,7 +80,7 @@ const ShiftDay = ({ shiftDay, employeeId }) => {
         return () => {
 
         }
-    }, [])
+    }, [ currentCalendar, shiftDay.shift])
 
     return (
         <div style={cssStyling} onMouseOver={over} onMouseOut={out} onContextMenu={contextMenu} onClick={(e) => handleClick(e)}>

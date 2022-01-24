@@ -1,43 +1,44 @@
-
-
-
 //fibo.worker.js
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
 
-let mogelijkeCombinaties;
-let hulpVal;
-let weekStructuren;
-let nachtShiften = ["1806", "1907"];
+  let nachtShiften = ["1806", "1907"];
+    let mogelijkeCombinaties;
 
-  // eslint-disable-next-line no-restricted-globals
-  self.onmessage = (message) => {
-
-    console.log(message);
-
-    switch (message.data[0]) {
-      case "ALLE_MOGELIJKHEDEN":
-        berekenMogelijkeCombinaties(message);
-        postMessage(hulpVal);
-        break;
-
-      case "FILTER_WEEKEND_EN_NACHT_INGEVULD":
-        filterWeekendEndNacht(message.data[1]);
-        postMessage(hulpVal);
-        break;
-
-      default:
-        break;
-    }
+    let hulpVal;
+    let weekStructuren;
 
 
 
-  };
+    // eslint-disable-next-line no-restricted-globals
+    self.onmessage = (message) => {
+
+      console.log(message);
+
+      switch (message.data[0]) {
+        case "ALLE_MOGELIJKHEDEN":
+          berekenMogelijkeCombinaties(message);
+          postMessage(mogelijkeCombinaties);
+          break;
+
+        case "FILTER_WEEKEND_EN_NACHT_INGEVULD":
+          filterWeekendEndNacht(message.data[1]);
+          postMessage(mogelijkeCombinaties);
+          break;
+
+        default:
+          break;
+      }
+
+
+
+    };
+
+
 
   const filterWeekendEndNacht = (message) => {
-    console.log(mogelijkeCombinaties);
-    console.log(hulpVal);
-    console.log(nachtShiften)
+    mogelijkeCombinaties = message.mogelijkeCombinaties;
+
     let OntbrekendeShiften = message.OntbrekendeShiften[message.weekNummer];
     let hulpVal_mogelijkeCombinaties;
 
@@ -45,7 +46,7 @@ let nachtShiften = ["1806", "1907"];
 
       hulpVal_mogelijkeCombinaties = mogelijkeCombinaties[index];
 
-      hulpVal_mogelijkeCombinaties.combinaties = mogelijkeCombinaties[index].combinaties.filter(weekCombo => weekBevatGeenNachtEnWeekendShiften(OntbrekendeShiften, weekCombo));
+      hulpVal_mogelijkeCombinaties.combinaties = mogelijkeCombinaties[index].combinaties.filter(weekCombo => weekBevatGeenNachtEnWeekendShiften(OntbrekendeShiften, weekCombo,message.weekStructuren));
 
       mogelijkeCombinaties[index] = hulpVal_mogelijkeCombinaties
 
@@ -65,7 +66,7 @@ let nachtShiften = ["1806", "1907"];
 
   }
 
-  const weekBevatGeenNachtEnWeekendShiften = (OntbrekendeShiften, weekCombo) => {
+  const weekBevatGeenNachtEnWeekendShiften = (OntbrekendeShiften, weekCombo,weekStructuren) => {
 
     weekCombo.forEach(weekId => {
       let week = weekStructuren.find(x => x.id === weekId);
