@@ -253,11 +253,9 @@ export default () => {
                     }
 
 
-
                     if (message.data[1].express === true) {
-                      index2++;
-                      index3 = 1000;
-                      index4 = 1000;
+                      index3++;
+                      index4 = 1000 ;
                       index5 = 1000;
                       index6 = 1000;
                       index7 = 1000;

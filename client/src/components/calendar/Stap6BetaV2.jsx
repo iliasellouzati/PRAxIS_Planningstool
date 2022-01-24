@@ -613,33 +613,31 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
         /* 4-5'en mag geen 4 shiften/week hebben */
         if (contractType.naam.trim() === "4-5") {
             let i = 0;
-            for (let index = 0; index < week.length; index++) {
+            for (let index = (week.length - 7); index < week.length; index++) {
                 if (week[index].shift !== "") {
                     i++;
                     if (i > 3) { return false }
                 }
             }
         }
-
-
-
-        /* Controle Nachtshiften toegelaten */
-        if (!contractType.nachtshiften_toegelaten) {
-            for (let index = 0; index < week.length; index++) {
-                if (nachtShiften.includes(week[index].shift)) { return false }
-            }
-        }
-
-        /* Weekends toegelaten */
-        if (contractType.naam.trim() === "4-5") {
-            for (let index = 0; index < week.length; index++) {
-                if (week[index].shift !== "" && (moment(week[index].day, "DD-MM-YYYY").isoWeekday() === 6 || moment(week[index].day, "DD-MM-YYYY").isoWeekday() === 7)) {
-                    return false
+        /*
+           
+                if (!contractType.nachtshiften_toegelaten) {
+                    for (let index = 0; index < week.length; index++) {
+                        if (nachtShiften.includes(week[index].shift)) { return false }
+                    }
                 }
-            }
-        }
-
-
+        
+        
+                if (contractType.naam.trim() === "4-5") {
+                    for (let index = 0; index < week.length; index++) {
+                        if (week[index].shift !== "" && (moment(week[index].day, "DD-MM-YYYY").isoWeekday() === 6 || moment(week[index].day, "DD-MM-YYYY").isoWeekday() === 7)) {
+                            return false
+                        }
+                    }
+                }
+        
+        */
         /*  Controle MAX 4 opeenvolgende shiften */
         for (let index = 1; index < week.length; index++) {
             if (week[index].shift === "") {
@@ -776,7 +774,7 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
                     if (week.vrijdag !== "") { i++; }
                     if (week.zaterdag !== "") { i++; }
                     if (week.zondag !== "") { i++; }
-                    if (i === 1) { filter.push(week.id) }
+                    if (i === 1) { !filter.some(x => x === week.id) && filter.push(week.id) }
                 })
 
             }
@@ -787,9 +785,15 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
             let weekendToegelaten = OperatorConfig.find(x => x.id === id).weekend;
 
             weekStructuren.forEach((week) => {
-                if (!weekendToegelaten && (nachtShiften.includes(week.vrijdag) || week.zaterdag !== "" || week.zondag !== "")) {
-                    filter.push(week.id);
+
+                if (!weekendToegelaten && (nachtShiften.some(x => x === week.vrijdag) || week.zaterdag !== "" || week.zondag !== "")) {
+                    !filter.some(x => x === week.id) && filter.push(week.id);
                 }
+                else if (weekendToegelaten && (week.zaterdag === "" || week.zondag === "")) {
+                    !filter.some(x => x === week.id) && filter.push(week.id);
+                }
+
+
                 if (nachtStructuur) {
                     if (dagShiften.includes(week.maandag) ||
                         dagShiften.includes(week.dinsdag) ||
@@ -798,7 +802,7 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
                         dagShiften.includes(week.vrijdag) ||
                         dagShiften.includes(week.zaterdag) ||
                         dagShiften.includes(week.zondag)) {
-                        filter.push(week.id)
+                        !filter.some(x => x === week.id) && filter.push(week.id)
                     }
 
                 } else {
@@ -809,7 +813,7 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
                         nachtShiften.includes(week.vrijdag) ||
                         nachtShiften.includes(week.zaterdag) ||
                         nachtShiften.includes(week.zondag)) {
-                        filter.push(week.id)
+                        !filter.some(x => x === week.id) && filter.push(week.id)
                     }
                 }
             })
@@ -1264,41 +1268,41 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
                 {Progressie === 1 &&
                     <div className="col-md-7" style={{ textAlign: 'left' }}>
 
-                        {SelectedCombos ===0 ?"Geen lijst geselecteerd" :
+                        {SelectedCombos === 0 ? "Geen lijst geselecteerd" :
 
 
 
 
-                    
-                                <table className="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            {OperatorConfig.map(conf => 
-                                                <th >
-                                                    {employees.find(emp=>emp.id==conf.id).naam.substring(0,8)}
-                                                </th>
 
+                            <table className="table table-striped">
+                                <thead>
+                                    <tr>
+                                        {OperatorConfig.map(conf =>
+                                            <th >
+                                                {employees.find(emp => emp.id == conf.id).naam.substring(0, 8)}
+                                            </th>
 
-                                            )}
-                                            <th>Select</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {SelectedCombos.map(combo => 
-
-                                            <tr key={combo.join()}>
-                                                {combo.map(comb=><td>{comb}</td>)}
-                                                <td onClick={() =>  dispatchWeek(TeAutomatiserenWeek-2,combo )}>
-                                                    <i class="fas fa-edit"></i>
-                                                </td>
-                                            </tr>
 
                                         )}
-                                    </tbody>
+                                        <th>Select</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {SelectedCombos.map(combo =>
 
-                                </table>
+                                        <tr key={combo.join()}>
+                                            {combo.map(comb => <td>{comb}</td>)}
+                                            <td onClick={() => { dispatchWeek(TeAutomatiserenWeek - 2, combo); checkOntbrekendeShiften() }}>
+                                                <i class="fas fa-edit"></i>
+                                            </td>
+                                        </tr>
 
-                            }
+                                    )}
+                                </tbody>
+
+                            </table>
+
+                        }
                     </div>
                 }
                 <div className="col-md-2" style={{ textAlign: 'center' }}>
@@ -1322,7 +1326,12 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
                             Week 5: {AantalDagenWeek5}
                         </div>}
                     {LOADING ? <div style={{ backgroundColor: "red" }}>OCCUPIED</div> : <div style={{ backgroundColor: "green" }}>SYSTEM STANDBY</div>}
-                    {Progressie === 1 && <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>Weergeef enkel combos met ingevulde nacht en weekend</button>}
+                    {Progressie === 1 && (
+                        <>
+                            <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>Weergeef enkel combos met ingevulde nacht en weekend</button>
+                            <button type="button" onClick={() => { setProgressie(0) }} style={{ margin: "10px" }}>---Begin met volgende week---</button>
+                        </>
+                    )}
 
 
                 </div>
