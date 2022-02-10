@@ -65,6 +65,11 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
 
     const [Progressie, setProgressie] = useState(0);
 
+    const [Madafackers, setMadafackers] = useState([]);
+
+    const [Madafaka1, setMadafaka1] = useState(1);
+    const [Madafaka2, setMadafaka2] = useState(2);
+
     let worker1 = new WorkerBuilder(Worker);
     let worker2 = new WorkerBuilder(Worker);
     let worker3 = new WorkerBuilder(Worker);
@@ -236,7 +241,7 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
 
                 mogelijkeCombinaties = [];
                 setEffectieveWeekStructuren([]);
-                console.log("combos voor responss behandeling : ")
+                console.log("combos voor respons behandeling : ")
                 console.log(mogelijkeCombinaties);
 
             }
@@ -1327,10 +1332,33 @@ const Stap6BetaV2 = ({ setStap6Week }) => {
                         </div>}
                     {LOADING ? <div style={{ backgroundColor: "red" }}>OCCUPIED</div> : <div style={{ backgroundColor: "green" }}>SYSTEM STANDBY</div>}
                     {Progressie === 1 && (
-                        <>
-                            <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>Weergeef enkel combos met ingevulde nacht en weekend</button>
-                            <button type="button" onClick={() => { setProgressie(0) }} style={{ margin: "10px" }}>---Begin met volgende week---</button>
-                        </>
+                        <div style={{ flexDirection: "column" }}>
+                            <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>filter op alle nachten en weekends ingevuld</button>
+                            <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>filter op min. 1 operator die frans kan ten alle tijde</button>
+                            <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>filter op hoogste week score</button>
+                            <div style={{ border: "1px dashed black" }}>
+
+                                <select onChange={(e) => setMadafaka1(parseInt(e.target.value))} name="MADAFAKA1" id="emp1">
+                                    {employees.filter(x => x.id !== Madafaka2).map(empl =>
+                                        <option key={empl.id} id={empl.id} value={empl.id}>{empl.naam.substring(0, 12)}</option>)}
+                                </select>
+                                <select onChange={(e) => setMadafaka2(parseInt(e.target.value))} name="MADAFAKA2" id="emp2">
+                                    {employees.filter(x => x.id !== Madafaka1).map(empl =>
+                                        <option key={empl.id} id={empl.id} value={empl.id}>{empl.naam.substring(0, 12)}</option>)}
+                                </select>
+
+                                <i onClick={() => { setMadafackers([...Madafackers, [Madafaka1, Madafaka2]]) }} style={{ color: "green", fontWeight: "20px", marginLeft: "5px" }} class="far fa-plus-square"></i>
+                                {Madafackers.length === 0 ? "Geen Operatoren" : Madafackers.map(madafaka => <div>
+                                    <span style={{ margin: "0px" }}>{employees.find(x => x.id === madafaka[0]).naam.substring(0, 12)} met {employees.find(x => x.id === madafaka[1]).naam.substring(0, 12)}</span>
+                                    <i onClick={()=>{setMadafackers([...Madafackers].filter(x=>x!==madafaka))}} style={{ color: 'red', marginLeft:"5px" }} class="fas fa-times" />
+
+                                </div>)}
+
+                                <button type="button" onClick={() => { filter(["FILTER_WEEKEND_EN_NACHT_INGEVULD"]) }} style={{ margin: "10px" }}>filter op lijst operatoren die niet samen mogen zitten </button>
+                            </div>
+
+                            <button type="button" style={{ backgroundColor: "lightgreen", margin: "10px" }} onClick={() => { setProgressie(0) }} >---Begin met volgende week---</button>
+                        </div>
                     )}
 
 

@@ -22,6 +22,7 @@ router.get("/:id", async (req, res) => {
     let SecondLasteinddatum = Moment_Operations.getLastDayOfCalendarMonth_Moment(currentMonth.clone().subtract(2, "month"));
     const SecondLastStoredShifts = await Shift_DB.getCalendarShifts(SecondLastbegindatum.format('YYYY-MM-DD'), SecondLasteinddatum.format('YYYY-MM-DD'));
 
+    
 
     const employees = await Employee_DB.getAllWerknemers();
 

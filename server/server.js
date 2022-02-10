@@ -6,11 +6,13 @@ import calendarRoute from './routes/calendarRoute.js';
 import rapportenRoute from './routes/rapportenRoute.js';
 import contractRoute  from './routes/contractRoute.js';
 import weekstructuurRoute from './routes/weekstructuurRoute.js';
+import expressStatusMonitor  from 'express-status-monitor';
 
 
 
 const app = express();
 
+app.use(expressStatusMonitor());
 app.use(express.json());
 app.use('/api/shifttypes',shifttypeRoute);
 app.use('/api/werknemers',werknemerRoute);
@@ -19,6 +21,7 @@ app.use('/api/Planning', calendarRoute);
 app.use('/api/overzicht', overzichtRoute );
 app.use('/api/rapporten', rapportenRoute);
 app.use('/api/weekstructuur',weekstructuurRoute);
+
 
 
 app.get('/', (req, res) => {
