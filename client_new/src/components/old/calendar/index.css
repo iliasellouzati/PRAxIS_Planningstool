@@ -1,0 +1,85 @@
+
+/* ---------- BEGIN CALENDAR ---------- */
+
+/* Calendar header*/
+.calendar-header{
+    grid-area: header;
+    background-color: red;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    font-size: large;
+  }
+  .calendar-name-employee{
+    width:15%;
+    font-size: 15px;
+    border: 1px solid black;
+  }
+  .calendar-name-employee-extra{
+    width: 100%;
+    font-size: 15px;
+    border: 1px solid black;
+    align-items: center;
+    
+  }
+  .controlebox{
+    display: inline;
+    text-align: right;
+    width: 60px;
+  }
+  .calendar-day42{
+      width:calc(70%/42);
+      border: 1px solid black;
+  }
+  
+  .calendar-day35{
+    width:calc(70%/35);
+    border: 1px solid black;
+  }
+  
+  .table {
+    border: 1px solid black;
+    width: 100%;
+    height: 100%;
+  }
+
+  .shiftbox{
+    height: '100%';
+    width: '100%' ;
+    font-size: x-small;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+  }
+  
+  /* Control box*/
+  
+  
+  
+  .calendar .day{
+    position: relative;
+    width: calc(100%/7);
+    height: 44px;
+    display: inline-block;
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    z-index: 1;
+    text-align: center;
+  }
+  .selected{
+    background-color: tomato;
+  }
+  .today{
+    border: 5px solid red;
+  }
+  .before{
+    color: gray;
+  }
+  
+  /* ---------- END CALENDAR ---------- */
