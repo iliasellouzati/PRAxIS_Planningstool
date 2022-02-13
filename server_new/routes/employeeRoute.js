@@ -60,7 +60,7 @@ router.delete("/:id", async (req, res) => {
   try {
 
     if (isNaN(req.params.id))
-      return res.status(400).send(`GET on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not a number`);
+      return res.status(400).send(`DELETE on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not a number`);
 
     const rowsAffected = await Employee_DB.deleteEmployeeWithId(req.params.id);
     rowsAffected ? res.status(204).send() : res.status(404).send(`Employee with id:${req.params.id} was not found`);
@@ -77,13 +77,13 @@ router.post("/", async (req, res) => {
   try {
 
     if (isNaN(req.body.id))
-      return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not a number`);
+      return res.status(400).send(`POST on ${hostUrl} with id "${req.body.id}" failed with because id is not a number`);
 
     if (req.body.name.trim() === "")
-      return res.status(400).send(`PUT on ${hostUrl}/:id failed because name is empty`);
+      return res.status(400).send(`POST on ${hostUrl} failed because name is empty`);
 
     if (!email_validation.test(req.body.email.toLowerCase().trim()))
-      return res.status(400).send(`PUT on ${hostUrl}/:id failed  because email is not valid`);
+      return res.status(400).send(`POST on ${hostUrl} failed  because email is not valid`);
 
 
 

@@ -99,7 +99,7 @@ const BetaScreen = (props) => {
                         <div className="modal-header">
                             <h4 className="modal-title">Opslaan</h4>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
+                                <span aria-hidden="true">X</span>
                             </button>
                         </div>
                         <div className="modal-body">

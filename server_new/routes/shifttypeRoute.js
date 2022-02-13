@@ -79,18 +79,17 @@ router.put("/:name", async (req, res) => {
     }
 })
 
-router.delete("/:naam", async (req, res) => {
+router.delete("/:name", async (req, res) => {
     try {
-        if (req.params.naam.trim() === '')
+        if (req.params.name.trim() === '')
             return res.status(404).send(`DELETE on ${hostUrl}/:name with name "${req.params.name}" failed with because name is empty`);
 
-        const rowsAffected = await Shifttypes_DB.deleteShifttypeWithName(req.params.naam);
+        const rowsAffected = await Shifttypes_DB.deleteShifttypeWithName(req.params.name);
         rowsAffected ? res.status(204).send() : res.status(404).send(`Shifttype with name:${req.params.name} was not found`);
 
     } catch (e) {
         res.status(500).send(`DELETE on ${hostUrl}/:name with name:"${req.params.name}" failed with error "${e.message}"`);
     }
-
 
 
 })

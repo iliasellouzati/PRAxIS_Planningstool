@@ -35,6 +35,11 @@ const SideBarLinks = [
         "link": "/contracttypes"
     },
     {
+        "naam": "weekstructuren",
+        "icon": "fas fa-puzzle-piece",
+        "link": "/weekstructuren"
+    },
+    {
         "naam": "instellingen",
         "icon": "fas fa-cogs",
         "link": "/instellingen"

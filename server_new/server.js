@@ -5,6 +5,9 @@ import cors from "cors";
 
 import employeeRoute from './routes/employeeRoute.js';
 import shifttypeRoute from './routes/shifttypeRoute.js';
+import contracttypeRoute from './routes/contracttypeRoute.js';
+import weeklystructureRoute from './routes/weeklystructureRoute.js';
+
 
 
 const app = express();
@@ -16,8 +19,12 @@ app.use( (req, res, next)=> {
     console.log(`API WAS HIT: ${req.method} on  ${req.protocol}://${req.get('host')}${req.originalUrl} `);
     return next();
 });
+
+app.use('/api/weeklystructure',weeklystructureRoute);
+app.use('/api/contracttype',contracttypeRoute);
 app.use('/api/employee', employeeRoute);
 app.use('/api/shifttype', shifttypeRoute);
+
 
 
 
