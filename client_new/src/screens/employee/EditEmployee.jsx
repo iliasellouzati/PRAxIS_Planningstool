@@ -85,54 +85,56 @@ const EditEmployee = ({ setShowSuccesModal, setShowDangerModal }) => {
       {Loading ? <LoadingSpinner />
         : Http4XXAnd5XX[0] ? <Http4XXAnd5XXError error={Http4XXAnd5XX[1]} setHttp4XXAnd5XX={setHttp4XXAnd5XX} /> :
           (
-            <div className="card card-info">
-              <div className="card-header">
-                <h3 className="card-title">Werknemer {id !== "new" ? "aanpassen" : "toevoegen"}</h3>
-              </div>
-              {Http400Error[0] && <BadRequest400Error error={Http400Error[1]} setHttp400Error={setHttp400Error} />}
+            <div className="col-md">
+              <div className="card card-info">
+                <div className="card-header">
+                  <h3 className="card-title">Werknemer {id !== "new" ? "aanpassen" : "toevoegen"}</h3>
+                </div>
+                {Http400Error[0] && <BadRequest400Error error={Http400Error[1]} setHttp400Error={setHttp400Error} />}
 
-              <form onSubmit={submitHandler}>
-                <div className="card-body">
+                <form onSubmit={submitHandler}>
+                  <div className="card-body">
 
-                  {/* ID */}
-                  <div className="form-group">
-                    <label htmlFor="ID">ID</label>
-                    <input type="number" class="form-control" id="ID" onChange={(e) => setId(e.target.value)} value={Id} />
-                  </div>
+                    {/* ID */}
+                    <div className="form-group">
+                      <label htmlFor="ID">ID</label>
+                      <input type="number" class="form-control" id="ID" onChange={(e) => setId(e.target.value)} value={Id} />
+                    </div>
 
-                  {/* NAAM */}
-                  <div className="form-group" >
-                    <label for="EMPL_NAME" >Naam </label>
-                    <input type="text" class="form-control" id="EMPL_NAME" onChange={(e) => setNaam(e.target.value)} value={Naam} />
-                  </div>
+                    {/* NAAM */}
+                    <div className="form-group" >
+                      <label for="EMPL_NAME" >Naam </label>
+                      <input type="text" class="form-control" id="EMPL_NAME" onChange={(e) => setNaam(e.target.value)} value={Naam} />
+                    </div>
 
-                  {/* EMAIL */}
-                  <div className="form-group" >
-                    <label for="EMPL_MAIL"  >Email</label>
-                    <input type="email" class="form-control" id="EMPL_MAIL" onChange={(e) => setEmail(e.target.value)} value={Email} />
-                  </div>
-                  {/* CONTRACTTYPE */}
-                  <div className="form-group" >
-                    <div className="row">
-                      <div className="col-3">
-                        <label for="EMPL_CONTRACT"  >Contracttype</label>
-                        <input type="text" class="form-control" list="CATEGORIE" id="EMPL_CONTRACT" onChange={(e) => setContracttype(e.target.value)} value={Contracttype} />
+                    {/* EMAIL */}
+                    <div className="form-group" >
+                      <label for="EMPL_MAIL"  >Email</label>
+                      <input type="email" class="form-control" id="EMPL_MAIL" onChange={(e) => setEmail(e.target.value)} value={Email} />
+                    </div>
+                    {/* CONTRACTTYPE */}
+                    <div className="form-group" >
+                      <div className="row">
+                        <div className="col-3">
+                          <label for="EMPL_CONTRACT"  >Contracttype</label>
+                          <input type="text" class="form-control" list="CATEGORIE" id="EMPL_CONTRACT" onChange={(e) => setContracttype(e.target.value)} value={Contracttype} />
+                        </div>
                       </div>
                     </div>
-                 </div>
 
-                  <div className="card-footer">
-                    <button type="submit" style={{ width: "125px" }} className="btn btn-success">{id !== "new" ? "Aanpassen" : "Toevoegen"}</button>
-                    {id !== "new" &&
-                      <button type="button" style={{ marginLeft: "50px", width: "125px" }} className="btn btn-danger " onClick={(() => deleteHandler())}     >Verwijderen</button>}
-                    <button type="button" style={{ marginLeft: "50px", width: "125px" }} className="btn btn-warning " onClick={() => setFinished(!Finished)}>Annuleren</button>
+                    <div className="card-footer">
+                      <button type="submit" style={{ width: "125px" }} className="btn btn-success">{id !== "new" ? "Aanpassen" : "Toevoegen"}</button>
+                      {id !== "new" &&
+                        <button type="button" style={{ marginLeft: "50px", width: "125px" }} className="btn btn-danger " onClick={(() => deleteHandler())}     >Verwijderen</button>}
+                      <button type="button" style={{ marginLeft: "50px", width: "125px" }} className="btn btn-warning " onClick={() => setFinished(!Finished)}>Annuleren</button>
 
+                    </div>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           )}
-   </div>
+    </div>
   )
 }
 

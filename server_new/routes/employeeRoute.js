@@ -36,7 +36,7 @@ router.put("/:id", async (req, res) => {
     if (parseInt(req.params.id) !== parseInt(req.body.id))
       return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not equal to employee Id:${req.body.id}`);
 
-    if (req.body.name.trim() === "")
+    if ( req.body.name.trim() === "")
       return res.status(400).send(`PUT on ${hostUrl}/:id failed because name is empty`);
 
     if (!email_validation.test(req.body.email.toLowerCase().trim()))
@@ -77,13 +77,13 @@ router.post("/", async (req, res) => {
   try {
 
     if (isNaN(req.body.id))
-      return res.status(400).send(`POST on ${hostUrl} with id "${req.params.id}" failed with because id is not a number`);
+      return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not a number`);
 
     if (req.body.name.trim() === "")
-      return res.status(400).send(`POST on ${hostUrl} failed because name is empty`);
+      return res.status(400).send(`PUT on ${hostUrl}/:id failed because name is empty`);
 
     if (!email_validation.test(req.body.email.toLowerCase().trim()))
-      return res.status(400).send(`POST on ${hostUrl} failed  because email is not valid`);
+      return res.status(400).send(`PUT on ${hostUrl}/:id failed  because email is not valid`);
 
 
 

@@ -1,9 +1,10 @@
 import express from 'express';
-import employeeRoute from './routes/employeeRoute.js';
 import expressStatusMonitor from 'express-status-monitor';
 import monitorConfig from './helpers/monitor_config.js';
 import cors from "cors";
 
+import employeeRoute from './routes/employeeRoute.js';
+import shifttypeRoute from './routes/shifttypeRoute.js';
 
 
 const app = express();
@@ -16,6 +17,8 @@ app.use( (req, res, next)=> {
     return next();
 });
 app.use('/api/employee', employeeRoute);
+app.use('/api/shifttype', shifttypeRoute);
+
 
 
 

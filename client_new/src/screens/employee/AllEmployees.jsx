@@ -14,7 +14,7 @@ const AllEmployees = () => {
 
   const fetchData = useCallback(async () => {
     await axios.get('http://127.0.0.1:3001/api/employee')
-    .then(response => setEmployees(response.data))
+      .then(response => setEmployees(response.data))
       .catch(error => setHttp500([true, error]));
   }, [])
 
@@ -37,53 +37,54 @@ const AllEmployees = () => {
 
 
 
-      {Loading ? <LoadingSpinner /> : Http500[0] ? <Http4XXAnd5XXError error={Http500[1]} setHttp500={setHttp500} /> : (
+      {Loading ? <LoadingSpinner /> : Http500[0] ? <Http4XXAnd5XXError error={Http500[1]} setHttp4XXAnd5XX={setHttp500} /> : (
+        <div className="col-md">
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title">Werknemers</h3>
+            </div>
 
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">Werknemers</h3>
-          </div>
-
-          <div className="card-body p-0">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th style={{ width: "10px" }}>ID</th>
-                  <th>NAAM</th>
-                  <th>EMAIL</th>
-                  <th>CONTRACTTYPE</th>
-                  <th>AANPASSEN</th>
-
-                </tr>
-              </thead>
-              <tbody>
-                {Employees.map((employee) => (
-
+            <div className="card-body p-0">
+              <table className="table table-striped">
+                <thead>
                   <tr>
-                    <td>{employee.id}</td>
-                    <td>{employee.naam}</td>
-                    <td>{employee.email}</td>
-                    <td>{employee.contracttype}</td>
-                    <td>
-                      <Link to={"/werknemers/" + employee.id}>
-                        <i class="fas fa-edit"></i>
-                      </Link>
+                    <th style={{ width: "10px" }}>ID</th>
+                    <th>NAAM</th>
+                    <th>EMAIL</th>
+                    <th>CONTRACTTYPE</th>
+                    <th>AANPASSEN</th>
 
+                  </tr>
+                </thead>
+                <tbody>
+                  {Employees.map((employee) => (
+
+                    <tr>
+                      <td>{employee.id}</td>
+                      <td>{employee.naam}</td>
+                      <td>{employee.email}</td>
+                      <td>{employee.contracttype}</td>
+                      <td>
+                        <Link to={"/werknemers/" + employee.id}>
+                          <i class="fas fa-edit"></i>
+                        </Link>
+
+                      </td>
+                    </tr>
+
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colSpan="5" >
+                      <Link to={"/werknemers/new"}>
+                        <button type="button" class="btn btn-block bg-gradient-primary btn-xs">Werknemer toevoegen</button>
+                      </Link>
                     </td>
                   </tr>
-
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan="5" >
-                    <Link to={"/werknemers/new"}>
-                      <button type="button" class="btn btn-block bg-gradient-primary btn-xs">Werknemer toevoegen</button>
-                    </Link>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                </tfoot>
+              </table>
+            </div>
           </div>
         </div>
       )}

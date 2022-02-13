@@ -5,8 +5,13 @@ import Header from './screens/index/Header';
 import Footer from './screens/index/Footer';
 import Sidebar from './screens/index/Sidebar';
 import ServerStatus from './screens/index/ServerStatus';
+
 import EditEmployee from './screens/employee/EditEmployee';
 import AllEmployees from './screens/employee/AllEmployees';
+
+import AllShiftypes from './screens/shifttype/AllShifttypes';
+import EditShifttype from './screens/shifttype/EditShifttype';
+
 import SuccesModal from './components/general/SuccesModal';
 import DangerModal from './components/general/DangerModal';
 
@@ -27,9 +32,13 @@ function App() {
       <Header />
       <Sidebar />
 
+      <Route path="/shifttypes/:name" >
+        <EditShifttype setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} />
+      </Route>
+      <Route path="/shifttypes" component={AllShiftypes} exact={true} />
 
-      <Route path="/werknemers/:id" component={EditEmployee} >
-        <EditEmployee setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal}  />
+      <Route path="/werknemers/:id" >
+        <EditEmployee setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} />
       </Route>
       <Route path="/werknemers" component={AllEmployees} exact={true} />
 
