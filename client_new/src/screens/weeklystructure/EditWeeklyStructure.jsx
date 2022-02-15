@@ -125,7 +125,10 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
         setScore(response.data[0].score);
         setLoading(prev => prev + 1);
       })
-      .catch(error => setHttp4XXAnd5XX([true, error]));
+      .catch(error => {
+        setHttp4XXAnd5XX([true, error]);
+        setLoading(prev => prev + 1);
+      })
   }, []);
 
   const fetchShifttypes = useCallback(async () => {
@@ -134,7 +137,10 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
         setShiftTypes(response.data);
         setLoading(prev => prev + 1);
       })
-      .catch(error => setHttp4XXAnd5XX([true, error]));
+      .catch(error => {
+        setHttp4XXAnd5XX([true, error]);
+        setLoading(prev => prev + 1);
+      })
   }, []);
 
   useEffect(() => {

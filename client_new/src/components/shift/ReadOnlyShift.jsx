@@ -3,24 +3,29 @@ import moment from 'moment';
 
 const ReadOnlyShift = ({shift, width}) => {
 
+
+  let cssStyling = shift ? { backgroundColor: shift.kleurcode, color: shift.tekstkleurcode,padding:"0px", margin:'0px', textAlign: 'center', height: "100%", width: "100%",fontSize: shift.standaardtekst === "min" ?"10px":"", outline: shift.border ? "2px solid black" : "" } : { padding:"0px", margin:'0px', textAlign: 'center', height: "100%", width: "100%" };
+
   return (
     <div style={{
-        backgroundColor: shift.kleurcode,
-        color: shift.tekstkleurcode,
+        backgroundColor: shift?.kleurcode,
+        color: shift?.tekstkleurcode,
         textAlign: 'center',
         height: '100%',
         width: width,
-        border: (shift.border ? "2px solid black" : ""),
+        border: (shift?.border ? "2px solid black" : ""),
+        padding:"0px",
+         margin:'0px'
       }}>
-        {shift.standaardtekst === "uur" ? (
+        {shift?.standaardtekst === "uur" ? (
           moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() > 0 ?
             moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
             moment.duration(moment(shift.einduur, "hh:mm").add(1, "day").diff(moment(shift.beginuur, "hh:mm"))).asHours()
         ) :
-          shift.standaardtekst === "min" ?
+          shift?.standaardtekst === "min" ?
             moment.utc(moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asMilliseconds()).format("hh:mm")
             :
-            shift.standaardtekst}
+            shift?.standaardtekst}
       </div>
 
   )

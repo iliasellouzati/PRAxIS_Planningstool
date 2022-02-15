@@ -4,8 +4,11 @@ const hour_minutes_validation = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
 const hex_color_validation = /^#([0-9a-f]{6}|[0-9a-f]{3})$/;
 
+const month_year_validation = /^(0?[1-9]|1[0-2])\/(\d{4})$/
+
 export {
     email_validation,
     hour_minutes_validation,
-    hex_color_validation
+    hex_color_validation,
+    month_year_validation
 };

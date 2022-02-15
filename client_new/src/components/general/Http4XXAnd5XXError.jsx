@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import '../../helpers/moment_prototype';
+import '../../helpers/moment';
 
 const Http4XXAnd5XXError = ({ error, setHttp4XXAnd5XX }) => {
     console.log(error);

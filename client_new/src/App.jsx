@@ -17,6 +17,7 @@ import EditWeeklyStructure from './screens/weeklystructure/EditWeeklyStructure';
 
 import SuccesModal from './components/general/SuccesModal';
 import DangerModal from './components/general/DangerModal';
+import Automatic from './screens/automatic/Automatic';
 
 
 
@@ -36,6 +37,10 @@ function App() {
       <Header />
       <Sidebar />
 
+
+      <Route path="/automatisatie/:month" >
+        <Automatic setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} />
+      </Route>
 
 
       <Route path="/weekstructuren/:id" >

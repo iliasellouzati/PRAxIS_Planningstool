@@ -61,17 +61,7 @@ moment.locale('nl', {
     }
 });
 
-moment.prototype.firstDayOfCalendarMonth_Moment = () => {
-    return this.clone().startOf("month").startOf("isoWeek");
-}
-
-moment.prototype.lastDayOfCalendarMonth_Moment= () =>{
-    return this.clone().endOf("month").endOf("isoWeek");
-}
-
-moment.prototype.totalDaysInCalendarMonth_Duration= (object) =>{
-    return moment.duration(object.endOf("month").endOf("isoWeek").diff(object.startOf("month").startOf("isoWeek"))).asDays() ;
-}
 
 
-export default moment.prototype;
+
+export default moment;
