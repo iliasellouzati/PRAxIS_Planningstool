@@ -4,9 +4,9 @@ moment.locale('nl', {
     months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
     monthsShort : 'jan._feb._maa._apr._mei._jun._jul._aug._sept._okt._nov._dec.'.split('_'),
     monthsParseExact : true,
-    weekdays : 'maandag_dinsdag_woensdag_donderdag_vrijdag_zaterdag_zondag'.split('_'),
-    weekdaysShort : 'maa._din._woe._don._vrij._zat._zon._'.split('_'),
-    weekdaysMin : 'm_d_w_d_v_z_z'.split('_'),
+    weekdays : 'zondag_maandag_dinsdag_woensdag_donderdag_vrijdag_zaterdag'.split('_'),
+    weekdaysShort : 'zon._maa._din._woe._don._vrij._zat.'.split('_'),
+    weekdaysMin : 'z_m_d_w_d_v_z'.split('_'),
     weekdaysParseExact : true,
     longDateFormat : {
         LT : 'HH:mm',

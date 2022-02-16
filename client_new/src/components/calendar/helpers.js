@@ -8,7 +8,7 @@ const getCalendarMoments_ArrayWithMoments = dateString =>{
 
 
     while (startDay.isBefore(endDay, 'day')) {
-        calendar.push(startDay);
+        calendar.push(startDay.clone());
         startDay = startDay.add(1, 'day');
     };
 

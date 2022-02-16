@@ -7,7 +7,7 @@ const SideBarLinks = [
     {
         "naam": "automatisch",
         "icon": "fas fa-magic",
-        "link": "/automatisatie/02-2021"
+        "link": "/automatisatie/03-2021"
     },
     {
         "naam": "manueel",

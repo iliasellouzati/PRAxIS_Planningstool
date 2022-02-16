@@ -156,7 +156,23 @@ router.get("/global/year/:year/calendarmonth/:month", async (req, res) => {
     }
 
 })
+router.get("/global/custom/:begin/:end", async (req, res) => {
 
+    try {
+
+            const beginDate = moment(req.params.begin, "DD-MM-YYYY");
+            const endDate = moment(req.params.end, "DD-MM-YYYY");
+
+        const shiften = await Calendar_DB.getCalendarShifts(beginDate.format("YYYY-MM-DD"), endDate.format("YYYY-MM-DD"));
+        shiften.length ? res.status(200).send(shiften) : res.status(204).send(`No Shifts found in year ${req.params.year}`);
+
+    } catch (e) {
+
+        res.status(500).send(`GET on ${hostUrl}/global/year/${req.params.year}/month/${req.params.month} failed with error "${e.message}"`);
+
+    }
+
+})
 
 
 export default router;

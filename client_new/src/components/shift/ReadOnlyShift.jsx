@@ -12,18 +12,18 @@ const ReadOnlyShift = ({shift, width}) => {
         color: shift?.tekstkleurcode,
         textAlign: 'center',
         height: '100%',
-        width: width,
+        width: '100%',
         border: (shift?.border ? "2px solid black" : ""),
         padding:"0px",
          margin:'0px'
       }}>
         {shift?.standaardtekst === "uur" ? (
           moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() > 0 ?
-            moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
-            moment.duration(moment(shift.einduur, "hh:mm").add(1, "day").diff(moment(shift.beginuur, "hh:mm"))).asHours()
+            parseInt(moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours()) :
+            parseInt(moment.duration(moment(shift.einduur, "hh:mm").add(1, "day").diff(moment(shift.beginuur, "hh:mm"))).asHours())
         ) :
           shift?.standaardtekst === "min" ?
-            moment.utc(moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asMilliseconds()).format("hh:mm")
+            moment.utc(moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asMilliseconds()).format("h:mm")
             :
             shift?.standaardtekst}
       </div>
