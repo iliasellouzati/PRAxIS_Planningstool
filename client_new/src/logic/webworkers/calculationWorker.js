@@ -1,120 +1,28 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
 
-  let mogelijkeCombinaties = [];
 
-  // eslint-disable-next-line no-restricted-globals
+
+//   eslint-disable-next-line no-restricted-globals
   self.onmessage = (message) => {
 
-    console.log(message);
-    mogelijkeCombinaties = berekenMogelijkeCombinaties(message);
+    let mogelijkeCombinaties = berekenMogelijkeCombinaties(message);
     postMessage(mogelijkeCombinaties);
 
   }
-};
-
-
-
-const filterWeekendEndNacht = (message) => {
-  mogelijkeCombinaties = message.mogelijkeCombinaties;
-
-  let OntbrekendeShiften = message.OntbrekendeShiften[message.weekNummer];
-  let hulpVal_mogelijkeCombinaties;
-
-  for (let index = 0; index < mogelijkeCombinaties.length; index++) {
-
-    hulpVal_mogelijkeCombinaties = mogelijkeCombinaties[index];
-
-    hulpVal_mogelijkeCombinaties.combinaties = mogelijkeCombinaties[index].combinaties.filter(weekCombo => weekBevatGeenNachtEnWeekendShiften(OntbrekendeShiften, weekCombo, message.weekStructuren));
-
-    mogelijkeCombinaties[index] = hulpVal_mogelijkeCombinaties
-
-  }
-
-  let hulpVal_hulpVal = [];
-
-  mogelijkeCombinaties.forEach(el => {
-    hulpVal_hulpVal.push({
-      "nietIngevuldeShiften": el.nietIngevuldeShiften,
-      "combinaties": el.combinaties.length
-    })
-  });
-
-  hulpVal = hulpVal_hulpVal;
-
-
-}
-
-const weekBevatGeenNachtEnWeekendShiften = (PssOntbrekendeShiften, weekCombo, weekStructuren) => {
-
-  weekCombo.forEach(weekId => {
-      let week = weekStructuren.find(x => x.id === weekId);
-      if (week.maandag !== "") {
-        let hulpDag = OntbrekendeShiften[0];
-        hulpDag = hulpDag.filter(x => week.maandag !== x);
-        OntbrekendeShiften[0] = hulpDag;
-      }
-      if (week.dinsdag !== "") {
-        let hulpDag = OntbrekendeShiften[1];
-        hulpDag = hulpDag.filter(x => week.dinsdag !== x);
-        OntbrekendeShiften[1] = hulpDag;
-      }
-      if (week.woensdag !== "") {
-        let hulpDag = OntbrekendeShiften[2];
-        hulpDag = hulpDag.filter(x => week.woensdag !== x);
-        OntbrekendeShiften[2] = hulpDag;
-      }
-      if (week.donderdag !== "") {
-        let hulpDag = OntbrekendeShiften[3];
-        hulpDag = hulpDag.filter(x => week.donderdag !== x);
-        OntbrekendeShiften[3] = hulpDag;
-      }
-      if (week.vrijdag !== "") {
-        let hulpDag = OntbrekendeShiften[4];
-        hulpDag = hulpDag.filter(x => week.vrijdag !== x);
-        OntbrekendeShiften[4] = hulpDag;
-      }
-      if (week.zaterdag !== "") {
-        let hulpDag = OntbrekendeShiften[5];
-        hulpDag = hulpDag.filter(x => week.zaterdag !== x);
-        OntbrekendeShiften[5] = hulpDag;
-      }
-      if (week.zondag !== "") {
-        let hulpDag = OntbrekendeShiften[6];
-        hulpDag = hulpDag.filter(x => week.zondag !== x);
-        OntbrekendeShiften[6] = hulpDag;
-      }
-    }
-
-  )
-
-  if (
-    OntbrekendeShiften[0].some(a => nachtShiften.includes(a)) ||
-    OntbrekendeShiften[1].some(a => nachtShiften.includes(a)) ||
-    OntbrekendeShiften[2].some(a => nachtShiften.includes(a)) ||
-    OntbrekendeShiften[3].some(a => nachtShiften.includes(a)) ||
-    OntbrekendeShiften[4].some(a => nachtShiften.includes(a)) ||
-    OntbrekendeShiften[5].length !== 0 ||
-    OntbrekendeShiften[6].length !== 0) {
-    return false
-  }
-
-  return true;
-
-}
 
 
 const berekenMogelijkeCombinaties = (message) => {
-  let possibleWeekIDs = message.data.possibleWeekIDs;
-  let missingShiftsWeek = message.data.missingShiftsWeek;
-  let weeklyStructures = message.data.weeklyStructures;
+  let possibleWeekIDs = message.data[1].possibleWeekIDs;
+  let missingShiftsWeek = message.data[1].missingShiftsWeek;
+  let weeklyStructures = message.data[1].weeklyStructures;
   let mogelijkeCombinaties = [];
 
 
   let ontbrekendeShiften = [...missingShiftsWeek]
   let i = 0;
   //-----------------------------------------loop1----------------------------------------------------------------------------
-  for (let index1 = 0; index1 < possibleWeekIDs[0].possibleWeeks.length; index1 += 1) {
+  for (let index1 = 0; index1 < possibleWeekIDs[0].possibleWeeks.length; index1++) {
 
     let teBehalenWeekIndex1 = [...ontbrekendeShiften];
     let weekIndex1 = weeklyStructures.find(x => x.id === possibleWeekIDs[0].possibleWeeks[index1]);
@@ -123,8 +31,8 @@ const berekenMogelijkeCombinaties = (message) => {
       continue;
     };
 
-    //-----------------------------------------loop2----------------------------------------------------------------------------
-    for (let index2 = 0; index2 < possibleWeekIDs[1].possibleWeeks.length; index2 += 2) {
+  //  -----------------------------------------loop2----------------------------------------------------------------------------
+    for (let index2 = 0; index2 < possibleWeekIDs[1].possibleWeeks.length; index2++) {
 
       let weekIndex2 = weeklyStructures.find(x => x.id === possibleWeekIDs[1].possibleWeeks[index2]);
       let teBehalenWeekIndex2 = [...teBehalenWeekIndex1];
@@ -133,7 +41,7 @@ const berekenMogelijkeCombinaties = (message) => {
         continue;
       };
 
-      //-----------------------------------------loop3----------------------------------------------------------------------------
+     // -----------------------------------------loop3----------------------------------------------------------------------------
       for (let index3 = 0; index3 < possibleWeekIDs[2].possibleWeeks.length; index3++) {
 
         let weekIndex3 = weeklyStructures.find(x => x.id === possibleWeekIDs[2].possibleWeeks[index3]);
@@ -143,7 +51,7 @@ const berekenMogelijkeCombinaties = (message) => {
           continue;
         };
 
-        //-----------------------------------------loop4---------------------------------------------------------------------------
+      //  -----------------------------------------loop4---------------------------------------------------------------------------
         for (let index4 = 0; index4 < possibleWeekIDs[3].possibleWeeks.length; index4++) {
 
           let weekIndex4 = weeklyStructures.find(x => x.id === possibleWeekIDs[3].possibleWeeks[index4]);
@@ -163,7 +71,7 @@ const berekenMogelijkeCombinaties = (message) => {
               continue;
             };
 
-            //-----------------------------------------loop6---------------------------------------------------------------------------
+           // -----------------------------------------loop6---------------------------------------------------------------------------
             for (let index6 = 0; index6 < possibleWeekIDs[5].possibleWeeks.length; index6++) {
 
               let weekIndex6 = weeklyStructures.find(x => x.id === possibleWeekIDs[5].possibleWeeks[index6]);
@@ -173,7 +81,7 @@ const berekenMogelijkeCombinaties = (message) => {
                 continue;
               };
 
-              //-----------------------------------------loop7---------------------------------------------------------------------------
+          //    -----------------------------------------loop7---------------------------------------------------------------------------
               for (let index7 = 0; index7 < possibleWeekIDs[6].possibleWeeks.length; index7++) {
 
                 let weekIndex7 = weeklyStructures.find(x => x.id === possibleWeekIDs[6].possibleWeeks[index7]);
@@ -183,7 +91,7 @@ const berekenMogelijkeCombinaties = (message) => {
                   continue;
                 };
 
-                //-----------------------------------------loop8--------------------------------------------------------------------------
+            //    -----------------------------------------loop8--------------------------------------------------------------------------
                 for (let index8 = 0; index8 < possibleWeekIDs[7].possibleWeeks.length; index8++) {
 
                   let weekIndex8 = weeklyStructures.find(x => x.id === possibleWeekIDs[7].possibleWeeks[index8]);
@@ -235,6 +143,8 @@ const berekenMogelijkeCombinaties = (message) => {
 
 
   }
+
+  return mogelijkeCombinaties;
 }
 
 
@@ -317,3 +227,4 @@ const checkWeekVoorWerknemer = (weekIndex, teBehalenWeekIndex) => {
 
 }
 
+};

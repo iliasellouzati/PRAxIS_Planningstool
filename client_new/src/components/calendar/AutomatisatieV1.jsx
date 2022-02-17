@@ -5,14 +5,12 @@ import { getCalendarMoments_ArrayWithMoments } from './helpers';
 import LoadingSpinner from '../../components/general/LoadingSpinner';
 import Http4XXAnd5XXError from '../../components/general/Http4XXAnd5XXError';
 import WeeklyConfigs from './WeeklyConfigs';
-import WorkerBuilder from '../../logic/automatisatie/worker-builder';
-import Worker from '../../logic/automatisatie/possibleWeeksWorker;';
-import { checkPossibleWeeklyStructures } from '../../logic/automatisatie/possibleWeekStructures';
+import { checkPossibleWeeklyStructures } from '../../logic/webworkers/helper';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { mapShiftsFromDbToAutomatisation } from '../../mappers/calendar/DatabaseToReduxMapper';
 
-const AutomatisatieV1 = () => {
+const AutomatisatieV1 = ({ postToMainWorker }) => {
 
     const { month } = useParams();
 
@@ -29,91 +27,35 @@ const AutomatisatieV1 = () => {
     const currentCalendar = useSelector((state) => state.currentCalendar);
     const { date, calendar } = currentCalendar;
 
-    let i = 0;
 
-    const [FeedBackWorkers, setFeedBackWorkers] = useState(0);
-    let mogelijkeCombinaties = [];
+    const startAutomatisation = async () => {
 
-    let worker1 = new WorkerBuilder(Worker);
-    let worker2 = new WorkerBuilder(Worker);
-    let worker3 = new WorkerBuilder(Worker);
-    let worker4 = new WorkerBuilder(Worker);
-    let worker5 = new WorkerBuilder(Worker);
-    let worker6 = new WorkerBuilder(Worker);
+        let previousWeeks = await axios.get(`http://127.0.0.1:3001/api/calendar/global/custom/${moment(month, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'week').format("DD-MM-YYYY")}/${moment(month, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'day').format("DD-MM-YYYY")}`);
 
-    worker1.onmessage = (message) => {
-        if (message) {
-            console.log("------- Message in MAIN THREAD from web worker 1: ");
-            console.log(message.data);
-            handleWorkerResponse(message.data);
+        previousWeeks = mapShiftsFromDbToAutomatisation(month, previousWeeks.data, Employees);
+        const missingShiftsWeek = checkOntbrekendeShiften();
 
-        }
-    };
-    worker2.onmessage = (message) => {
-        if (message) {
-            console.log("------- Message in MAIN THREAD from web worker 2");
-            console.log(message.data);
-            handleWorkerResponse(message.data);
-        }
-    };
-    worker3.onmessage = (message) => {
-        if (message) {
-            console.log("------- Message in MAIN THREAD from web worker 3");
-            console.log(message.data);
-            handleWorkerResponse(message.data);
-        }
-    };
-
-    worker4.onmessage = (message) => {
-        if (message) {
-            console.log("------- Message in MAIN THREAD from web worker 4");
-            console.log(message.data);
-            handleWorkerResponse(message.data);
-        }
-    };
-
-    worker5.onmessage = (message) => {
-        if (message) {
-            console.log("------- Message in MAIN THREAD from web worker 5");
-            console.log(message.data);
-            handleWorkerResponse(message.data);
-        }
-    };
-    worker6.onmessage = (message) => {
-        if (message) {
-            console.log("------- Message in MAIN THREAD from web worker 6");
-            console.log(message.data);
-            handleWorkerResponse(message.data);
-        }
-    };
-    const handleWorkerResponse = (respons) => {
-
-        console.log("combos voor responss behandeling : ")
-        console.log(mogelijkeCombinaties);
-
-        respons.forEach(element => {
-            if (!mogelijkeCombinaties?.some(x => x.nietIngevuldeShiften === element.nietIngevuldeShiften)) {
-                mogelijkeCombinaties.push(element)
-            } else {
-                let hulpIndex = mogelijkeCombinaties.findIndex(x => x.nietIngevuldeShiften === element.nietIngevuldeShiften);
-                mogelijkeCombinaties[hulpIndex].combinaties.push(...element.combinaties);
-            }
-        });
-
-
-        setFeedBackWorkers(++i);
+        postToMainWorker(["INIT", {
+            "weeklyStructures": WeeklyStructures,
+            "employees": Employees,
+            "config": Config,
+            "previousWeeks": previousWeeks,
+            "missingShiftsWeek": missingShiftsWeek,
+            "WeekNumber": "1"
+        }]);
 
     }
-    const checkOntbrekendeShiften = (weekNr) => {
+    const checkOntbrekendeShiften = () => {
         let hulpCalenderMetOntbrekendeShiften = [];
-        const verplichteShiften = ["0618", "0719", "1806", "1907"];
-        hulpCalenderMetOntbrekendeShiften.push(Array(7).fill(0).map(() => verplichteShiften));
+        let verplichteShiften = ["0618", "0719", "1806", "1907"];
 
+        for (let index = 0; index < calendarMonthHelper.length / 7; index++) {
+            hulpCalenderMetOntbrekendeShiften.push(Array(7).fill(0).map(() => verplichteShiften));
+        }
 
         calendar.forEach(empl => {
             empl.calendar.forEach((shiftDay, index) => {
 
-                { Math.floor() }
                 if (verplichteShiften.includes(shiftDay.shift)) {
                     let hulpVal = hulpCalenderMetOntbrekendeShiften[Math.floor(index / 7)][index % 7];
                     hulpVal = hulpVal.filter(x => x !== shiftDay.shift);
@@ -121,63 +63,9 @@ const AutomatisatieV1 = () => {
                 }
             })
         })
-        let hlpval1 = hulpCalenderMetOntbrekendeShiften[0][0].length + hulpCalenderMetOntbrekendeShiften[0][1].length +
-            hulpCalenderMetOntbrekendeShiften[0][2].length + hulpCalenderMetOntbrekendeShiften[0][3].length +
-            hulpCalenderMetOntbrekendeShiften[0][4].length + hulpCalenderMetOntbrekendeShiften[0][5].length +
-            hulpCalenderMetOntbrekendeShiften[0][6].length;
-
-        let hlpval2 = hulpCalenderMetOntbrekendeShiften[1][0].length + hulpCalenderMetOntbrekendeShiften[1][1].length +
-            hulpCalenderMetOntbrekendeShiften[1][2].length + hulpCalenderMetOntbrekendeShiften[1][3].length +
-            hulpCalenderMetOntbrekendeShiften[1][4].length + hulpCalenderMetOntbrekendeShiften[1][5].length +
-            hulpCalenderMetOntbrekendeShiften[1][6].length;
-
-        let hlpval3 = hulpCalenderMetOntbrekendeShiften[2][0].length + hulpCalenderMetOntbrekendeShiften[2][1].length +
-            hulpCalenderMetOntbrekendeShiften[2][2].length + hulpCalenderMetOntbrekendeShiften[2][3].length +
-            hulpCalenderMetOntbrekendeShiften[2][4].length + hulpCalenderMetOntbrekendeShiften[2][5].length +
-            hulpCalenderMetOntbrekendeShiften[2][6].length;
-
-        let hlpval4 = hulpCalenderMetOntbrekendeShiften[3][0].length + hulpCalenderMetOntbrekendeShiften[3][1].length +
-            hulpCalenderMetOntbrekendeShiften[3][2].length + hulpCalenderMetOntbrekendeShiften[3][3].length +
-            hulpCalenderMetOntbrekendeShiften[3][4].length + hulpCalenderMetOntbrekendeShiften[3][5].length +
-            hulpCalenderMetOntbrekendeShiften[3][6].length;
-
-        if (hulpCalenderMetDeDagen.length === 5) {
-            let hlpval5 = hulpCalenderMetOntbrekendeShiften[4][0].length + hulpCalenderMetOntbrekendeShiften[4][1].length +
-                hulpCalenderMetOntbrekendeShiften[4][2].length + hulpCalenderMetOntbrekendeShiften[4][4].length +
-                hulpCalenderMetOntbrekendeShiften[4][4].length + hulpCalenderMetOntbrekendeShiften[4][5].length +
-                hulpCalenderMetOntbrekendeShiften[4][6].length;
-
-            setAantalDagenWeek5(hlpval5);
-        }
-
-
-        setOntbrekendeShiften(hulpCalenderMetOntbrekendeShiften);
-
-        console.log("Ontbrekende shifts berekend:");
-        console.log(hulpCalenderMetOntbrekendeShiften);
-
-
+        return hulpCalenderMetOntbrekendeShiften;
     }
 
-    const start = async () => {
-
-        if (i === 0) {
-            let beginDate = moment(date, "MM-YYYY").clone().startOf("month").startOf("isoWeek").subtract(1, "week");
-            let endDate = moment(date, "MM-YYYY").clone().startOf("month").startOf("isoWeek").subtract(1, "day");
-            const DBshifts = await axios.get(`http://localhost:3001/api/calendar/global/custom/${beginDate.format("DD-MM-YYYY")}/${endDate.format("DD-MM-YYYY")}`);
-
-            let prevWeeks = mapShiftsFromDbToAutomatisation(date, DBshifts.data, Employees);
-            let possibleWeekIDs = checkPossibleWeeklyStructures(WeeklyStructures, Employees, Config, prevWeeks, MISSINGSHIFTS, "1");
-        }
-
-
-
-        let possibleWeekIDs = checkPossibleWeeklyStructures(WeeklyStructures, Employees, Config, prevWeeks, MISSINGSHIFTS, "1");
-
-
-
-
-    }
 
     const init = (employees) => {
         let config = [];
@@ -211,8 +99,6 @@ const AutomatisatieV1 = () => {
                     "night": false,
                     "weekend": false
                 }
-
-
             })
         })
         setConfig(config);
@@ -265,7 +151,7 @@ const AutomatisatieV1 = () => {
                         <tbody>
                             {Employees.map((empl, index) =>
                                 <tr>
-                                    <td>{empl.naam}</td>
+                                    <td>{empl.naam.substring(0, 8)}</td>
                                     <td>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"1"} /> : "N.V.T."}</td>
                                     <td>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"2"} /> : "N.V.T."}</td>
                                     <td>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"3"} /> : "N.V.T."}</td>
@@ -274,18 +160,15 @@ const AutomatisatieV1 = () => {
                                     {calendarMonthHelper.length > 35 && <td>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs index={index} config={Config} setConfig={setConfig} employeeId={empl.id} weekNumber={"6"} /> : "N.V.T."}</td>}
                                     <td style={{ width: "30px" }}>
                                         <input type="number" id="BEGIN_UREN" value={Config[index].totalShifts} onChange={(e) => { }} />
-                                        <input type="number" id="BEGIN_UREN" value={Config[index].totalShifts} onChange={(e) => { }} />
                                     </td>
                                 </tr>
                             )}
                             <td colSpan="7" >
 
-                                <button type="button" class="btn btn-block bg-gradient-primary btn-xs">start</button>
-                                <div id="myProgress" style={{ width: "70%", backgroundColor: "gray", height: "5px" }}>
-                                    <div id="myBar" style={{ width: ((FeedBackWorkers) * 100 / 30) + '%', height: "5px", backgroundColor: "green" }}></div>
-
+                                <button type="button" class="btn btn-block bg-gradient-primary btn-xs" onClick={() => { startAutomatisation() }}>start</button>
+                                <div id="myProgress" style={{ width: "100%", backgroundColor: "gray", height: "25px" }}>
+                                    <div id="myBar" style={{ width: (10 * 100 / 30) + '%', height: "25px", backgroundColor: "green" }}></div>
                                 </div>
-
                             </td>
                         </tbody>
                     </table>

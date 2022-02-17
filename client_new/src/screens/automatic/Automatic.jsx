@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCalendarShifts } from '../../redux/actions/calendarActions';
 import ReadOnlyCalendar from '../../components/calendar/ReadOnlyCalendar';
 
-const Automatic = () => {
+const Automatic = ({postToMainWorker}) => {
 
   let { month } = useParams();
 
@@ -45,7 +45,7 @@ const Automatic = () => {
 
                   {/* PLANNING TABEL */}
                   <div className="card-body">
-                    <ReadOnlyCalendar />
+                    <ReadOnlyCalendar postToMainWorker={postToMainWorker}/>
 
                   </div>
 

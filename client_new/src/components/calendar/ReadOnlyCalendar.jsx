@@ -9,7 +9,7 @@ import ReadOnlyShift from '../shift/ReadOnlyShift';
 import moment from '../../helpers/moment';
 import AutomatisatieV1 from './AutomatisatieV1';
 
-const ReadOnlyCalendar = () => {
+const ReadOnlyCalendar = ({postToMainWorker}) => {
 
 
     const currentCalendar = useSelector((state) => state.currentCalendar);
@@ -99,7 +99,7 @@ const ReadOnlyCalendar = () => {
 
                     <div className="row">
                         <div className="col-md-12">
-                            <AutomatisatieV1 />
+                            <AutomatisatieV1 postToMainWorker={postToMainWorker} />
 
                         </div>
 
