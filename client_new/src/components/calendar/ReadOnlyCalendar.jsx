@@ -6,10 +6,9 @@ import LoadingSpinner from '../../components/general/LoadingSpinner';
 import Http4XXAnd5XXError from '../../components/general/Http4XXAnd5XXError';
 import { getCalendarMoments_ArrayWithMoments } from './helpers';
 import ReadOnlyShift from '../shift/ReadOnlyShift';
-import moment from '../../helpers/moment';
-import AutomatisatieV1 from './AutomatisatieV1';
+import AutomatisatieV1 from '../../screens/automatic/AutomatisatieV1';
 
-const ReadOnlyCalendar = ({postToMainWorker}) => {
+const ReadOnlyCalendar = () => {
 
 
     const currentCalendar = useSelector((state) => state.currentCalendar);
@@ -97,16 +96,6 @@ const ReadOnlyCalendar = ({postToMainWorker}) => {
 
                     </table>
 
-                    <div className="row">
-                        <div className="col-md-12">
-                            <AutomatisatieV1 postToMainWorker={postToMainWorker} />
-
-                        </div>
-
-
-
-
-                    </div>
 
                 </React.Fragment>
             )}

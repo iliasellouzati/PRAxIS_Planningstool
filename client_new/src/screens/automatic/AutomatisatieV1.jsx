@@ -1,16 +1,15 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { getCalendarMoments_ArrayWithMoments } from './helpers';
+import { getCalendarMoments_ArrayWithMoments } from '../../components/calendar/helpers';
 import LoadingSpinner from '../../components/general/LoadingSpinner';
 import Http4XXAnd5XXError from '../../components/general/Http4XXAnd5XXError';
-import WeeklyConfigs from './WeeklyConfigs';
-import { checkPossibleWeeklyStructures } from '../../logic/webworkers/helper';
+import WeeklyConfigs from '../../components/calendar/WeeklyConfigs';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { mapShiftsFromDbToAutomatisation } from '../../mappers/calendar/DatabaseToReduxMapper';
 
-const AutomatisatieV1 = ({ postToMainWorker }) => {
+const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
 
     const { month } = useParams();
 
@@ -25,7 +24,8 @@ const AutomatisatieV1 = ({ postToMainWorker }) => {
     const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(month);
 
     const currentCalendar = useSelector((state) => state.currentCalendar);
-    const { date, calendar } = currentCalendar;
+    const { calendar } = currentCalendar;
+
 
 
     const startAutomatisation = async () => {
@@ -35,13 +35,14 @@ const AutomatisatieV1 = ({ postToMainWorker }) => {
         previousWeeks = mapShiftsFromDbToAutomatisation(month, previousWeeks.data, Employees);
         const missingShiftsWeek = checkOntbrekendeShiften();
 
-        postToMainWorker(["INIT", {
+        INIT_StartUpMainWorkerForAutomatisation(["INIT", {
             "weeklyStructures": WeeklyStructures,
             "employees": Employees,
             "config": Config,
             "previousWeeks": previousWeeks,
             "missingShiftsWeek": missingShiftsWeek,
-            "WeekNumber": "1"
+            "WeekNumber": "1",
+            "numberOfWeeks": calendarMonthHelper.length / 7
         }]);
 
     }
@@ -104,6 +105,45 @@ const AutomatisatieV1 = ({ postToMainWorker }) => {
         setConfig(config);
     }
 
+    const TEMP_INIT_VALUES = () => {
+        let config = [...Config];
+        for (let index1 = 0; index1 < config.length; index1++) {
+
+            for (let index2 = 1; index2 <= 6; index2++) {
+                switch (index1) {
+                    case 1:
+                    case 2:
+                        config[index1][`${index2}`] = {
+                            "night": true,
+                            "weekend": true
+                        }
+                        break;
+
+                    case 4:
+                    case 5:
+                        config[index1][`${index2}`] = {
+                            "night": true,
+                            "weekend": false
+                        }
+                        break;
+
+                    case 6:
+                    case 7:
+                        config[index1][`${index2}`] = {
+                            "night": false,
+                            "weekend": true
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+
+            }
+        }
+        setConfig(config);
+
+    }
     const fetchData = useCallback(async () => {
         const employees = await axios.get('http://127.0.0.1:3001/api/employee')
             .then(response => {
@@ -124,10 +164,12 @@ const AutomatisatieV1 = ({ postToMainWorker }) => {
 
     }, [])
 
+
     useEffect(() => {
         fetchData().catch(console.error);
         return () => {
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -144,7 +186,7 @@ const AutomatisatieV1 = ({ postToMainWorker }) => {
                                 <th>{calendarMonthHelper[21].format('DD-MM')} tot {calendarMonthHelper[27].format('DD-MM')}</th>
                                 {calendarMonthHelper.length > 28 && <th>{calendarMonthHelper[28].format('DD-MM')} tot {calendarMonthHelper[34].format('DD-MM')}</th>}
                                 {calendarMonthHelper.length > 35 && <th>{calendarMonthHelper[35].format('DD-MM')} tot {calendarMonthHelper[41].format('DD-MM')}</th>}
-                                <th>#Shifts</th>
+                                {/* <th>#Shifts</th> */}
                             </tr>
 
                         </thead>
@@ -158,17 +200,17 @@ const AutomatisatieV1 = ({ postToMainWorker }) => {
                                     <td>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"4"} /> : "N.V.T."}</td>
                                     {calendarMonthHelper.length > 28 && <td>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs index={index} config={Config} setConfig={setConfig} employeeId={empl.id} weekNumber={"5"} /> : "N.V.T."}</td>}
                                     {calendarMonthHelper.length > 35 && <td>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs index={index} config={Config} setConfig={setConfig} employeeId={empl.id} weekNumber={"6"} /> : "N.V.T."}</td>}
-                                    <td style={{ width: "30px" }}>
+                                    {/* <td style={{ width: "30px" }}>
                                         <input type="number" id="BEGIN_UREN" value={Config[index].totalShifts} onChange={(e) => { }} />
-                                    </td>
+                                    </td> */}
                                 </tr>
                             )}
                             <td colSpan="7" >
 
+                                <button type="button" class="btn btn-block bg-gradient-danger btn-xs" onClick={() => { TEMP_INIT_VALUES() }}>TEMP_INIT_VALUES</button>
+
                                 <button type="button" class="btn btn-block bg-gradient-primary btn-xs" onClick={() => { startAutomatisation() }}>start</button>
-                                <div id="myProgress" style={{ width: "100%", backgroundColor: "gray", height: "25px" }}>
-                                    <div id="myBar" style={{ width: (10 * 100 / 30) + '%', height: "25px", backgroundColor: "green" }}></div>
-                                </div>
+
                             </td>
                         </tbody>
                     </table>

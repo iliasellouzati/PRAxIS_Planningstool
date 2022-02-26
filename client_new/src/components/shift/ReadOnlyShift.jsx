@@ -1,10 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-const ReadOnlyShift = ({shift, width}) => {
-
-
-  let cssStyling = shift ? { backgroundColor: shift.kleurcode, color: shift.tekstkleurcode,padding:"0px", margin:'0px', textAlign: 'center', height: "100%", width: "100%",fontSize: shift.standaardtekst === "min" ?"10px":"", outline: shift.border ? "2px solid black" : "" } : { padding:"0px", margin:'0px', textAlign: 'center', height: "100%", width: "100%" };
+const ReadOnlyShift = ({shift}) => {
 
   return (
     <div style={{

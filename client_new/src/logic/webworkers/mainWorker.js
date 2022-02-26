@@ -6,12 +6,34 @@ export default () => {
     // eslint-disable-next-line no-restricted-globals
     self.onmessage = (message) => {
 
+        let response = [];
+
         switch (message.data[0]) {
             case "INIT":
-                let response = checkPossibleWeeklyStructures(message.data[1]);
-                postMessage(["WEEK_1_POSSIBLE_IDS_FOUND", response]);
+                response = checkPossibleWeeklyStructures(message.data[1]);
+                postMessage(["POSSIBLE_IDS_FOUND", response]);
                 break;
 
+            case "CONTINU":
+                console.log("SWitchcase was hit!!!!!!!!!!!!!!!!!");
+                response = checkPossibleWeeklyStructures(message.data[1]);
+                console.log("SWitchcase was finished!!!!!!!!!!!!!!!!!");
+                console.log("huidige week in MAIN WORKER:" + message.data[1]["WeekNumber"])
+                console.log(JSON.stringify(response));
+                postMessage(["POSSIBLE_IDS_FOUND", response]);
+                break;
+
+            case "LAST_ONE":
+
+                console.log("LAST SWitchcase was hit!!!!!!!!!!!!!!!!!");
+                response = checkPossibleWeeklyStructures(message.data[1]);
+                console.log("LAST SWitchcase was finished!!!!!!!!!!!!!!!!!");
+                console.log("huidige week in MAIN WORKER:" + message.data[1]["WeekNumber"])
+                console.log(JSON.stringify(response));
+
+                postMessage(["LAST_POSSIBLE_IDS_FOUND", response]);
+                break;
+                
             case "FILTER_WEEKEND_EN_NACHT_INGEVULD":
                 postMessage("");
                 break;
@@ -52,7 +74,6 @@ export default () => {
                 "possibleWeeks": hulpList
             });
 
-            console.log("Mogelijke structuren (aantal: " + hulpList.length + ") berekend voor empl " + employees[index].naam);
 
         }
 
@@ -62,7 +83,6 @@ export default () => {
     const checkPossibleWeeklyStructuresIndividualy = (weeklyStructures, employee, config, missingShiftsWeek, prevWeek, WeekNumber) => {
 
 
-        const obligatedShifts = ["0618", "0719", "1806", "1907"];
         const dayShifts = ["0618", "0719"];
         const nightShifts = ["1806", "1907"];
 

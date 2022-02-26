@@ -48,6 +48,7 @@ const EditContractType = ({ setShowSuccesModal, setShowDangerModal }) => {
         setIdeaalShiftsAWeek(response.data[0].ideaal_shifts_per_week);
       })
       .catch(error => setHttp4XXAnd5XX([true, error]));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteHandler = async () => {

@@ -31,6 +31,7 @@ const EditEmployee = ({ setShowSuccesModal, setShowDangerModal }) => {
         setContracttype(response.data[0].contracttype)
       })
       .catch(error => setHttp4XXAnd5XX([true, error]));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteHandler = async () => {

@@ -28,11 +28,8 @@ const checkPossibleWeeklyStructures = async (weeklyStructures, employees, config
 
 const checkPossibleWeeklyStructuresIndividualy = (weeklyStructures, employee, config, missingShiftsWeek, prevWeek,WeekNumber) => {
 
-
-    const obligatedShifts = ["0618", "0719", "1806", "1907"];
     const dayShifts = ["0618", "0719"];
     const nightShifts = ["1806", "1907"];
-
 
     let currentWeek = [...prevWeek];
 

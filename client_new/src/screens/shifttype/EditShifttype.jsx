@@ -112,6 +112,7 @@ const EditShifttype = ({ setShowSuccesModal, setShowDangerModal }) => {
         setActive(response.data[0].actief);
       })
       .catch(error => setHttp4XXAnd5XX([true, error]));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
