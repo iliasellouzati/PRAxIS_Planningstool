@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const SideBarLinks = [
     {
         "naam": "home",
@@ -15,9 +17,9 @@ const SideBarLinks = [
         "link": "/manueel"
     },
     {
-        "naam": "historie",
+        "naam": "planningen",
         "icon": "fas fa-table",
-        "link": "/historie"
+        "link": "/planningen/"+moment().format("YYYY")
     },
     {
         "naam": "werknemers",

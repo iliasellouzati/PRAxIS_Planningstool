@@ -3,6 +3,19 @@
 --   site:      SQL Server 2012
 --   type:      SQL Server 2012
 
+create TABLE status_calendar
+(
+id int not null primary key IDENTITY(1,1),
+month nvarchar(10) not null,
+ progress int NOT NULL,
+    version int NOT NULL,
+	comment varchar(1500) ,
+	 affected_employees int,
+	  added_shifts int,
+	   same_shifts int,
+	    deleted_shifts int,
+		 changed_shifts int
+		)
 
 
 CREATE TABLE shift (

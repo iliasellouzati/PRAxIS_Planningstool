@@ -15,7 +15,7 @@ const Automatic = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
 
   const dispatch = useDispatch();
   const currentCalendar = useSelector((state) => state.currentCalendar);
-  const { loading, error } = currentCalendar;
+  const { date, loading, error } = currentCalendar;
 
 
 
@@ -23,7 +23,9 @@ const Automatic = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
   const [Http400Error, setHttp400Error] = useState([error, ""])
 
   useEffect(() => {
-    dispatch(getCalendarShifts(month));
+    if (date !== month) {
+      dispatch(getCalendarShifts(month));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

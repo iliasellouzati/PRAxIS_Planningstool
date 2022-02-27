@@ -3,7 +3,6 @@ import MainWorker from '../logic/webworkers/mainWorker';
 import CalculationWorker from '../logic/webworkers/calculationWorker';
 import { useDispatch, useSelector } from 'react-redux';
 import Config from '../logic/webworkers/config';
-import { useEffect } from 'react';
 import { addShift } from '../redux/actions/calendarActions';
 import moment from 'moment';
 
@@ -28,9 +27,7 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
 
   mainWorker.onmessage = (message) => {
     if (message) {
-      console.log("------- Message in MAIN THREAD from MAINWORKER");
       console.log(message.data[1]);
-      console.log(config);
       incrementProgress();
       sendReponseMainWorkerToCalculationWorkers(message.data);
     }
@@ -77,7 +74,7 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
   }
   const handleCalculationWorkerResponse = (respons) => {
     incrementProgress();
-    respons.forEach(element => {
+    respons?.forEach(element => {
 
       if (!config.possibleWeekCombos.some(x => x.nietIngevuldeShiften === element.nietIngevuldeShiften)) {
         config.possibleWeekCombos.push(element)
@@ -110,8 +107,12 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     fireUpCalculationsWorkers();
 
     switch (respons[0]) {
-      case "POSSIBLE_IDS_FOUND":
       case "LAST_POSSIBLE_IDS_FOUND":
+        mainWorker.terminate();
+
+      
+      // eslint-disable-next-line no-fallthrough
+      case "POSSIBLE_IDS_FOUND":
 
 
         config.possibleWeekIDs = respons[1];
@@ -175,12 +176,6 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         break;
 
 
-
-      case "FINISHED":
-        mainWorker.terminate();
-
-        break;
-
       default:
         break;
     }
@@ -189,44 +184,49 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
   const handleEndOfCalculationWorkers = () => {
 
     killAllCalculationsWorkers();
+    if(config.possibleWeekCombos.length===0){
+      setShowDangerModal([true,["Fout!",`maand: ${date}`,`De planning voor de operatoren is mislukt wegens te weinig mogelijkheden`]])
+      mainWorker.terminate();
+    } else{
 
-    config.amountOfWorkerResponses = 0;
-
-    let randomIndex = Math.floor(Math.random() * config.possibleWeekCombos.length);
-
-    let randomWeekComboIndex = Math.floor(Math.random() * config.possibleWeekCombos[randomIndex].combinaties.length);
-
-    config.comboWeek = config.possibleWeekCombos[randomIndex].combinaties[randomWeekComboIndex];
-
-    config.comboWeek.forEach((weekId, index) => {
-      let week = config.weeklyStructures.find(x => x.id === weekId);
-      dispatchWeek(config.WeekNumber, week, config.employees[index], date);
-    })
-
-    setTimeout(function () {
-      config.comboWeek = [];
-      config.possibleWeekCombos = [];
-      let newPreviousWeeks = [];
-
-      calendar.filter(x => config.employees.some(empl => empl.id === x.employeeId)).forEach(emplCal => {
-        let hulpcal = emplCal.calendar.slice((parseInt(config.WeekNumber) - 1) * 7, (parseInt(config.WeekNumber) * 7));
-        hulpcal = hulpcal.map(x => x.shift);
-        newPreviousWeeks.push({
-          "employeeId": emplCal.employeeId,
-          "week": hulpcal
-        })
+      config.amountOfWorkerResponses = 0;
+      let randomIndex = Math.floor(Math.random() * config.possibleWeekCombos.length);
+      let randomWeekComboIndex = Math.floor(Math.random() * config.possibleWeekCombos[randomIndex].combinaties.length);
+      config.comboWeek = config.possibleWeekCombos[randomIndex].combinaties[randomWeekComboIndex];
+      config.comboWeek.forEach((weekId, index) => {
+        let week = config.weeklyStructures.find(x => x.id === weekId);
+        dispatchWeek(config.WeekNumber, week, config.employees[index], date);
       })
+  
+      setTimeout(function () {
+        config.comboWeek = [];
+        config.possibleWeekCombos = [];
+        let newPreviousWeeks = [];
+  
+        calendar.filter(x => config.employees.some(empl => empl.id === x.employeeId)).forEach(emplCal => {
+          let hulpcal = emplCal.calendar.slice((parseInt(config.WeekNumber) - 1) * 7, (parseInt(config.WeekNumber) * 7));
+          hulpcal = hulpcal.map(x => x.shift);
+          newPreviousWeeks.push({
+            "employeeId": emplCal.employeeId,
+            "week": hulpcal
+          })
+        })
+  
+        config.previousWeeks = newPreviousWeeks;
+  
+        config.WeekNumber = `${parseInt(config.WeekNumber) + 1}`;
+        if (parseInt(config.WeekNumber) < config.numberOfWeeks) {
+          mainWorker.postMessage(["CONTINU", config]);
+        } else if(parseInt(config.WeekNumber) === config.numberOfWeeks) {
+          mainWorker.postMessage(["LAST_ONE", config]);
+        }else{
+          setShowSuccesModal([true,["Klaar!",`maand: ${date}`,`De planningvoor de operatoren werd aangemaakt`]])
+        }
+      }, 250);
 
-      config.previousWeeks = newPreviousWeeks;
+    }
 
-      config.WeekNumber = `${parseInt(config.WeekNumber) + 1}`;
-      if (parseInt(config.WeekNumber) === config.numberOfWeeks) {
-        mainWorker.postMessage(["LAST_ONE", config]);
-
-      } else {
-        mainWorker.postMessage(["CONTINU", config]);
-      }
-    }, 250);
+   
 
   }
   const dispatchWeek = (weekNumber, week, employee, date) => {
@@ -270,9 +270,6 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     }));
 
   }
-
-
-
 
   return { INIT_StartUpMainWorkerForAutomatisation }
 }

@@ -8,6 +8,7 @@ import shifttypeRoute from './routes/shifttypeRoute.js';
 import contracttypeRoute from './routes/contracttypeRoute.js';
 import weeklystructureRoute from './routes/weeklystructureRoute.js';
 import calendarRoute from './routes/calendarRoute.js';
+import statusCalendarRoute from './routes/statusCalendarRoute.js';
 
 
 
@@ -27,6 +28,7 @@ app.use('/api/weeklystructure', weeklystructureRoute);
 app.use('/api/contracttype', contracttypeRoute);
 app.use('/api/employee', employeeRoute);
 app.use('/api/shifttype', shifttypeRoute);
+app.use('/api/statuscalendar',statusCalendarRoute);
 
 
 app.get('/', (req, res) => {

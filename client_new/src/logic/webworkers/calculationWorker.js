@@ -5,7 +5,6 @@ export default () => {
 
 //   eslint-disable-next-line no-restricted-globals
   self.onmessage = (message) => {
-    console.log("CALCUL WORKER HIT");
     let mogelijkeCombinaties = berekenMogelijkeCombinaties(message);
     postMessage(mogelijkeCombinaties);
 
