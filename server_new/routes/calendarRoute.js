@@ -85,8 +85,6 @@ router.get("/individual/:employeeId/year/:year/calendarmonth/:month", async (req
 
 })
 
-
-
 router.get("/global/year/:year", async (req, res) => {
 
     try {

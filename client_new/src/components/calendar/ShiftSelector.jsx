@@ -1,8 +1,10 @@
 import axios from 'axios';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-
-
+import { changeCalenderShiftType } from '../../redux/actions/calendarActions';
+import Http4XXAnd5XXError from '../general/Http4XXAnd5XXError';
+import LoadingSpinner from '../general/LoadingSpinner';
+import ReadOnlyShift from '../shift/ReadOnlyShift';
 
 const ShiftSelector = () => {
 
@@ -10,124 +12,117 @@ const ShiftSelector = () => {
     const dispatch = useDispatch();
     const currentCalendar = useSelector((state) => state.currentCalendar);
     const { currentShift } = currentCalendar;
+    const [Http500, setHttp500] = useState([false, ""]);
 
-    const [ShiftTypes, setShiftTypes] = useState([])
-    const [Categorien, setCategorien] = useState([]);
-    const [Inactieve, setInactieve] = useState(false);
-    const [ShowCategieren, setShowCategieren] = useState([]);
 
     const [Loading, setLoading] = useState(true);
 
-    const [Http500, setHttp500] = useState([false, ""]);
+    const [ShiftTypes, setShiftTypes] = useState([])
+    const [Categories, setCategories] = useState([]);
+    const [Inactive, setInactive] = useState(false);
+    const [ActiveCategieres, setActiveCategieres] = useState([])
 
-    const getAndSetCategories = shifttypes => {
-        let cats = [];
-
-        shifttypes.forEach(shift => {
-            if (!cats.some(x => x.trim() === shift.categorie.trim())) {
-                cats.push(shift.categorie.trim());
-            }
-        });
-
-        setCategorien(cats);
-    }
-
-    const fetchData = useCallback(async () => {
-
+    const fetchData = async () => {
         await axios.get('http://127.0.0.1:3001/api/shifttype')
             .then(response => {
                 setShiftTypes(response.data);
-                getAndSetCategories(response.data);
+                let cats =[];
+                response.data.forEach(shift => {
+                    if (!cats.some(x => x.trim() === shift.categorie.trim())) {
+                        cats.push(shift.categorie.trim());
+                    }
+                });
+                setCategories(cats);
+
             })
             .catch(error => setHttp500([true, error]));
 
+
+
         setLoading(false);
 
-    }, [])
+    }
+
+
 
     useEffect(() => {
-        fetchData().catch(console.error);
 
-        return () => {
 
-        }
+        fetchData();
+
     }, [])
 
-
     return (
+        <React.Fragment>
+            {Loading ? <LoadingSpinner /> : Http500[0] ? <Http4XXAnd5XXError error={Http500[1]} setHttp4XXAnd5XX={setHttp500} /> : (
+                <div class="card bg-gradient-primary collapsed-card" >
+                    <div class="card-header border-0 ui-sortable-handle" >
+                        {Categories.map(cat =>
 
-        <div class="card bg-gradient-primary collapsed-card">
-            <div class="card-header border-0 ui-sortable-handle" >
+
+                            <button type="button"
+                                style={{ marginRight: "5px", fontSize:'10px' }}
+                                class="btn btn-primary btn-sm daterange"
+                                onClick={() => {
+                                    let hulpArr = [...ActiveCategieres];
+                                    if (hulpArr.indexOf(cat) === -1) {
+                                        hulpArr.push(cat);
+                                    } else {
+                                        hulpArr.splice(hulpArr.indexOf(cat), 1)
+                                    }
+                                    setActiveCategieres(hulpArr);
+
+                                }}
+
+                            >
+                                <span style={ActiveCategieres.includes(cat) ? { fontWeight: 'bold', color: 'red' } : {}} > {cat}</span>
+                            </button>
+                        )}
+                        <button
+                            type="button"
+                            class="btn btn-primary btn-sm daterange"
+                            style={{ fontSize:'10px' }}
+                            onClick={() => setInactive(!Inactive)}>
+                            <span style={Inactive ? { fontWeight: 'bold', color: 'red' } : {}}> inactieve </span>
+                        </button>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-primary btn-sm" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-transparent" style={{ display: "none" }}>
+                        <div class="row">
+                            <table style={{ backgroundColor: 'white', textAlign: "center", color: 'black' }} className="table">
+
+                                <tbody>
+                                    {ShiftTypes.map((shift) =>
+                                    (ActiveCategieres.includes(shift.categorie.trim()) && (shift.actief || Inactive) &&
 
 
-                {Categorien.map(cat =>
+                                        <tr style={shift.naam === currentShift?{backgroundColor:'lightgray', border:'2px solid black'}:{}}>
+                                            <td style={{ padding: "1px" }}>{shift.naam}</td>
+                                            <td style={{width:"70px", margin:'0px', padding:'1px' }} ><ReadOnlyShift shift={shift}  /></td>
+                                            {/* <td style={{ padding: "1px" }}><div style={{ backgroundColor: shift.kleurcode, height: '30px', width: "65px", border: '1px solid black' }}></div></td> */}
+                                            <td style={{ padding: "1px" }}>
+                                                <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.naam))}><i className={shift.naam === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>
+                                            </td>
+                                        </tr>
+                                    )
+                                    )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-
-                    <button type="button"
-                        key={cat}
-                        style={{ marginRight: "5px" }}
-                        class="btn btn-primary btn-sm daterange"
-                        onClick={() => {
-                            let hulpArr = [...ShowCategieren];
-                            if (hulpArr.indexOf(cat) === -1) {
-                                hulpArr.push(cat);
-                            } else {
-                                hulpArr.splice(hulpArr.indexOf(cat), 1)
-                            }
-                            setShowCategieren(hulpArr);
-
-                        }}
-
-                    >
-                        <span style={ShowCategieren.includes(cat) ? { fontWeight: 'bold', color: 'red' } : {}} > {cat}</span>
-                    </button>
-                )}
-                <button
-                    type="button"
-                    class="btn btn-primary btn-sm daterange"
-                    onClick={() => setInactieve(!Inactieve)}>
-                    <span style={Inactieve ? { fontWeight: 'bold', color: 'red' } : {}}> inactieve </span>
-                </button>
-
-                <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-card-widget="collapse" title="Collapse">
-                        <i class="fas fa-plus"></i>
-                    </button>
                 </div>
-            </div>
+            )
 
-            <div class="card-footer bg-transparent" style={{ display: "none" }}>
-                <div class="row">
-                    <table style={{ backgroundColor: 'white', textAlign: "center", color: 'black' }} className="table">
-
-                        <tbody>
-                            {ShiftTypes.map((shift) =>
-                            (ShowCategieren.includes(shift.categorie.trim()) && (shift.actief || Inactieve) &&
-
-
-                                <tr>
-                                    <td style={{ padding: "1px" }}>{shift.naam}</td>
-                                    <td style={{ padding: "1px" }}><div style={{ backgroundColor: shift.kleurcode, height: '30px', width: "65px", border: '1px solid black' }}></div></td>
-                                    <td style={{ padding: "1px" }}>
-                                        {/* <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.naam))}><i className={shift.naam === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button> */}
-                                    </td>
-                                </tr>
-                            )
-
-                            )
-                            }
-
-
-
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
-
+            }
+        </React.Fragment>
     )
 }
 
