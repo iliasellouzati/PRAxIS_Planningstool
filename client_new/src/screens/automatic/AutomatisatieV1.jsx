@@ -12,7 +12,7 @@ import { mapShiftsFromDbToAutomatisation } from '../../mappers/calendar/Database
 
 const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
 
-    const { month } = useParams();
+    const { month, year } = useParams();
 
     const [Http500, setHttp500] = useState([false, ""]);
 
@@ -33,7 +33,7 @@ const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
 
     const startAutomatisation = async () => {
 
-        let previousWeeks = await axios.get(`http://127.0.0.1:3001/api/calendar/global/custom/${moment(month, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'week').format("DD-MM-YYYY")}/${moment(month, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'day').format("DD-MM-YYYY")}`);
+        let previousWeeks = await axios.get(`http://127.0.0.1:3001/api/calendar/global/custom/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'week').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'day').format("DD-MM-YYYY")}`);
 
         previousWeeks = mapShiftsFromDbToAutomatisation(month, previousWeeks.data, Employees);
         const missingShiftsWeek = checkOntbrekendeShiften();

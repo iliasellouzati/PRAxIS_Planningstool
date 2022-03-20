@@ -13,15 +13,16 @@ const ReadOnlyCalendar = () => {
 
     const currentCalendar = useSelector((state) => state.currentCalendar);
     const { calendar } = currentCalendar;
-    const { month } = useParams();
+    const { month, year } = useParams();
 
     const [Http500, setHttp500] = useState([false, ""]);
 
-    const [Loading, setLoading] = useState(true);
+    const [Loading, setLoading] = useState(false);
+
     const [Employees, setEmployees] = useState([]);
     const [ShiftTypes, setShiftTypes] = useState([])
 
-    const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(month);
+    const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
     const cssWidthDay = (90 / (calendarMonthHelper.length)) + "%";
 
 

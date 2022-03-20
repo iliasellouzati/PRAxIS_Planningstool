@@ -75,7 +75,7 @@ function App() {
 
     <Route path="/planningen/:year" component={AllCalendarStatusForYear} exact={true}/>
 
-      <Route path="/automatisatie/:month" >
+      <Route path="/automatisatie/:year/:month" >
         <Automatic setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} INIT_StartUpMainWorkerForAutomatisation={WebWorkerModule.INIT_StartUpMainWorkerForAutomatisation} />
       </Route>
 

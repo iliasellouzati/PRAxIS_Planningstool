@@ -11,7 +11,7 @@ import AutomatisatieV1 from './AutomatisatieV1';
 
 const Automatic = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
 
-  let { month } = useParams();
+  let { month,year } = useParams();
 
   const dispatch = useDispatch();
   const currentCalendar = useSelector((state) => state.currentCalendar);
@@ -23,8 +23,8 @@ const Automatic = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
   const [Http400Error, setHttp400Error] = useState([error, ""])
 
   useEffect(() => {
-    if (date !== month) {
-      dispatch(getCalendarShifts(month));
+    if (date !== `${month}-${year}`) {
+      dispatch(getCalendarShifts(month,year));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
