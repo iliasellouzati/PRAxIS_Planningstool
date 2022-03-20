@@ -15,7 +15,7 @@ const mapShiftsFromDbToCalendar = (dateString, calendarFromDb, Employees) => {
 
     for (let index1 = 0; index1 < returnCalendar.length; index1++) {
         for (let index2 = 0; index2 < returnCalendar[index1].calendar.length; index2++) {
-            let shift = calendarFromDb.find(x => moment(x.datum, "YYYY-MM-DD").isSame(moment(returnCalendar[index1].calendar[index2].day, "DD-MM-YYYY"), 'day') && x.werknemers_id === returnCalendar[index1].employeeId);
+            let shift = calendarFromDb===""?null:calendarFromDb.find(x => moment(x.datum, "YYYY-MM-DD").isSame(moment(returnCalendar[index1].calendar[index2].day, "DD-MM-YYYY"), 'day') && x.werknemers_id === returnCalendar[index1].employeeId);
             if (shift) {
                 returnCalendar[index1].calendar[index2].shift = shift.shifttypes_naam;
             }
@@ -40,7 +40,7 @@ const mapShiftsFromDbToAutomatisation = (dateString, calendarFromDb, Employees) 
     for (let index1 = 0; index1 < returnCalendar.length; index1++) {
         for (let index2 = 0; index2 < returnCalendar[index1].week.length; index2++) {
 
-            let shift = calendarFromDb.find(x =>
+            let shift = calendarFromDb?.find(x =>
                 moment(x.datum, "YYYY-MM-DD").isSame(moment(returnCalendar[index1].week[index2].day, "DD-MM-YYYY"), 'day') &&
                 x.werknemers_id === returnCalendar[index1].employeeId);
 
