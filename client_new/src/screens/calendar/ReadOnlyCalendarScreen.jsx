@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import Http4XXAnd5XXError from '../../components/general/Http4XXAnd5XXError';
 import LoadingSpinner from '../../components/general/LoadingSpinner';
 import BadRequest400Error from '../../components/general/BadRequest400Error';
-import { getCalendarShifts, getStoredCalender } from '../../redux/actions/calendarActions';
+import { getCalendarShifts } from '../../redux/actions/calendarActions';
 import ReadOnlyCalendar from '../../components/calendar/ReadOnlyCalendar';
 import { useDispatch } from 'react-redux';
 
@@ -20,7 +20,7 @@ const ReadOnlyCalendarScreen = () => {
   const [Http400Error, setHttp400Error] = useState([false, ""]);
 
   useEffect(() => {
-    dispatch(getStoredCalender(year, month, version));
+ 
   }, [])
 
 

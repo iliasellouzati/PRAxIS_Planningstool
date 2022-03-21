@@ -37,6 +37,7 @@ const mapShiftsFromDbToAutomatisation = (dateString, calendarFromDb, Employees) 
         })
     });
 
+    
     for (let index1 = 0; index1 < returnCalendar.length; index1++) {
         for (let index2 = 0; index2 < returnCalendar[index1].week.length; index2++) {
 

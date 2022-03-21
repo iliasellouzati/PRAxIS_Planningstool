@@ -6,7 +6,6 @@ import LoadingSpinner from '../../components/general/LoadingSpinner';
 import Http4XXAnd5XXError from '../../components/general/Http4XXAnd5XXError';
 import { getCalendarMoments_ArrayWithMoments } from './helpers';
 import ReadOnlyShift from '../shift/ReadOnlyShift';
-import AutomatisatieV1 from '../../screens/automatic/AutomatisatieV1';
 
 const ReadOnlyCalendar = () => {
 
@@ -80,7 +79,7 @@ const ReadOnlyCalendar = () => {
                             {calendar.map(individueleCalendar =>
                                 <tr>
                                     <td style={{ padding: "1px", width: { cssWidthDay } }}    >
-                                        {Employees.find(empl => empl.id === individueleCalendar.employeeId).naam.substring(0,10)}
+                                        {Employees.find(empl => empl.id === individueleCalendar.employeeId)?.naam.substring(0,10)}
                                     </td>
                                     {individueleCalendar.calendar.map(shiftDay =>
                                         <td style={{ padding: "0px", maxWidth: { cssWidthDay }, height: "100%", margin: "0px" }}>

@@ -24,7 +24,7 @@ const Automatic = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
 
   useEffect(() => {
     if (date !== `${month}-${year}`) {
-      dispatch(getCalendarShifts(month,year));
+      dispatch(getCalendarShifts(`${month}-${year}`));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
