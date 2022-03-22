@@ -13,8 +13,9 @@ const RulesChecker = () => {
   const currentCalendar = useSelector((state) => state.currentCalendar);
   const { date, calendar } = currentCalendar;
 
-  const [Shifttypes, setShifttypes] = useState()
-
+  const [Shifttypes, setShifttypes] = useState();
+  
+const [ResetView, setResetView] = useState(0);
   const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(date);
 
   const dataObject = { 'calendar': calendar, 'calendarMonthHelper': calendarMonthHelper, 'shifttypes': Shifttypes };
@@ -29,12 +30,15 @@ const RulesChecker = () => {
   const checkRegularPrio1 = () => {
     setPrio1({
       ...Prio1,
-      'STANDBY': StandbyControle(dataObject),
       '>4FOLLOWINGSHIFTS': Max4OperatorShifts(dataObject),
       'DayAfterNight': DagNaNacht(dataObject)
     })
   }
   const checkFinalPrio1 = () => {
+    setPrio1({
+      ...Prio1,
+      'STANDBY': StandbyControle(dataObject)
+    })
   }
 
   //--------------- PRIO 2 ----------------
@@ -42,9 +46,10 @@ const RulesChecker = () => {
     'COOPMAN': []
   });
   const checkRegularPrio2 = () => {
-    setPrio2({ ...Prio2, 'COOPMAN': CoopmanShiftControle(dataObject) })
   }
   const checkFinalPrio2 = () => {
+    setPrio2({ ...Prio2, 'COOPMAN': CoopmanShiftControle(dataObject) })
+
   }
 
   //--------------- PRIO 3 ----------------
@@ -53,6 +58,12 @@ const RulesChecker = () => {
   }
   const checkFinalPrio3 = () => {
 
+  }
+
+  const checkFinal =() =>{
+    checkFinalPrio1();
+    checkFinalPrio2();
+    checkFinalPrio3();
   }
 
 
@@ -84,10 +95,10 @@ const RulesChecker = () => {
         <h3 className="card-title">Controle regels</h3>
         <div className="card-tools">
           <div class="card-tools">
-            <button type="button" class="btn  btn-sm" title="Eindcontrole">
+            <button type="button" class="btn  btn-sm" title="Eindcontrole" onClick={()=>checkFinal()}>
               <i class="fas fa-eye"></i>
             </button>
-            <button type="button" class="btn  btn-sm" title="refresh">
+            <button type="button" class="btn  btn-sm" title="refresh" onClick={()=>setResetView(()=>ResetView+1)}>
               <i class="fas fa-redo-alt"></i>
             </button>
             <button type="button" class="btn  btn-sm" data-card-widget="collapse" title="Collapse">
@@ -103,9 +114,9 @@ const RulesChecker = () => {
             <i className="fas fa-ban"></i>
           </p>
           <p className="d-flex flex-column text-right">
-            <GeneralRulesLine name={'Standby'} data={Prio1['STANDBY']} />
-            <IndividualRulesLine name={'>4 opeenvol. op. shiften'} data={Prio1['>4FOLLOWINGSHIFTS']} />
-            <IndividualRulesLine name={'Dag na een nacht'} data={Prio1['DayAfterNight']} />
+            <GeneralRulesLine ResetView={ResetView} name={'Standby'} data={Prio1['STANDBY']} />
+            <IndividualRulesLine ResetView={ResetView} name={'>4 opeenvol. op. shiften'} data={Prio1['>4FOLLOWINGSHIFTS']} />
+            <IndividualRulesLine ResetView={ResetView} name={'Dag na een nacht'} data={Prio1['DayAfterNight']} />
 
           </p>
         </div>
@@ -115,7 +126,7 @@ const RulesChecker = () => {
             <i className="fas fa-exclamation-triangle"></i>
           </p>
           <p className="d-flex flex-column text-right">
-            <GeneralRulesLine name={'Coopman'} data={Prio2['COOPMAN']} />
+            <GeneralRulesLine ResetView={ResetView} name={'Coopman'} data={Prio2['COOPMAN']} />
           </p>
         </div>
 

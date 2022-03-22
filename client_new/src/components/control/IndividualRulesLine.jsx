@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react'
 
-const IndividualRulesLine = ({ name, data }) => {
+const IndividualRulesLine = ({ResetView, name, data }) => {
 
 
     const [Show, setShow] = useState(true);
     const [ForcedShow, setForcedShow] = useState(true);
 
+    useEffect(() => {
+      
+        setForcedShow(true);
+    
+      return () => {
+        
+      }
+    }, [ResetView])
+    
 
     useEffect(() => {
         if (ForcedShow) {

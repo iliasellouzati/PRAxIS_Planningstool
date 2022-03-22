@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react'
 
-const GeneralRulesLine = ({ name, data }) => {
+const GeneralRulesLine = ({ResetView, name, data }) => {
 
     const [Show, setShow] = useState(true);
     const [ForcedShow, setForcedShow] = useState(true);
 
+    useEffect(() => {
+      
+        setForcedShow(true);
+    
+      return () => {
+        
+      }
+    }, [ResetView])
+    
     useEffect(() => {
         if (ForcedShow) {
             if (Show && data.length === 0) {
