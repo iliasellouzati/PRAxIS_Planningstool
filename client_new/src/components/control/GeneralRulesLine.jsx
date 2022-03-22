@@ -34,10 +34,26 @@ const GeneralRulesLine = ({ setHighlightDay, ResetView, name, data }) => {
             {ForcedShow && Show &&
                 <div >
                     <b style={{ marginRight: '5px' }}>{name}: </b>
-                    {data.length > 5 ? <span>{`${data.length} dagen`}</span> : data.map(day => <span onMouseOver={()=>setHighlightDay([true,moment(day,"DD-MM-YYYY")])} onMouseOut={()=>setHighlightDay([false,[]])} style={{ border: '1px dashed black', marginLeft: '3px', paddingLeft: '3px', paddingRight: '3px' }}> {day.substring(0, 5)} </span>)}
+                    {data.length > 5 ?
+                        <span>{`${data.length} dagen`}</span>
+                        :
+                        data.map(day =>
+                            <span
+                                onMouseOver={() => setHighlightDay([true, moment(day, "DD-MM-YYYY")])}
+                                onMouseOut={() => setHighlightDay([false, []])}
+                                style={{
+                                    border: '1px dashed black',
+                                    marginLeft: '3px',
+                                    paddingLeft: '3px',
+                                    paddingRight: '3px'
+                                }}>
+                                {day.substring(0, 5)}
+                            </span>)}
+
                     <button type="button" class="ml-2 mb-1 close" onClick={() => { setForcedShow(false) }} >
                         <span>X</span>
                     </button>
+
                 </div>}
         </React.Fragment>
     )

@@ -30,14 +30,14 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
   const checkRegularPrio1 = () => {
     setPrio1({
       ...Prio1,
+      'STANDBY': StandbyControle(dataObject),
       '>4FOLLOWINGSHIFTS': Max4OperatorShifts(dataObject),
       'DayAfterNight': DagNaNacht(dataObject)
     })
   }
   const checkFinalPrio1 = () => {
     setPrio1({
-      ...Prio1,
-      'STANDBY': StandbyControle(dataObject)
+      ...Prio1
     })
   }
 
@@ -46,9 +46,9 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
     'COOPMAN': []
   });
   const checkRegularPrio2 = () => {
+    setPrio2({ ...Prio2, 'COOPMAN': CoopmanShiftControle(dataObject) })
   }
   const checkFinalPrio2 = () => {
-    setPrio2({ ...Prio2, 'COOPMAN': CoopmanShiftControle(dataObject) })
 
   }
 
@@ -114,9 +114,9 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
             <i className="fas fa-ban"></i>
           </p>
           <p className="d-flex flex-column text-right">
-            <GeneralRulesLine ResetView={ResetView} name={'Standby'} data={Prio1['STANDBY']} />
-            <IndividualRulesLine ResetView={ResetView} name={'>4 opeenvol. op. shiften'} data={Prio1['>4FOLLOWINGSHIFTS']} />
-            <IndividualRulesLine ResetView={ResetView} name={'Dag na een nacht'} data={Prio1['DayAfterNight']} />
+            <GeneralRulesLine setHighlightDay={setHighlightDay}  ResetView={ResetView} name={'Standby'} data={Prio1['STANDBY']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'>4 opeenvol. op. shiften'} data={Prio1['>4FOLLOWINGSHIFTS']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'Dag na een nacht'} data={Prio1['DayAfterNight']} />
 
           </p>
         </div>
@@ -140,10 +140,6 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
 
           </p>
         </div>
-
-
-
-
       </div>
     </div>
   )

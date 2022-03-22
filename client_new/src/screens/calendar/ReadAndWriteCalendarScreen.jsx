@@ -54,7 +54,7 @@ const ReadAndWriteCalendarScreen = () => {
 
                   <div className="col-6">
                     
-                     <RulesChecker setHighlightDay={setHighlightDay} sethighlightCustom={setHighlightCustom}/>
+                     <RulesChecker setHighlightDay={setHighlightDay} setHighlightCustom={setHighlightCustom}/>
 
                   </div>
                   <div className="col-2">
