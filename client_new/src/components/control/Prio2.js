@@ -13,8 +13,7 @@ const CoopmanShiftControle = ({calendar,calendarMonthHelper,shifttypes}) => {
         for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
 
             let shift = calendar[employeeLooper].calendar[individualDayLooper].shift;
-            // if(shift!=="" &&  shifttypes.find(s => s.naam === shift)?.categorie.trim() === "coopman"){
-            if(shift!=="" &&  shift.includes('Coopman')){
+            if(shift!=="" &&  shifttypes.find(s => s.naam === shift)?.categorie.trim() === "coopman"){
                 hulpArrMetDeDagen.pop();
                 break;
             }
