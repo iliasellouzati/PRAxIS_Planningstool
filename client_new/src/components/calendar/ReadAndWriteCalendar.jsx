@@ -59,7 +59,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                             <tr>
                                 <th rowSpan="2" style={{ padding: "1px", width: "10%", textAlign: 'center' }}>Werknemers</th>
                                 {calendarMonthHelper.map((element, index) =>
-                                    <th key={index} style={HighlightDay[0] && HighlightDay[1].isSame(element, 'day') ? { outline: "2px solid gold", padding: "1px", width: { cssWidthDay } } : element === "Z" ? { border: '2px solid green', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
+                                    <th key={index} style={HighlightDay[0] && HighlightDay[1].isSame(element, 'day') ? { outline: "2px solid red", padding: "1px", width: { cssWidthDay } } : element === "Z" ? { border: '2px solid green', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
                                 )}
 
                             </tr>
@@ -70,7 +70,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                         key={index}
                                         style={
                                             HighlightDay[0] && HighlightDay[1].isSame(day, 'day') ?
-                                                { outline: "2px solid gold", padding: "1px", width: { cssWidthDay } }
+                                                { outline: "2px solid red", padding: "1px", width: { cssWidthDay } }
                                                 :
                                                 day.isoWeekday() === 6 || day.isoWeekday() === 7 ?
                                                     { border: '2px solid darkgreen', padding: "1px", width: { cssWidthDay } }
@@ -99,7 +99,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                                         ||
                                                         (HighlightCustom[0] && HighlightCustom[1].employeeId === individueleCalendar.employeeId && HighlightCustom[1].start.clone().subtract(1,'day').isBefore(moment(shiftDay.day, 'DD-MM-YYYY'), 'day') && HighlightCustom[1].end.clone().add(1,'day').isAfter(moment(shiftDay.day, 'DD-MM-YYYY'), 'day') )
                                                     )
-                                                    ? { outline: "2px solid gold", padding: "0px", margin: "0px", width: { cssWidthDay } }
+                                                    ? { outline: "2px solid red", padding: "0px", margin: "0px", width: { cssWidthDay } }
                                                     :
                                                     { padding: "0px", width: { cssWidthDay }, margin: "0px" }}>
                                             <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { getCalendarMoments_ArrayWithMoments } from '../calendar/helpers';
 import { DagNaNacht, Max4OperatorShifts, StandbyControle } from './Prio1';
-import { CoopmanShiftControle } from './Prio2';
+import { CoopmanShiftControle ,OverurenWeekControle} from './Prio2';
 import GeneralRulesLine from './GeneralRulesLine';
 import IndividualRulesLine from './IndividualRulesLine';
 
@@ -43,10 +43,11 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
 
   //--------------- PRIO 2 ----------------
   const [Prio2, setPrio2] = useState({
-    'COOPMAN': []
+    'COOPMAN': [],
+    'OverurenWeek':[]
   });
   const checkRegularPrio2 = () => {
-    setPrio2({ ...Prio2, 'COOPMAN': CoopmanShiftControle(dataObject) })
+    setPrio2({ ...Prio2, 'COOPMAN': CoopmanShiftControle(dataObject), 'OverurenWeek': OverurenWeekControle(dataObject) })
   }
   const checkFinalPrio2 = () => {
 
@@ -127,6 +128,7 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
           </p>
           <p className="d-flex flex-column text-right">
             <GeneralRulesLine setHighlightDay={setHighlightDay} ResetView={ResetView} name={'Coopman'} data={Prio2['COOPMAN']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'Overuren Week'} data={Prio2['OverurenWeek']} />
           </p>
         </div>
 
