@@ -50,7 +50,7 @@ const ReadAndWriteCalendarScreen = () => {
                     <ShiftSelector />
                   </div>
 
-                  <div className="col-4">
+                  <div className="col-6">
                     
                      <RulesChecker/>
 

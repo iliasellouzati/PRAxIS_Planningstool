@@ -1,25 +1,70 @@
-import React, { useEffect, useState } from 'react'
+import axios from 'axios';
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import { getCalendarMoments_ArrayWithMoments } from '../calendar/helpers';
+import { CoopmanShiftControle } from './Prio2';
+import RulesLine from './RulesLine';
+
 
 const RulesChecker = () => {
 
   const currentCalendar = useSelector((state) => state.currentCalendar);
-  const { calendar } = currentCalendar;
+  const { date, calendar } = currentCalendar;
 
+  const [Shifttypes, setShifttypes] = useState()
+
+  const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(date);
+
+  const dataObject = { 'calendar': calendar, 'calendarMonthHelper': calendarMonthHelper, 'shifttypes': Shifttypes };
+
+  
+//--------------- PRIO 1 ----------------
   const [Prio1, setPrio1] = useState([]);
-  const [Prio2, setPrio2] = useState([]);
+  const checkRegularPrio1 = () => {
+  }
+  const checkFinalPrio1 = ()=> {
+  }
+
+//--------------- PRIO 2 ----------------
+  const [Prio2, setPrio2] = useState({
+    'COOPMAN': []
+  });
+  const checkRegularPrio2 = () => {
+    setPrio2({ ...Prio2, 'COOPMAN': CoopmanShiftControle(dataObject) })
+  }
+  const checkFinalPrio2 = ()=> {
+  }
+
+  //--------------- PRIO 3 ----------------
   const [Prio3, setPrio3] = useState([]);
+  const checkRegularPrio3 = () => {
+  }
+  const checkFinalPrio3 = ()=> {
+
+  }
+
+
+
+  const fetchData = useCallback(async () => {
+    await axios.get('http://127.0.0.1:3001/api/shifttype')
+      .then(response => {
+        setShifttypes(response.data);
+      })
+  }, [])
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData])
 
 
   useEffect(() => {
-
-
-    return () => {
-
+    if (Shifttypes) {
+      checkRegularPrio1();
+      checkRegularPrio2();
+      checkRegularPrio3();
     }
-  }, [calendar])
-
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calendar, Shifttypes])
 
   return (
     <div className="card collapsed-card">
@@ -27,10 +72,10 @@ const RulesChecker = () => {
         <h3 className="card-title">Controle regels</h3>
         <div className="card-tools">
           <div class="card-tools">
-          <button type="button" class="btn  btn-sm"  title="Eindcontrole">
+            <button type="button" class="btn  btn-sm" title="Eindcontrole">
               <i class="fas fa-eye"></i>
             </button>
-            <button type="button" class="btn  btn-sm"  title="refresh">
+            <button type="button" class="btn  btn-sm" title="refresh">
               <i class="fas fa-redo-alt"></i>
             </button>
             <button type="button" class="btn  btn-sm" data-card-widget="collapse" title="Collapse">
@@ -52,15 +97,13 @@ const RulesChecker = () => {
             <span className="text-muted">REGISTRATION RATE</span>
           </p>
         </div>
+        
         <div className="d-flex justify-content-between align-items-center border-bottom mb-3">
           <p className="text-warning text-xl">
             <i className="fas fa-exclamation-triangle"></i>
           </p>
           <p className="d-flex flex-column text-right">
-            <span className="font-weight-bold">
-              <i className="ion ion-android-arrow-up text-warning"></i> 0.8%
-            </span>
-            <span className="text-muted">SALES RATE</span>
+            <RulesLine name={'Coopman'} data={Prio2['COOPMAN']} />
           </p>
         </div>
 
