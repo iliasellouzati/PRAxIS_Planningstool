@@ -17,6 +17,8 @@ const ReadAndWriteCalendarScreen = () => {
   const currentCalendar = useSelector((state) => state.currentCalendar);
   const { date, loading, error } = currentCalendar;
 
+  const [HighlightDay, setHighlightDay] = useState([false,[]]);
+  const [HighlightCustom, setHighlightCustom] = useState([false,[]])
 
 
   const [setHttp4XXAnd5XX] = useState([false, ""]);
@@ -41,7 +43,7 @@ const ReadAndWriteCalendarScreen = () => {
             <div className="card">
               {/* PLANNING TABEL */}
               <div className="card-body">
-                <ReadAndWriteCalendar />
+                <ReadAndWriteCalendar HighlightDay={HighlightDay} HighlightCustom={HighlightCustom} />
               </div>
               <div className='card-footer'>
                 <div className="row">
@@ -52,7 +54,7 @@ const ReadAndWriteCalendarScreen = () => {
 
                   <div className="col-6">
                     
-                     <RulesChecker/>
+                     <RulesChecker setHighlightDay={setHighlightDay} sethighlightCustom={setHighlightCustom}/>
 
                   </div>
                   <div className="col-2">

@@ -8,8 +8,9 @@ import { getCalendarMoments_ArrayWithMoments } from './helpers';
 import ReadOnlyShift from '../shift/ReadOnlyShift';
 import ReadAndWriteShift from '../shift/ReadAndWriteShift';
 import ReadAndWriteShiftContextMenu from '../contextmenu/ReadAndWriteShiftContextMenu';
+import moment from 'moment';
 
-const ReadAndWriteCalendar = () => {
+const ReadAndWriteCalendar = ({HighlightDay, HighlightCustom}) => {
 
     const currentCalendar = useSelector((state) => state.currentCalendar);
     const { calendar } = currentCalendar;
@@ -58,14 +59,14 @@ const ReadAndWriteCalendar = () => {
                             <tr>
                                 <th rowSpan="2" style={{ padding: "1px", width: "10%", textAlign: 'center' }}>Werknemers</th>
                                 {calendarMonthHelper.map((element, index) =>
-                                    <th key={index} style={element === "Z" ? { border: '2px solid green', padding: "1px", width: "100%" } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
+                                    <th key={index}  style={ HighlightDay[0]&& HighlightDay[1].isSame(element,'day')?{border:"3px solid gold", padding: "1px", width: { cssWidthDay } } : element === "Z" ? { border: '2px solid green', padding: "1px", width: { cssWidthDay }  } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
                                 )}
 
                             </tr>
                             <tr>
                                 {calendarMonthHelper.map((day, index) =>
 
-                                    <th key={index} style={day.isoWeekday() === 6 || day.isoWeekday() === 7 ? { border: '2px solid darkgreen', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}   >
+                                    <th key={index} style={HighlightDay[0]&& HighlightDay[1].isSame(day,'day')?{border:"3px solid gold", padding: "1px", width: { cssWidthDay }} : day.isoWeekday() === 6 || day.isoWeekday() === 7 ? { border: '2px solid darkgreen', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}   >
                                         {day.format("DD").toString()}
                                     </th>
                                 )}
@@ -81,7 +82,7 @@ const ReadAndWriteCalendar = () => {
                                         {Employees.find(empl => empl.id === individueleCalendar.employeeId).naam.substring(0, 10)}
                                     </td>
                                     {individueleCalendar.calendar.map(shiftDay =>
-                                        <td style={{ padding: "0px", width: { cssWidthDay }, margin: "0px" }}>
+                                        <td style={HighlightDay[0]&& HighlightDay[1].isSame(moment(shiftDay.day,"DD-MM-YYYY"),'day')?{border:"3px solid gold", padding: "0px",margin:"0px", width: { cssWidthDay }} :{ padding: "0px", width: { cssWidthDay }, margin: "0px" }}>
                                             <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
                                         </td>
                                     )}

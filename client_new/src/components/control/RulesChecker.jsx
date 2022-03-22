@@ -8,14 +8,14 @@ import GeneralRulesLine from './GeneralRulesLine';
 import IndividualRulesLine from './IndividualRulesLine';
 
 
-const RulesChecker = () => {
+const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
 
   const currentCalendar = useSelector((state) => state.currentCalendar);
   const { date, calendar } = currentCalendar;
 
   const [Shifttypes, setShifttypes] = useState();
-  
-const [ResetView, setResetView] = useState(0);
+
+  const [ResetView, setResetView] = useState(0);
   const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(date);
 
   const dataObject = { 'calendar': calendar, 'calendarMonthHelper': calendarMonthHelper, 'shifttypes': Shifttypes };
@@ -25,7 +25,7 @@ const [ResetView, setResetView] = useState(0);
   const [Prio1, setPrio1] = useState({
     'STANDBY': [],
     '>4FOLLOWINGSHIFTS': [],
-    'DayAfterNight':[]
+    'DayAfterNight': []
   });
   const checkRegularPrio1 = () => {
     setPrio1({
@@ -60,7 +60,7 @@ const [ResetView, setResetView] = useState(0);
 
   }
 
-  const checkFinal =() =>{
+  const checkFinal = () => {
     checkFinalPrio1();
     checkFinalPrio2();
     checkFinalPrio3();
@@ -95,10 +95,10 @@ const [ResetView, setResetView] = useState(0);
         <h3 className="card-title">Controle regels</h3>
         <div className="card-tools">
           <div class="card-tools">
-            <button type="button" class="btn  btn-sm" title="Eindcontrole" onClick={()=>checkFinal()}>
+            <button type="button" class="btn  btn-sm" title="Eindcontrole" onClick={() => checkFinal()}>
               <i class="fas fa-eye"></i>
             </button>
-            <button type="button" class="btn  btn-sm" title="refresh" onClick={()=>setResetView(()=>ResetView+1)}>
+            <button type="button" class="btn  btn-sm" title="refresh" onClick={() => setResetView(() => ResetView + 1)}>
               <i class="fas fa-redo-alt"></i>
             </button>
             <button type="button" class="btn  btn-sm" data-card-widget="collapse" title="Collapse">
@@ -126,7 +126,7 @@ const [ResetView, setResetView] = useState(0);
             <i className="fas fa-exclamation-triangle"></i>
           </p>
           <p className="d-flex flex-column text-right">
-            <GeneralRulesLine ResetView={ResetView} name={'Coopman'} data={Prio2['COOPMAN']} />
+            <GeneralRulesLine setHighlightDay={setHighlightDay} ResetView={ResetView} name={'Coopman'} data={Prio2['COOPMAN']} />
           </p>
         </div>
 
@@ -137,10 +137,7 @@ const [ResetView, setResetView] = useState(0);
           </p>
 
           <p className="d-flex flex-column text-right">
-            <span className="font-weight-bold">
-              <i className="ion ion-android-arrow-up text-info"></i> 12%
-            </span>
-            <span className="text-muted">CONVERSION RATE</span>
+
           </p>
         </div>
 
