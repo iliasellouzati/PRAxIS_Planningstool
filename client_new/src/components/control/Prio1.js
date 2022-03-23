@@ -29,31 +29,29 @@ const Max4OperatorShifts = ({calendar,calendarMonthHelper,shifttypes}) =>{
 
 let result= [];
 
+    for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+        let shiftCounter= 0;
 
+        for (let individualDayLooper = 0; individualDayLooper  < calendarMonthHelper.length ; individualDayLooper++) {
 
-for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
-let shiftCounter= 0;
+            let shift = calendar[employeeLooper].calendar[individualDayLooper].shift
 
-    for (let individualDayLooper = 0; individualDayLooper  < calendarMonthHelper.length ; individualDayLooper++) {
-
-        let shift = calendar[employeeLooper].calendar[individualDayLooper].shift
-
-        if(operatorShifts.some(x=>x===shift)){
-            shiftCounter++;
-        }else{
-            shiftCounter=0;
-        }
-
-        if(shiftCounter>4){
-            if(result.length!==0&&result[result.length-1].start===calendarMonthHelper[individualDayLooper+1-shiftCounter]&&result[result.length-1].employeeId===calendar[employeeLooper].employeeId){
-                result.pop();
+            if(operatorShifts.some(x=>x===shift)){
+                shiftCounter++;
+            }else{
+                shiftCounter=0;
             }
-            result.push({'employeeId':calendar[employeeLooper].employeeId,'start':calendarMonthHelper[individualDayLooper+1-shiftCounter],'end':calendarMonthHelper[individualDayLooper]})
+
+            if(shiftCounter>4){
+                if(result.length!==0&&result[result.length-1].start===calendarMonthHelper[individualDayLooper+1-shiftCounter]&&result[result.length-1].employeeId===calendar[employeeLooper].employeeId){
+                    result.pop();
+                }
+                result.push({'employeeId':calendar[employeeLooper].employeeId,'start':calendarMonthHelper[individualDayLooper+1-shiftCounter],'end':calendarMonthHelper[individualDayLooper]})
         }
     }
 }
 
-return result;
+    return result;
 }
 const DagNaNacht =({calendar,calendarMonthHelper,shifttypes})=>{
     let result=[];
@@ -220,5 +218,78 @@ const CorrectePlaatsingStandyControle = ({
     
 
 }
+const TweeBlancoShiftsNaWeekendMet3Nacht = ({
+    calendar,
+    calendarMonthHelper,
+    shifttypes
+}) => {
+    let result = [];
 
-export {StandbyControle,Max4OperatorShifts,DagNaNacht,DubbeleOperatorShift,OperatorShiftenControle,LegeShiftenTussen3NachtenEnDagShift, TweeLegeShiftenTussen4NachtenEnDagShift,CorrectePlaatsingStandyControle}
+    for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+    let opeenVolgendeNachtenShiften = 0;
+    let blankoShift = 0;
+
+        for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
+
+            let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            
+            if (nightShifts.includes(shiftName)&&blankoShift===0 && (calendarMonthHelper[individualDayLooper].isoWeekday() === 5 || calendarMonthHelper[individualDayLooper].isoWeekday() === 6 || calendarMonthHelper[individualDayLooper].isoWeekday() === 7)) {
+                opeenVolgendeNachtenShiften++;
+                continue;}
+
+
+           else if (opeenVolgendeNachtenShiften!==0 && shiftName==='') {
+                blankoShift++;
+
+                continue;
+            }
+            if (opeenVolgendeNachtenShiften === 3 && blankoShift < 2) {
+                result.push({
+                    'employeeId': calendar[employeeLooper].employeeId,
+                    'start': calendarMonthHelper[individualDayLooper - (opeenVolgendeNachtenShiften + blankoShift)],
+                    'end': calendarMonthHelper[individualDayLooper]
+                });
+                opeenVolgendeNachtenShiften = 0;
+                blankoShift = 0;
+              
+            }else{
+                opeenVolgendeNachtenShiften=0;
+                blankoShift=0;
+            }
+        }
+    }
+    return result;
+
+}
+
+const StandbyCorrectePlaatsingControle = ({
+    calendar,
+    calendarMonthHelper,
+    shifttypes
+}) => {
+
+
+    let result= [];
+
+    for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+
+        for (let individualDayLooper = 0; individualDayLooper  < calendarMonthHelper.length ; individualDayLooper++) {
+
+            let shift = calendar[employeeLooper].calendar[individualDayLooper].shift
+
+            if(shifttypes.find(x=>x.naam===shift).categorie==="standby"){
+                result.push({                    
+                    'employeeId': calendar[employeeLooper].employeeId,
+                    'start': calendarMonthHelper[individualDayLooper],
+                    'end': calendarMonthHelper[individualDayLooper]
+                })
+            }
+
+        }
+    }
+
+    return result;
+
+}
+
+export {StandbyControle,Max4OperatorShifts,DagNaNacht,DubbeleOperatorShift,OperatorShiftenControle,LegeShiftenTussen3NachtenEnDagShift,TweeLegeShiftenTussen4NachtenEnDagShift,CorrectePlaatsingStandyControle,TweeBlancoShiftsNaWeekendMet3Nacht,StandbyCorrectePlaatsingControle}
