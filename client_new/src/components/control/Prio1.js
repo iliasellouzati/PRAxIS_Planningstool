@@ -261,7 +261,6 @@ const TweeBlancoShiftsNaWeekendMet3Nacht = ({
     return result;
 
 }
-
 const StandbyCorrectePlaatsingControle = ({
     calendar,
     calendarMonthHelper,
@@ -277,14 +276,80 @@ const StandbyCorrectePlaatsingControle = ({
 
             let shift = calendar[employeeLooper].calendar[individualDayLooper].shift
 
-            if(shifttypes.find(x=>x.naam===shift).categorie==="standby"){
-                result.push({                    
-                    'employeeId': calendar[employeeLooper].employeeId,
-                    'start': calendarMonthHelper[individualDayLooper],
-                    'end': calendarMonthHelper[individualDayLooper]
-                })
-            }
+            if(shifttypes.find(x=>x.naam===shift)?.categorie.trim()==="standby"){
 
+                switch (shift) {
+                    case 'standby 24h':
+                        if(individualDayLooper!==0&&(
+                            nightShifts.includes(calendar[employeeLooper].calendar[individualDayLooper-1].shift)
+                            ||
+                            ['standby 24h','standby nacht'].includes(calendar[employeeLooper].calendar[individualDayLooper-1].shift)
+                            )){
+                                if(result.length!==0&&result[result.length-1].start===calendarMonthHelper[individualDayLooper-1]&&result[result.length-1].employeeId===calendar[employeeLooper].employeeId){
+                                    result.pop();
+                                }
+                                result.push({                    
+                                    'employeeId': calendar[employeeLooper].employeeId,
+                                    'start': calendarMonthHelper[individualDayLooper-1],
+                                    'end': calendarMonthHelper[individualDayLooper]
+                            })
+                        }else if(individualDayLooper!==calendarMonthHelper.length-1 &&(
+                            dayShifts.includes(calendar[employeeLooper].calendar[individualDayLooper+1].shift)
+                            ||
+                            ['standby 24h','standby dag'].includes(calendar[employeeLooper].calendar[individualDayLooper+1].shift)
+                            )){
+                                if(result.length!==0&&result[result.length-1].start===calendarMonthHelper[individualDayLooper-1]&&result[result.length-1].employeeId===calendar[employeeLooper].employeeId){
+                                    result.pop();
+                                }
+                                result.push({                    
+                                    'employeeId': calendar[employeeLooper].employeeId,
+                                    'start': calendarMonthHelper[individualDayLooper],
+                                    'end': calendarMonthHelper[individualDayLooper+1]
+                            })
+                        }
+                        break;
+
+                    case 'standby dag':
+                        if(individualDayLooper!==0&&(
+                            nightShifts.includes(calendar[employeeLooper].calendar[individualDayLooper-1].shift)
+                            ||
+                            ['standby 24h','standby nacht'].includes(calendar[employeeLooper].calendar[individualDayLooper-1].shift)
+                            )){
+                                    if(result.length!==0&&result[result.length-1].start===calendarMonthHelper[individualDayLooper-1]&&result[result.length-1].employeeId===calendar[employeeLooper].employeeId){
+                                        result.pop();
+                                    }
+                                result.push({                    
+                                    'employeeId': calendar[employeeLooper].employeeId,
+                                    'start': calendarMonthHelper[individualDayLooper-1],
+                                    'end': calendarMonthHelper[individualDayLooper]
+                            })
+                        }
+                        
+                        
+                        break;
+
+                    case 'standby nacht':
+                        if(individualDayLooper!==calendarMonthHelper.length-1 &&(
+                            dayShifts.includes(calendar[employeeLooper].calendar[individualDayLooper+1].shift)
+                            ||
+                            ['standby 24h','standby dag'].includes(calendar[employeeLooper].calendar[individualDayLooper+1].shift)
+                            )){
+                                if(result.length!==0&&result[result.length-1].start===calendarMonthHelper[individualDayLooper-1]&&result[result.length-1].employeeId===calendar[employeeLooper].employeeId){
+                                    result.pop();
+                                }
+                            result.push({                    
+                                'employeeId': calendar[employeeLooper].employeeId,
+                                'start': calendarMonthHelper[individualDayLooper],
+                                'end': calendarMonthHelper[individualDayLooper+1]
+                            })
+                        }                       
+                        
+                        break;
+
+                    default:
+                        break;
+                }
+            }
         }
     }
 

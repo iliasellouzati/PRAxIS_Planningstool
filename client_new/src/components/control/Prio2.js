@@ -62,7 +62,7 @@ const OverurenWeekControle = ({
             week.forEach(shiftName => {
                 if (shiftName !== "") {
                     let shift = shifttypes.find(x => x.naam === shiftName);
-                    let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() > 0 ?
+                    let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                         moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
                         moment.duration(moment(shift.einduur, "hh:mm").add(1, "day").diff(moment(shift.beginuur, "hh:mm"))).asHours();
                     uurCounter.add(duration);
@@ -71,7 +71,7 @@ const OverurenWeekControle = ({
 
             if (shiftNameZo !== "") {
                 let shift = shifttypes.find(x => x.naam === shiftNameZo);
-                let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() > 0 ?
+                let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                     moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
                     moment.duration(moment("24:00", "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours();
                 uurCounter.add(duration);
@@ -116,7 +116,7 @@ const OverurenMaandControle = ({
                 }
 
                 let shift = shifttypes.find(x => x.naam === shiftName);
-                let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() > 0 ?
+                let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                     moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
                     moment.duration(moment(shift.einduur, "hh:mm").add(1, "day").diff(moment(shift.beginuur, "hh:mm"))).asHours();
 

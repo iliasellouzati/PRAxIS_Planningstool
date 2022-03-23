@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { getCalendarMoments_ArrayWithMoments } from '../calendar/helpers';
-import { DagNaNacht, DubbeleOperatorShift, LegeShiftenTussen3NachtenEnDagShift, Max4OperatorShifts, OperatorShiftenControle, StandbyControle, TweeBlancoShiftsNaWeekendMet3Nacht, TweeLegeShiftenTussen4NachtenEnDagShift } from './Prio1';
+import { DagNaNacht, DubbeleOperatorShift, LegeShiftenTussen3NachtenEnDagShift, Max4OperatorShifts, OperatorShiftenControle, StandbyControle, StandbyCorrectePlaatsingControle, TweeBlancoShiftsNaWeekendMet3Nacht, TweeLegeShiftenTussen4NachtenEnDagShift } from './Prio1';
 import { CoopmanShiftControle, OverurenWeekControle, OverurenMaandControle, TweeLegeShiftenTussen3NachtenEnDagShift, DrieLegeShiftenTussen4NachtenEnDagShift } from './Prio2';
 import { MinimumOperators } from './Prio3';
 import GeneralRulesLine from './GeneralRulesLine';
@@ -31,7 +31,8 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
     'OPERATORSHIFT': [],
     'BlankTussen3NachtEnDag': [],
     '2BlankTussen4NachtEnDag': [],
-    '2BlankTussen3NachtWeekendEnVolgendeShift':[]
+    '2BlankTussen3NachtWeekendEnVolgendeShift':[],
+    'CorrectePlaatsingStandby':[]
   });
   const checkRegularPrio1 = () => {
     setPrio1({
@@ -43,7 +44,8 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
       'OPERATORSHIFT': OperatorShiftenControle(dataObject),
       'BlankTussen3NachtEnDag': LegeShiftenTussen3NachtenEnDagShift(dataObject),
       '2BlankTussen4NachtEnDag': TweeLegeShiftenTussen4NachtenEnDagShift(dataObject),
-      '2BlankTussen3NachtWeekendEnVolgendeShift':TweeBlancoShiftsNaWeekendMet3Nacht(dataObject)
+      '2BlankTussen3NachtWeekendEnVolgendeShift':TweeBlancoShiftsNaWeekendMet3Nacht(dataObject),
+      'CorrectePlaatsingStandby':StandbyCorrectePlaatsingControle(dataObject)    
     })
   }
   const checkFinalPrio1 = () => {
@@ -150,6 +152,8 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
             <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'Blanko Tussen 3 nacht en dag'} data={Prio1['BlankTussen3NachtEnDag']} />
             <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'2 Blanko Tussen 4 nacht en dag'} data={Prio1['2BlankTussen4NachtEnDag']} />
             <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'2 Blanko na nacht weekend'} data={Prio1['2BlankTussen3NachtWeekendEnVolgendeShift']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'Incorrecte Standby'} data={Prio1['CorrectePlaatsingStandby']} />
+
 
           </p>
         </div>
