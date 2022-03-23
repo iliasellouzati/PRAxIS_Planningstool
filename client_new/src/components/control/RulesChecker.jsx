@@ -2,8 +2,9 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { getCalendarMoments_ArrayWithMoments } from '../calendar/helpers';
-import { DagNaNacht, Max4OperatorShifts, StandbyControle } from './Prio1';
-import { CoopmanShiftControle ,OverurenWeekControle} from './Prio2';
+import { DagNaNacht, DubbeleOperatorShift, LegeShiftenTussen3NachtenEnDagShift, Max4OperatorShifts, OperatorShiftenControle, StandbyControle, TweeLegeShiftenTussen4NachtenEnDagShift } from './Prio1';
+import { CoopmanShiftControle, OverurenWeekControle, OverurenMaandControle, TweeLegeShiftenTussen3NachtenEnDagShift, DrieLegeShiftenTussen4NachtenEnDagShift } from './Prio2';
+import { MinimumOperators } from './Prio3';
 import GeneralRulesLine from './GeneralRulesLine';
 import IndividualRulesLine from './IndividualRulesLine';
 
@@ -25,14 +26,22 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
   const [Prio1, setPrio1] = useState({
     'STANDBY': [],
     '>4FOLLOWINGSHIFTS': [],
-    'DayAfterNight': []
+    'DayAfterNight': [],
+    'DubbeleOperatorShift': [],
+    'OPERATORSHIFT': [],
+    'BlankTussen3NachtEnDag': [],
+    '2BlankTussen4NachtEnDag': []
   });
   const checkRegularPrio1 = () => {
     setPrio1({
       ...Prio1,
       'STANDBY': StandbyControle(dataObject),
       '>4FOLLOWINGSHIFTS': Max4OperatorShifts(dataObject),
-      'DayAfterNight': DagNaNacht(dataObject)
+      'DayAfterNight': DagNaNacht(dataObject),
+      'DubbeleOperatorShift': DubbeleOperatorShift(dataObject),
+      'OPERATORSHIFT': OperatorShiftenControle(dataObject),
+      'BlankTussen3NachtEnDag': LegeShiftenTussen3NachtenEnDagShift(dataObject),
+      '2BlankTussen4NachtEnDag': TweeLegeShiftenTussen4NachtenEnDagShift(dataObject)
     })
   }
   const checkFinalPrio1 = () => {
@@ -44,18 +53,34 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
   //--------------- PRIO 2 ----------------
   const [Prio2, setPrio2] = useState({
     'COOPMAN': [],
-    'OverurenWeek':[]
+    'OverurenWeek': [],
+    'OverurenMaand': [],
+    '2BlankTussen3NachtEnDag': [],
+    '3BlankTussen4NachtEnDag': []
   });
   const checkRegularPrio2 = () => {
-    setPrio2({ ...Prio2, 'COOPMAN': CoopmanShiftControle(dataObject), 'OverurenWeek': OverurenWeekControle(dataObject) })
+    setPrio2({
+      ...Prio2,
+      'COOPMAN': CoopmanShiftControle(dataObject),
+      'OverurenWeek': OverurenWeekControle(dataObject),
+      'OverurenMaand': OverurenMaandControle(dataObject),
+      '2BlankTussen3NachtEnDag': TweeLegeShiftenTussen3NachtenEnDagShift(dataObject),
+      '3BlankTussen4NachtEnDag': DrieLegeShiftenTussen4NachtenEnDagShift(dataObject)
+    })
   }
   const checkFinalPrio2 = () => {
 
   }
 
   //--------------- PRIO 3 ----------------
-  const [Prio3, setPrio3] = useState([]);
+  const [Prio3, setPrio3] = useState({
+    'MinimumOps': []
+  });
   const checkRegularPrio3 = () => {
+    setPrio3({
+      ...Prio3,
+      'MinimumOps': MinimumOperators(dataObject)
+    })
   }
   const checkFinalPrio3 = () => {
 
@@ -115,10 +140,13 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
             <i className="fas fa-ban"></i>
           </p>
           <p className="d-flex flex-column text-right">
-            <GeneralRulesLine setHighlightDay={setHighlightDay}  ResetView={ResetView} name={'Standby'} data={Prio1['STANDBY']} />
-            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'>4 opeenvol. op. shiften'} data={Prio1['>4FOLLOWINGSHIFTS']} />
+            <GeneralRulesLine setHighlightDay={setHighlightDay} ResetView={ResetView} name={'Standby te kort'} data={Prio1['STANDBY']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'>4 opeenvol. operatorshiften'} data={Prio1['>4FOLLOWINGSHIFTS']} />
             <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'Dag na een nacht'} data={Prio1['DayAfterNight']} />
-
+            <GeneralRulesLine setHighlightDay={setHighlightDay} ResetView={ResetView} name={'Dubbele operator shift'} data={Prio1['DubbeleOperatorShift']} />
+            <GeneralRulesLine setHighlightDay={setHighlightDay} ResetView={ResetView} name={'Operatorshift te kort'} data={Prio1['OPERATORSHIFT']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'Blanko Tussen 3 nacht en dag'} data={Prio1['BlankTussen3NachtEnDag']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'2 Blanko Tussen 4 nacht en dag'} data={Prio1['2BlankTussen4NachtEnDag']} />
           </p>
         </div>
 
@@ -127,8 +155,12 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
             <i className="fas fa-exclamation-triangle"></i>
           </p>
           <p className="d-flex flex-column text-right">
-            <GeneralRulesLine setHighlightDay={setHighlightDay} ResetView={ResetView} name={'Coopman'} data={Prio2['COOPMAN']} />
+            <GeneralRulesLine setHighlightDay={setHighlightDay} ResetView={ResetView} name={'Coopmanshit te kort'} data={Prio2['COOPMAN']} />
             <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'Overuren Week'} data={Prio2['OverurenWeek']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'Overuren Maand'} data={Prio2['OverurenMaand']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'2 Blanko Tussen 3 nacht en dag'} data={Prio2['2BlankTussen3NachtEnDag']} />
+            <IndividualRulesLine setHighlightCustom={setHighlightCustom} ResetView={ResetView} name={'3 Blanko Tussen 4 nacht en dag'} data={Prio2['3BlankTussen4NachtEnDag']} />
+
           </p>
         </div>
 
@@ -139,6 +171,7 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
           </p>
 
           <p className="d-flex flex-column text-right">
+            <GeneralRulesLine setHighlightDay={setHighlightDay} ResetView={ResetView} name={'Min. Reserve Ops'} data={Prio3['MinimumOps']} />
 
           </p>
         </div>

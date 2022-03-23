@@ -19,7 +19,7 @@ const GeneralRulesLine = ({ setHighlightDay, ResetView, name, data }) => {
 
     useEffect(() => {
         if (ForcedShow) {
-            if (Show && data.length === 0) {
+            if (data.length === 0||data===[]) {
                 setShow(false);
             } else {
                 setShow(true);

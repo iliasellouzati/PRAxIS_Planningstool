@@ -25,15 +25,14 @@ const StandbyControle = ({calendar,calendarMonthHelper,shifttypes})  =>{
     return hulpArrMetDeDagen;
 
 }
-
 const Max4OperatorShifts = ({calendar,calendarMonthHelper,shifttypes}) =>{
 
 let result= [];
 
 
-let shiftCounter= 0;
 
 for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+let shiftCounter= 0;
 
     for (let individualDayLooper = 0; individualDayLooper  < calendarMonthHelper.length ; individualDayLooper++) {
 
@@ -56,8 +55,6 @@ for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++)
 
 return result;
 }
-
-
 const DagNaNacht =({calendar,calendarMonthHelper,shifttypes})=>{
     let result=[];
 
@@ -75,6 +72,153 @@ const DagNaNacht =({calendar,calendarMonthHelper,shifttypes})=>{
 
     return result;
 }
+const DubbeleOperatorShift =({calendar,calendarMonthHelper,shifttypes})=>{
+    let hulpArrMetDeDagen = [];
+
+    for (let individualDayLooper = 0; individualDayLooper  < calendarMonthHelper.length ; individualDayLooper++) {
+
+        let checker={
+            '0618':0,
+            '0719':0,
+            '1806':0,
+            '1907':0
+        }
+
+        for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+
+            let shift = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            if(operatorShifts.includes(shift)){
+                checker[`${shift}`]++;
+            }
+        }
+        if(checker['0618']>1||checker['0719']>1||checker['1806']>1||checker['1907']>1){
+            hulpArrMetDeDagen.push(calendarMonthHelper[individualDayLooper].format('DD-MM-YYYY'));
+        }
+    }
+
+    return hulpArrMetDeDagen;
+}
+const OperatorShiftenControle =({calendar,calendarMonthHelper,shifttypes})=>{
+    let hulpArrMetDeDagen = [];
+
+    for (let individualDayLooper = 0; individualDayLooper  < calendarMonthHelper.length ; individualDayLooper++) {
+
+        let checker={
+            '0618':0,
+            '0719':0,
+            '1806':0,
+            '1907':0
+        }
+
+        for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+
+            let shift = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            if(operatorShifts.includes(shift)){
+                checker[`${shift}`]++;
+            }
+        }
+        if(checker['0618']===0||checker['0719']===0||checker['1806']===0||checker['1907']===0){
+            hulpArrMetDeDagen.push(calendarMonthHelper[individualDayLooper].format('DD-MM-YYYY'));
+        }
+    }
+
+    return hulpArrMetDeDagen;
+}
+const LegeShiftenTussen3NachtenEnDagShift = ({
+    calendar,
+    calendarMonthHelper,
+    shifttypes
+}) => {
+
+    let result = [];
+
+    for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+    let opeenVolgendeNachtenShiften = 0;
+    let blankoShift = 0;
+
+        for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
+
+            let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            
+            if (nightShifts.includes(shiftName) && blankoShift!==0 && opeenVolgendeNachtenShiften!==0) {
+                blankoShift=0;
+                opeenVolgendeNachtenShiften=1;
+                continue;}
 
 
-export {StandbyControle,Max4OperatorShifts,DagNaNacht}
+           else if (nightShifts.includes(shiftName)) {
+                opeenVolgendeNachtenShiften++;
+                continue;
+            } else if (shiftName === '' && opeenVolgendeNachtenShiften !== 0) {
+                blankoShift++;
+                continue;
+            }
+            if (opeenVolgendeNachtenShiften === 3 && blankoShift < 1) {
+                result.push({
+                    'employeeId': calendar[employeeLooper].employeeId,
+                    'start': calendarMonthHelper[individualDayLooper - (opeenVolgendeNachtenShiften + blankoShift)],
+                    'end': calendarMonthHelper[individualDayLooper]
+                });
+                opeenVolgendeNachtenShiften = 0;
+                blankoShift = 0;
+              
+            }else{
+                opeenVolgendeNachtenShiften=0;
+                blankoShift=0;
+            }
+        }
+    }
+    return result;
+}
+const TweeLegeShiftenTussen4NachtenEnDagShift = ({
+    calendar,
+    calendarMonthHelper,
+    shifttypes
+}) => {
+
+    let result = [];
+
+
+    for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+    let opeenVolgendeNachtenShiften = 0;
+    let blankoShift = 0;
+        for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
+
+            let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+
+
+            if (nightShifts.includes(shiftName) && blankoShift!==0 && opeenVolgendeNachtenShiften!==0) {
+                blankoShift=0;
+                opeenVolgendeNachtenShiften=1;
+                continue;}
+
+           else if (nightShifts.includes(shiftName)) {
+                opeenVolgendeNachtenShiften++;
+                continue;
+            } else if (shiftName === '' && opeenVolgendeNachtenShiften !== 0) {
+                blankoShift++;
+                continue;
+            }
+            if (opeenVolgendeNachtenShiften === 4 && blankoShift < 2) {
+                result.push({
+                    'employeeId': calendar[employeeLooper].employeeId,
+                    'start': calendarMonthHelper[individualDayLooper - (opeenVolgendeNachtenShiften + blankoShift)],
+                    'end': calendarMonthHelper[individualDayLooper]
+                });
+                opeenVolgendeNachtenShiften = 0;
+                blankoShift = 0;
+            }
+        }
+    }
+    return result;
+}
+const CorrectePlaatsingStandyControle = ({
+    calendar,
+    calendarMonthHelper,
+    shifttypes
+}) => {
+    
+
+}
+
+export {StandbyControle,Max4OperatorShifts,DagNaNacht,DubbeleOperatorShift,OperatorShiftenControle,LegeShiftenTussen3NachtenEnDagShift, TweeLegeShiftenTussen4NachtenEnDagShift,CorrectePlaatsingStandyControle}

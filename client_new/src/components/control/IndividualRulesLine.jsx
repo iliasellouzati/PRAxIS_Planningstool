@@ -17,6 +17,8 @@ const IndividualRulesLine = ({ setHighlightCustom, ResetView, name, data }) => {
 
 
     useEffect(() => {
+        console.log(name);
+        console.log(data);
         if (ForcedShow) {
             if (typeof data === 'undefined' || data?.length === 0) {
                 setShow(false);
@@ -44,7 +46,7 @@ const IndividualRulesLine = ({ setHighlightCustom, ResetView, name, data }) => {
                                 paddingLeft: '3px',
                                 paddingRight: '3px'
                             }}>
-                            {`ID:${serie.employeeId} van ${serie.start.format('DD-MM')} tot ${serie.end.format('DD-MM')}`}
+                            {`ID:${serie.employeeId} van ${serie.start.clone().format('DD-MM')} tot ${serie.end.clone().format('DD-MM')}`}
                         </span>)}
                 <button type="button" class="ml-2 mb-1 close" onClick={() => { setForcedShow(false) }} >
                     <span>X</span>

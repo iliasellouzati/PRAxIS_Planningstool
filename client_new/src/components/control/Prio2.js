@@ -42,11 +42,9 @@ const OverurenWeekControle = ({
 
     let result = [];
 
-
-
     for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
 
-        for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper+=7) {
+        for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper += 7) {
 
             let uurCounter = moment.duration('0', 'hours');
 
@@ -86,8 +84,6 @@ const OverurenWeekControle = ({
                     'end': calendarMonthHelper[individualDayLooper + 6]
                 })
             }
-
-
         }
     }
 
@@ -101,28 +97,145 @@ const OverurenMaandControle = ({
     shifttypes
 }) => {
 
+    let currentMonth = calendarMonthHelper[Math.floor(calendarMonthHelper.length / 2)];
+
+    let result = [];
+
+
+    for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+
+        let uurCounter = moment.duration('0', 'hours');
+
+        for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
+
+            if (moment(calendar[employeeLooper].calendar[individualDayLooper].day, 'DD-MM-YYYY').isSame(currentMonth, 'month')) {
+
+                let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+                if (shiftName === '') {
+                    continue;
+                }
+
+                let shift = shifttypes.find(x => x.naam === shiftName);
+                let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() > 0 ?
+                    moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
+                    moment.duration(moment(shift.einduur, "hh:mm").add(1, "day").diff(moment(shift.beginuur, "hh:mm"))).asHours();
+
+                uurCounter.add(duration);
+            }
+
+
+        }
+
+        if (uurCounter > 180) {
+            result.push({
+                'employeeId': calendar[employeeLooper].employeeId,
+                'start': currentMonth.clone().startOf('month'),
+                'end': currentMonth.clone().endOf('month')
+            })
+        }
+
+    }
+
+    return result;
+
 
 }
-const TweeLegeShiftNa3Nachten = ({
+
+const TweeLegeShiftenTussen3NachtenEnDagShift = ({
     calendar,
     calendarMonthHelper,
     shifttypes
 }) => {
 
+    let result = [];
 
+    for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+        let opeenVolgendeNachtenShiften = 0;
+        let blankoShift = 0;
+        for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
+
+            let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            
+            if (nightShifts.includes(shiftName) && blankoShift!==0 && opeenVolgendeNachtenShiften!==0) {
+                blankoShift=0;
+                opeenVolgendeNachtenShiften=1;
+                continue;}
+
+
+           else if (nightShifts.includes(shiftName)) {
+                opeenVolgendeNachtenShiften++;
+                continue;
+            } else if (shiftName === '' && opeenVolgendeNachtenShiften !== 0) {
+                blankoShift++;
+                continue;
+            }
+            if (opeenVolgendeNachtenShiften === 3 && blankoShift < 2) {
+                result.push({
+                    'employeeId': calendar[employeeLooper].employeeId,
+                    'start': calendarMonthHelper[individualDayLooper - (opeenVolgendeNachtenShiften + blankoShift)],
+                    'end': calendarMonthHelper[individualDayLooper]
+                });
+                opeenVolgendeNachtenShiften = 0;
+                blankoShift = 0;
+              
+            }else{
+                opeenVolgendeNachtenShiften=0;
+                blankoShift=0;
+            }
+        }
+    }
+    return result;
 }
-const DrieLegeShiftNa4Nachten = ({
+
+const DrieLegeShiftenTussen4NachtenEnDagShift = ({
     calendar,
     calendarMonthHelper,
     shifttypes
 }) => {
 
+    let result = [];
 
+
+    for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
+    let opeenVolgendeNachtenShiften = 0;
+    let blankoShift = 0;
+        for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
+
+            let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+
+
+            if (nightShifts.includes(shiftName) && blankoShift!==0 && opeenVolgendeNachtenShiften!==0) {
+                blankoShift=0;
+                opeenVolgendeNachtenShiften=1;
+                continue;}
+
+           else if (nightShifts.includes(shiftName)) {
+                opeenVolgendeNachtenShiften++;
+                continue;
+            } else if (shiftName === '' && opeenVolgendeNachtenShiften !== 0) {
+                blankoShift++;
+                continue;
+            }
+            if (opeenVolgendeNachtenShiften === 4 && blankoShift < 3) {
+                result.push({
+                    'employeeId': calendar[employeeLooper].employeeId,
+                    'start': calendarMonthHelper[individualDayLooper - (opeenVolgendeNachtenShiften + blankoShift)],
+                    'end': calendarMonthHelper[individualDayLooper]
+                });
+                opeenVolgendeNachtenShiften = 0;
+                blankoShift = 0;
+            }
+        }
+    }
+    return result;
 }
 
 
 
 export {
     CoopmanShiftControle,
-    OverurenWeekControle
+    OverurenWeekControle,
+    OverurenMaandControle,
+    TweeLegeShiftenTussen3NachtenEnDagShift,
+    DrieLegeShiftenTussen4NachtenEnDagShift
 }
