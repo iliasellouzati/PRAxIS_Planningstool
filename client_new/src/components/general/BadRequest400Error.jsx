@@ -1,6 +1,7 @@
 import React from 'react'
 
 const BadRequest400Error = ({setHttp400Error,error}) => {
+    console.log(error);
     return (
         <div class="alert alert-warning alert-dismissible">
             <button type="button" class="close" onClick={()=>{setHttp400Error([false,[]])}}>X</button>

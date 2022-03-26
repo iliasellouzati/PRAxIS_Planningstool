@@ -33,7 +33,7 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
             textAlign: 'center',
             verticalAlign: 'middle',
             height: "27px",
-            width: "100%",
+            width: "45px",
             fontSize: Shift.standaardtekst !== "uur" ? "10px" : "",
             outline: Shift.border ? "1px solid black" : ""
         }
@@ -43,7 +43,7 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
             margin: '0px',
             textAlign: 'center',
             height: "100%",
-            width: "100%"
+            width: "45px"
         };
 
     function over(e) {
@@ -58,6 +58,10 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
         }
     }
 
+    function roundToTwo(num) {    
+        return +(Math.round(num + "e+2")  + "e-2");
+    }
+
 
     const handleClick = (e) => {
 
@@ -69,17 +73,19 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
         }
     }
     const calculateShiftText = () => {
-        let shift = shifttypes.find(o => o.naam === shiftDay.shift)
+        let shift = shifttypes.find(o => o.naam === shiftDay.shift);
 
-        let text = shift.standaardtekst === "uur" ? (
-            moment.duration(moment((shiftDay.endmoment || shift.einduur), "hh:mm").diff(moment((shiftDay.startmoment || shift.beginuur), "hh:mm"))).asHours() > 0 ?
-                moment.duration(moment((shiftDay.endmoment || shift.einduur), "hh:mm").diff(moment((shiftDay.startmoment || shift.beginuur), "hh:mm"))).asHours() :
-                moment.duration(moment((shiftDay.endmoment || shift.einduur), "hh:mm").add(1, "day").diff(moment((shiftDay.startmoment || shift.beginuur), "hh:mm"))).asHours()
+
+
+        let text = shift.standaardtekst === "uur" ? roundToTwo( 
+            moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() > 0 ?
+                moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() :
+                moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").add(1, "day").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours()
         ) :
             shift.standaardtekst === "min" ?
-                (moment.utc(moment.duration(moment((shiftDay.endmoment | shift.einduur), "hh:mm").diff(moment((shiftDay.startmoment | shift.beginuur), "hh:mm"))).asMilliseconds()).format("hh:mm") > 0 ?
-                    moment.utc(moment.duration(moment((shiftDay.endmoment | shift.einduur), "hh:mm").diff(moment((shiftDay.startmoment | shift.beginuur), "hh:mm"))).asMilliseconds()).format("h:mm") :
-                    moment.utc(moment.duration(moment((shiftDay.endmoment | shift.einduur), "hh:mm").add(1, "day").diff(moment((shiftDay.startmoment | shift.beginuur), "hh:mm"))).asMilliseconds()).format("h:mm")
+                (moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("hh:mm") > 0 ?
+                    moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("h:mm") :
+                    moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").add(1, "day").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("h:mm")
                 )
                 :
                 shift.standaardtekst;

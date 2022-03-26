@@ -26,12 +26,25 @@ const AllCalendarStatusForYear = () => {
 
     const addCalendarMonth = async (month) => {
         setLoading(true);
-        console.log(year);
-        await axios.post(`http://127.0.0.1:3001/api/statuscalendar/${year}/${moment(month, "MM-YYYY").format("MM")}`, { "timestamp": moment().format("DD/MM/YYYY HH:MM") })
-            .then(() => {
-                fetchData();
+        let version;
+        let progress;
+        let versionsForMonth = CalendarStatus.filter(x => x.month === month);
+        if (versionsForMonth.length === 0) {
+            version = 1;
+            progress=0;
+        } else {
+            version = versionsForMonth.reduce((prev, curr) => (prev.version > curr.version) ? prev : curr).version + 1;
+            progress=1;
+        }
+        await axios.post(
+            `http://127.0.0.1:3001/api/statuscalendar/${year}/${moment(month, "MM-YYYY").format("MM")}`,
+            {
+                "timestamp": moment().format("DD/MM/YYYY HH:MM"),
+                "version": version,
+                'progress':progress
             })
-            .catch(error => setHttp500([true, error]));
+            .then(() => { fetchData(); })
+            .catch(error => { setHttp500([true, error]); setLoading(false); });
     };
 
     const orderCalendarStatusByMonth = (CalendarStatusList) => {
@@ -210,7 +223,8 @@ const AllCalendarStatusForYear = () => {
                                                                                 </tr>
                                                                             )}
 
-                                                                            {!CalendarStatus.some(x => x.month === month) &&
+                                                                            {(!CalendarStatus.some(x => x.month === month) ||
+                                                                                CalendarStatus.filter(x => x.month === month).reduce((prev, curr) => (prev.version > curr.version) ? prev : curr).progress === 2) &&
                                                                                 <td colSpan="11" >
 
                                                                                     <button type="button" class="btn btn-block bg-gradient-primary btn-xs" onClick={() => { addCalendarMonth(month); console.log(month); }} >Planning toevoegen</button>

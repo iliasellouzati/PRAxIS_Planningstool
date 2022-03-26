@@ -17,8 +17,6 @@ const IndividualRulesLine = ({ setHighlightCustom, ResetView, name, data }) => {
 
 
     useEffect(() => {
-        console.log(name);
-        console.log(data);
         if (ForcedShow) {
             if (typeof data === 'undefined' || data?.length === 0) {
                 setShow(false);

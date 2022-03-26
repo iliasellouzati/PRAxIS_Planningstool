@@ -48,7 +48,7 @@ const saveCalenderShifts = (idPlanning,calendar) => async (dispatch)=> {
         dispatch({type: SAVE_CALENDAR_SHIFTS_REQUEST});
         const {data} = await axios.post("/api/planning/"+ idPlanning, calendar);
         dispatch({type:SAVE_CALENDAR_SHIFTS_SUCCES , payload: data})
-        
+         
     } catch (error) {
         dispatch({type:SAVE_CALENDAR_SHIFTS_FAIL, payload:error.message})
     }

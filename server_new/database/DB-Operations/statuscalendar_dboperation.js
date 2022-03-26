@@ -11,7 +11,7 @@ async function getAllStatusOfCalendarsByYear(year) {
 
         let pool = await sql.connect(config);
         let status = await pool.request()
-        .input('year', sql.VarChar(100), year)
+            .input('year', sql.VarChar(100), year)
             .execute('getAllStatusOfCalendarsByYear');
         return status.recordsets[0];
     } catch (error) {
@@ -20,13 +20,27 @@ async function getAllStatusOfCalendarsByYear(year) {
     }
 };
 
-
-async function addNewCalendarStatus(month, version, progress, timestamp) {
+async function getIndividualCalendarStatus(monthYear, version) {
     try {
 
         let pool = await sql.connect(config);
         let status = await pool.request()
-            .input('month', sql.NVarChar(10), month)
+            .input('month', sql.NVarChar(10), monthYear)
+            .input('version', sql.Int, version)
+            .execute('getIndividualCalendarStatus');
+        return status.recordsets[0];
+    } catch (error) {
+        sql.close();
+        throw new Error(error.message);
+    }
+}
+
+async function addNewCalendarStatus(monthYear, version, progress, timestamp) {
+    try {
+
+        let pool = await sql.connect(config);
+        let status = await pool.request()
+            .input('month', sql.NVarChar(10), monthYear)
             .input('version', sql.Int, version)
             .input('progress', sql.Int, progress)
             .input('time_saved', sql.VarChar(50), timestamp)
@@ -38,9 +52,38 @@ async function addNewCalendarStatus(month, version, progress, timestamp) {
     }
 };
 
+async function updateProgressForIndividualCalendarStatus(monthYear,version) {
+    try {
 
+        let pool = await sql.connect(config);
+        let status = await pool.request()
+            .input('month', sql.NVarChar(10), monthYear)
+            .input('version', sql.Int, version)
+            .execute('updateProgressForIndividualCalendarStatus');
+        return status.rowsAffected[0];
+    } catch (error) {
+        sql.close();
+        throw new Error(error.message);
+    }
+}
 
+async function getLatestCalendarStatusForIndividualMonth(monthYear){
+    try {
 
-
-
-export {getAllStatusOfCalendarsByYear,addNewCalendarStatus};
+        let pool = await sql.connect(config);
+        let status = await pool.request()
+            .input('month', sql.NVarChar(10), monthYear)
+            .execute('getLatestCalendarStatusForIndividualMonth');
+        return status.recordsets[0];
+    } catch (error) {
+        sql.close();
+        throw new Error(error.message);
+    }
+}
+export {
+    getAllStatusOfCalendarsByYear,
+    addNewCalendarStatus,
+    getIndividualCalendarStatus,
+    updateProgressForIndividualCalendarStatus,
+    getLatestCalendarStatusForIndividualMonth
+};

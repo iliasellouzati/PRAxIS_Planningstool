@@ -25,6 +25,14 @@ datum date,
 shifttypes_naam varchar(100),
 werknemers_id int)
 --------------------------------------------------
+CREATE TYPE UDT_shift2 AS TABLE
+(
+datum date,
+shifttypes_naam varchar(100),
+werknemers_id int,
+beginuur nvarchar(5),
+einduur nvarchar(5))
+--------------------------------------------------
 CREATE PROCEDURE saveNewShifts
 ( 
 	@shifts UDT_shift READONLY

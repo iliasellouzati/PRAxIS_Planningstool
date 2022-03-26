@@ -55,9 +55,9 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                     <table className="table table-bordered table-hover">
 
                         {/* BOVENSTE INFORMATIEVE TABELRIJ MET DAGEN */}
-                        <thead>
+                        <thead style={{ textAlign: 'center'}}>
                             <tr>
-                                <th rowSpan="2" style={{ padding: "1px", width: "10%", textAlign: 'center' }}>Werknemers</th>
+                                <th rowSpan="2" style={{ padding: "1px", width: "10%" }}>Werknemers</th>
                                 {calendarMonthHelper.map((element, index) =>
                                     <th key={index} style={HighlightDay[0] && HighlightDay[1].isSame(element, 'day') ? { outline: "2px solid red", padding: "1px", width: { cssWidthDay } } : element === "Z" ? { border: '2px solid green', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
                                 )}
@@ -99,9 +99,9 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                                         ||
                                                         (HighlightCustom[0] && HighlightCustom[1].employeeId === individueleCalendar.employeeId && HighlightCustom[1].start.clone().subtract(1,'day').isBefore(moment(shiftDay.day, 'DD-MM-YYYY'), 'day') && HighlightCustom[1].end.clone().add(1,'day').isAfter(moment(shiftDay.day, 'DD-MM-YYYY'), 'day') )
                                                     )
-                                                    ? { outline: "2px solid red", padding: "0px", margin: "0px", width: { cssWidthDay } }
+                                                    ? { outline: "2px solid red", padding: "0px", margin: "0px" }
                                                     :
-                                                    { padding: "0px", width: { cssWidthDay }, margin: "0px" }}>
+                                                    { padding: "0px", margin: "0px" }}>
                                             <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
                                         </td>
                                     )}
