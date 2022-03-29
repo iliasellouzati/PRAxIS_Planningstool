@@ -1,5 +1,6 @@
 import Express from 'express';
 import * as Employee_DB from '../database/DB-Operations/employee_dboperations.js';
+import * as Employee_Contract_DB from '../database/DB-Operations/employeeContract_dboperations.js'
 import {
   email_validation
 } from '../helpers/regex.js'
@@ -8,6 +9,43 @@ import {
 const router = Express.Router();
 
 const hostUrl = "http://localhost:3001/api/employee";
+
+router.get('/', async (req, res) => {
+  try {
+
+    const employees = await Employee_DB.getAllEmployees();
+
+    employees.length ? res.status(200).send(employees) : res.status(204).send("No Employees Found");
+
+  } catch (e) {
+
+    res.status(500).send(`GET on ${hostUrl} failed with error "${e.message}"`);
+
+  }
+
+})
+router.post("/", async (req, res) => {
+  try {
+    const rowsAffected = await Employee_DB.addEmployee(
+      req.body.voornaam,
+      req.body.familienaam,
+      req.body.contracttype_id,
+      req.body.email,
+      req.body.franstalig,
+      req.body.opleiding,
+      req.body.geboortedatum,
+      req.body.geboortedatum_partner
+    );
+
+    rowsAffected ? res.status(204).send() : res.status(404).send(`Employee was not added`);
+
+
+  } catch (e) {
+
+    res.status(500).send(`POST on ${hostUrl} failed with error "${e.message}"`);
+
+  }
+})
 
 router.get("/:id", async (req, res) => {
 
@@ -36,13 +74,18 @@ router.put("/:id", async (req, res) => {
     if (parseInt(req.params.id) !== parseInt(req.body.id))
       return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not equal to employee Id:${req.body.id}`);
 
-    if ( req.body.name.trim() === "")
-      return res.status(400).send(`PUT on ${hostUrl}/:id failed because name is empty`);
 
-    if (!email_validation.test(req.body.email.toLowerCase().trim()))
-      return res.status(400).send(`PUT on ${hostUrl}/:id failed  because email is not valid`);
-
-    const rowsAffected = await Employee_DB.updateEmployee(req.params.id, req.body.name, req.body.email, req.body.contracttype);
+    const rowsAffected = await Employee_DB.updateEmployee(
+      req.params.id,
+      req.body.voornaam,
+      req.body.familienaam,
+      req.body.contracttype_id,
+      req.body.email,
+      req.body.franstalig,
+      req.body.opleiding,
+      req.body.geboortedatum,
+      req.body.geboortedatum_partner
+    );
 
     rowsAffected ? res.status(204).send() : res.status(404).send(`Employee with id:${req.params.id} was not found in DB`);
 
@@ -73,45 +116,60 @@ router.delete("/:id", async (req, res) => {
 
 });
 
-router.post("/", async (req, res) => {
+router.get('/all/contracts', async (req, res) => {
   try {
 
-    if (isNaN(req.body.id))
-      return res.status(400).send(`POST on ${hostUrl} with id "${req.body.id}" failed with because id is not a number`);
+    const contracts = await Employee_Contract_DB.getAllContractsForAllEmployees();
 
-    if (req.body.name.trim() === "")
-      return res.status(400).send(`POST on ${hostUrl} failed because name is empty`);
-
-    if (!email_validation.test(req.body.email.toLowerCase().trim()))
-      return res.status(400).send(`POST on ${hostUrl} failed  because email is not valid`);
-
-
-
-    const rowsAffected = await Employee_DB.addEmployee(req.body.id, req.body.name, req.body.email, req.body.contracttype);
-
-    rowsAffected ? res.status(204).send() : res.status(404).send(`Employee was not added`);
-
-
-  } catch (e) {
-
-    res.status(500).send(`POST on ${hostUrl} failed with error "${e.message}"`);
-
-  }
-})
-
-router.get('/', async (req, res) => {
-  try {
-
-    const employees = await Employee_DB.getAllEmployees();
-
-    employees.length ? res.status(200).send(employees) : res.status(204).send("No Employees Found");
+    contracts.length ? res.status(200).send(contracts) : res.status(204).send("No Contracts Found");
 
   } catch (e) {
 
     res.status(500).send(`GET on ${hostUrl} failed with error "${e.message}"`);
 
   }
+});
 
-})
+
+router.get('/:employeeId/contract', async (req, res) => {
+  try {
+
+    const contracts = await Employee_Contract_DB.getAllContractsForEmployee(req.params.employeeId);
+
+    contracts.length ? res.status(200).send(contracts) : res.status(204).send("No Contracts Found");
+
+  } catch (e) {
+
+    res.status(500).send(`GET on ${hostUrl} failed with error "${e.message}"`);
+
+  }
+});
+
+router.post('/:employeeId/contract', async (req, res) => {
+  try {
+
+    const result = await Employee_Contract_DB.addIndividualContractForEmployee(req.params.employeeId, req.body.begindatum, req.body.einddatum);
+    result ? res.status(204).send() : res.status(400).send("Contract not updated");
+
+  } catch (e) {
+    res.status(500).send(`PUT on ${hostUrl}/:employeeId/contract/:contractId failed with error "${e.message}"`);
+  }
+});
+
+router.put('/:employeeId/contract/:contractId', async (req, res) => {
+  try {
+
+    if (parseInt(req.params.contractId) !== parseInt(req.body.Id))
+      return res.status(400).send(`PUT on ${hostUrl}/:employeeId/contract/:contractId  with employeeId "${req.params.employeeId}" failed with because id is not equal to contract Id:${req.body.Id}`);
+
+    const result = await Employee_Contract_DB.updateIndividualContractForEmployee(req.body.Id, req.body.begindatum, req.body.einddatum);
+    result ? res.status(204).send() : res.status(400).send("Contract not added");
+
+  } catch (e) {
+    res.status(500).send(`PUT on ${hostUrl}/:employeeId/contract/:contractId failed with error "${e.message}"`);
+  }
+});
+
+
 
 export default router;

@@ -99,7 +99,7 @@ function App() {
       <Route path="/shifttypes" component={AllShiftypes} exact={true} />
 
 
-      <Route path="/contracttypes/:name" >
+      <Route path="/contracttypes/:id" >
         <EditContractType setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} />
       </Route>
       <Route path="/contracttypes" component={AllContractType} exact={true} />

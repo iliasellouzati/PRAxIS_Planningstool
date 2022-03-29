@@ -174,6 +174,7 @@ const EditShifttype = ({ setShowSuccesModal, setShowDangerModal }) => {
                             <label for="AANPASBARE_UREN" class="custom-control-label" >De uren kunnen aangepast worden </label>
                           </div>
                         </div>
+                        
                       </div>
                       <div className="col-3">
 

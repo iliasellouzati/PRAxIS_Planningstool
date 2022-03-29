@@ -31,6 +31,7 @@ app.use('/api/shifttype', shifttypeRoute);
 app.use('/api/statuscalendar',statusCalendarRoute);
 
 
+
 app.get('/', (req, res) => {
 
     res.send('Server is ready');

@@ -64,3 +64,17 @@ SET naam = @naam, wekelijkse_contract_uren=@wekelijkse_contract_uren,maandelijke
 where naam= @oudenaam;
 SELECT * 
 FROM contracttypes;
+
+
+
+
+Create TABLE contracttypes2
+(
+id int not null primary key IDENTITY(1,1),
+naam nvarchar(50) not null,
+wekelijkse_contract_uren int,
+nachtshiften_toegelaten bit not null,
+standby_toegelaten bit not null,
+max_weekends_per_jaar int not null 
+)
+

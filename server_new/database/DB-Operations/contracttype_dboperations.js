@@ -20,12 +20,12 @@ async function getAllContracts() {
 
 
 
-async function getContracttypeWithName(name) {
+async function getContracttypeWithName(id) {
     try {
 
         let pool = await sql.connect(config);
         let contract = await pool.request()
-            .input('naam', sql.VarChar(50), name)
+            .input('id', sql.VarChar(50), id)
             .execute('getContracttypeWithNaam');
         return contract.recordsets[0];
     } catch (error) {
@@ -33,12 +33,12 @@ async function getContracttypeWithName(name) {
         throw new Error(error.message);
     }
 };
-async function deleteContracttypeWithName(name) {
+async function deleteContracttypeWithName(id) {
     try {
 
         let pool = await sql.connect(config);
         let contracttype = await pool.request()
-            .input('naam', sql.VarChar(50), name)
+            .input('id', sql.Int, id)
             .execute('removeContracttypeWithNaam');
         return contracttype.rowsAffected[0];
     } catch (error) {
@@ -50,32 +50,18 @@ async function deleteContracttypeWithName(name) {
 async function addContracttype(
     name,
     weeklyContractHours,
-    monthlyContractHours,
-    maxFollowingShifts,
-    maxShiftsAWeek,
-    maxHoursAWeek,
     nightShiftsAllowed,
     standbyAllowed,
-    maxHoursAMonth,
-    maxWeekendsAYear,
-    ideaalShiftsAWeek
-
-) {
+    maxWeekendsAYear) {
     try {
 
         let pool = await sql.connect(config);
         let contracttype = await pool.request()
-        .input('naam', sql.VarChar(50), name)
-        .input('wekelijkse_contract_uren', sql.Int, weeklyContractHours)
-        .input('maandelijke_contract_uren', sql.Int, monthlyContractHours)
-        .input('max_opeenvolgende_shifts', sql.Int, maxFollowingShifts)
-        .input('max_shifts_per_week', sql.Int, maxShiftsAWeek)
-        .input('nachtshiften_toegelaten', sql.Bit, nightShiftsAllowed)
-        .input('standby_toegelaten', sql.Bit, standbyAllowed)
-        .input('max_uur_per_week', sql.Int, maxHoursAWeek)
-        .input('max_uur_per_maand', sql.Int, maxHoursAMonth)
-        .input('max_weekends_per_jaar', sql.Int, maxWeekendsAYear)
-        .input('ideaal_shifts_per_week', sql.Int, ideaalShiftsAWeek)
+            .input('naam', sql.NVarChar(50), name)
+            .input('wekelijkse_contract_uren', sql.Int, weeklyContractHours)
+            .input('nachtshiften_toegelaten', sql.Bit, nightShiftsAllowed)
+            .input('standby_toegelaten', sql.Bit, standbyAllowed)
+            .input('max_weekends_per_jaar', sql.Int, maxWeekendsAYear)
             .execute('addContracttype');
         return contracttype.rowsAffected[0];
     } catch (error) {
@@ -85,34 +71,22 @@ async function addContracttype(
 };
 
 async function updateContracttypes(
-    oldname,
+    id,
     name,
     weeklyContractHours,
-    monthlyContractHours,
-    maxFollowingShifts,
-    maxShiftsAWeek,
-    maxHoursAWeek,
     nightShiftsAllowed,
     standbyAllowed,
-    maxHoursAMonth,
-    maxWeekendsAYear,
-    ideaalShiftsAWeek) {
+    maxWeekendsAYear) {
     try {
 
         let pool = await sql.connect(config);
         let contracttype = await pool.request()
-            .input('oudenaam', sql.VarChar(50), oldname)
-            .input('naam', sql.VarChar(50), name)
+            .input('id', sql.Int, id)
+            .input('naam', sql.NVarChar(50), name)
             .input('wekelijkse_contract_uren', sql.Int, weeklyContractHours)
-            .input('maandelijke_contract_uren', sql.Int, monthlyContractHours)
-            .input('max_opeenvolgende_shifts', sql.Int, maxFollowingShifts)
-            .input('max_shifts_per_week', sql.Int, maxShiftsAWeek)
             .input('nachtshiften_toegelaten', sql.Bit, nightShiftsAllowed)
             .input('standby_toegelaten', sql.Bit, standbyAllowed)
-            .input('max_uur_per_week', sql.Int, maxHoursAWeek)
-            .input('max_uur_per_maand', sql.Int, maxHoursAMonth)
             .input('max_weekends_per_jaar', sql.Int, maxWeekendsAYear)
-            .input('ideaal_shifts_per_week', sql.Int, ideaalShiftsAWeek)
             .execute('updateContracttype');
         return contracttype.rowsAffected[0];
     } catch (error) {
@@ -124,4 +98,10 @@ async function updateContracttypes(
 
 
 
-export { getAllContracts, updateContracttypes, getContracttypeWithName, deleteContracttypeWithName, addContracttype }
+export {
+    getAllContracts,
+    updateContracttypes,
+    getContracttypeWithName,
+    deleteContracttypeWithName,
+    addContracttype
+}

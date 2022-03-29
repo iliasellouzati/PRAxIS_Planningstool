@@ -46,32 +46,44 @@ async function deleteEmployeeWithId(id) {
     }
 };
 
-async function addEmployee(id, name, email, contracttype) {
+
+
+
+async function addEmployee(voornaam, familienaam, contracttype_id,email, franstalig, opleiding, geboortedatum, geboortedatum_partner) {
     try {
 
         let pool = await sql.connect(config);
         let employee = await pool.request()
-            .input('id', sql.Int, id)
-            .input('naam', sql.VarChar(100), name)
-            .input('email', sql.VarChar(100), email)
-            .input('contracttype', sql.VarChar(50), contracttype)
+            .input('voornaam', sql.NVarChar(100), voornaam)
+            .input('familienaam', sql.NVarChar(100), familienaam)
+            .input('contracttype_id', sql.Int, contracttype_id)
+            .input('email', sql.NVarChar(100), email)
+            .input('franstalig', sql.Bit, franstalig)
+            .input('opleiding', sql.Bit, opleiding)
+            .input('geboortedatum', sql.NVarChar(10), geboortedatum)
+            .input('geboortedatum_partner', sql.NVarChar(10), geboortedatum_partner)
             .execute('addWerknemer');
-        return employee.recordsets[0];
+        return employee.rowsAffected[0];
     } catch (error) {
         sql.close();
         throw new Error(error.message);
     }
 };
 
-async function updateEmployee(id, name, email,contracttype) {
+async function updateEmployee(id,voornaam, familienaam, contracttype_id,email, franstalig, opleiding, geboortedatum, geboortedatum_partner) {
     try {
 
         let pool = await sql.connect(config);
         let employee = await pool.request()
-            .input('id', sql.Int, id)
-            .input('naam', sql.VarChar(100), name)
-            .input('email', sql.VarChar(100), email)
-            .input('contracttype', sql.VarChar(50), contracttype)
+            .input('id',sql.Int,id)
+            .input('voornaam', sql.NVarChar(100), voornaam)
+            .input('familienaam', sql.NVarChar(100), familienaam)
+            .input('contracttype_id', sql.Int, contracttype_id)
+            .input('email', sql.NVarChar(100), email)
+            .input('franstalig', sql.Bit, franstalig)
+            .input('opleiding', sql.Bit, opleiding)
+            .input('geboortedatum', sql.NVarChar(10), geboortedatum)
+            .input('geboortedatum_partner', sql.NVarChar(10), geboortedatum_partner)
             .execute('updateWerknemer');
         return employee.rowsAffected[0];
     } catch (error) {
@@ -82,4 +94,11 @@ async function updateEmployee(id, name, email,contracttype) {
 
 
 
-export {getAllEmployees,getEmployeeWithId,deleteEmployeeWithId,addEmployee,updateEmployee};
+export {
+    getAllEmployees,
+    getEmployeeWithId,
+    deleteEmployeeWithId,
+    addEmployee,
+    updateEmployee
+    
+};
