@@ -52,13 +52,14 @@ async function addNewCalendarStatus(monthYear, version, progress, timestamp) {
     }
 };
 
-async function updateProgressForIndividualCalendarStatus(monthYear,version) {
+async function updateProgressForIndividualCalendarStatus(monthYear, version,timestamp) {
     try {
 
         let pool = await sql.connect(config);
         let status = await pool.request()
             .input('month', sql.NVarChar(10), monthYear)
             .input('version', sql.Int, version)
+            .input('timestamp', sql.VarChar(50), timestamp)
             .execute('updateProgressForIndividualCalendarStatus');
         return status.rowsAffected[0];
     } catch (error) {
@@ -67,7 +68,7 @@ async function updateProgressForIndividualCalendarStatus(monthYear,version) {
     }
 }
 
-async function getLatestCalendarStatusForIndividualMonth(monthYear){
+async function getLatestCalendarStatusForIndividualMonth(monthYear) {
     try {
 
         let pool = await sql.connect(config);

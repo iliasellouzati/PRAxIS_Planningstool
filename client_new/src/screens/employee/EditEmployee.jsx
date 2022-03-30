@@ -20,7 +20,7 @@ const EditEmployee = ({ setShowSuccesModal, setShowDangerModal }) => {
   const [Id, setId] = useState("");
   const [VoorNaam, setVoorNaam] = useState("");
   const [FamilieNaam, setFamilieNaam] = useState("");
-  const [ContractType, setContractType] = useState("");
+  const [ContractType, setContractType] = useState(1);
   const [Email, setEmail] = useState("");
   const [Franstalig, setFranstalig] = useState("");
   const [Opleiding, setOpleiding] = useState("");
@@ -274,9 +274,9 @@ const EditEmployee = ({ setShowSuccesModal, setShowDangerModal }) => {
                             <div className="form-group" >
 
                               <label for="EMPL_CONTRACT"  >Contracttype : </label>
-                              <select id="EMPL_CONTRACT" style={{ marginLeft: "5px" }} onChange={(e) => setContractType(e.target.value)} value={ContractType}>
+                              <select id="EMPL_CONTRACT" style={{ marginLeft: "5px" }}   onChange={(e) => setContractType(e.target.value)} value={ContractType}>
                                 {AlleContractTypes !== "" && AlleContractTypes.map(type =>
-                                  <option value={type.id} > {type.naam}</option>
+                                  <option value={type.id}  > {type.naam}</option>
                                 )}
                               </select>
 
@@ -361,11 +361,11 @@ const EditEmployee = ({ setShowSuccesModal, setShowDangerModal }) => {
                                       <td>{contract.begindatum}</td>
                                       <td>{contract.einddatum ? contract.einddatum : "N.V.T"}</td>
                                       <td>
-                                        {!contract.einddatum ?
-                                          <span class="badge bg-success">ACTIEF</span> :
+                                        {!contract.einddatum ?( moment(contract.begindatum,"DD/MM/YYYY").isAfter(moment(),'day')? <span class="badge bg-warning">TOEKOMST!</span>:
+                                          <span class="badge bg-success">ACTIEF</span> ):
                                           moment(contract.einddatum, "DD/MM/YYYY").isBefore(moment(), 'day') ?
-                                            <span class="badge bg-danger">NIET-ACTIEF</span> :
-                                            <span class="badge bg-warning">WORDT STOPGEZET</span>
+                                            <span class="badge bg-danger">NIET-ACTIEF</span> :( moment(contract.begindatum,"DD/MM/YYYY").isAfter(moment(),'day')?<span class="badge bg-warning">TOEKOMST!</span>:
+                                            <span class="badge bg-warning">ACTIEF + WORDT STOPGEZET</span>)
                                         }
                                       </td>
 

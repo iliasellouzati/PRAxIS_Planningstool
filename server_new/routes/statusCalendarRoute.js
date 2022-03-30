@@ -53,9 +53,6 @@ router.get("/:year/:month/:version", async (req, res) => {
 });
 
 
-
-
-
 router.post("/:year/:month", async (req, res) => {
     try {
 
@@ -66,7 +63,7 @@ router.post("/:year/:month", async (req, res) => {
             return res.status(400).send(`POST on ${hostUrl}/:year/:month with year "${req.params.year}" and month "${req.params.month} failed  because month is not valid`);
         if (isNaN(req.body.version))
             return res.status(400).send(`POST on ${hostUrl}/:year/:month with year failed  because version (in the body) is not valid`);
-        if (isNaN(req.body.progress)|| req.params.progress < 0 || req.params.progress > 2)
+        if (isNaN(req.body.progress) || req.params.progress < 0 || req.params.progress > 2)
             return res.status(400).send(`POST on ${hostUrl}/:year/:month with year failed  because progress (in the body) is not valid`);
 
         const rowsAffected = await Statuscalendars_DB.addNewCalendarStatus(`${req.params.month}-${req.params.year}`, req.body.version, req.body.progress, req.body.timestamp);
@@ -89,7 +86,7 @@ router.post("/:year/:month/:version", async (req, res) => {
         if (isNaN(req.params.year) || req.params.year < 2015 || req.params.year > 2099)
             return res.status(400).send(`POST on ${hostUrl}/:year/:month/:version with version "${req.params.version}" failed because version is not valid`);
 
-        const rowsAffected = await Statuscalendars_DB.updateProgressForIndividualCalendarStatus(`${req.params.month}-${req.params.year}`, req.params.version);
+        const rowsAffected = await Statuscalendars_DB.updateProgressForIndividualCalendarStatus(`${req.params.month}-${req.params.year}`, req.params.version, req.body.timestamp);
         rowsAffected ? res.status(204).send() : res.status(404).send(`Version ${req.params.version} was not updated for ${req.params.month}-${req.params.year}`);
 
     } catch (e) {

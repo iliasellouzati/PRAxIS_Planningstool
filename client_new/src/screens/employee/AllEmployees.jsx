@@ -17,18 +17,19 @@ const AllEmployees = () => {
 
 
   const fetchData = async () => {
+    let empls = [];
     await axios.get('http://127.0.0.1:3001/api/employee')
-      .then(response => setEmployees(response.data))
+      .then(response => { setEmployees(response.data); empls = response.data; })
       .catch(error => setHttp500([true, error]));
 
     await axios.get('http://127.0.0.1:3001/api/employee/all/contracts')
-      .then(response => { setAllContracts(response.data); separateInactiveEmployees(response.data); })
+      .then(response => { setAllContracts(response.data); separateInactiveEmployees(response.data, empls); })
       .catch(error => setHttp500([true, error]));
 
     console.log(AllContracts)
   }
 
-  const separateInactiveEmployees = (allContracts) => {
+  const separateInactiveEmployees = (allContracts, empls) => {
     if (allContracts === undefined || allContracts === null || allContracts.length === 0) {
       setInactiveEmployees([]);
       return;
@@ -49,7 +50,9 @@ const AllEmployees = () => {
         inactiveEmpl = inactiveEmpl.filter(x => x !== contract.werknemer_id);
         return;
       }
-    })
+    });
+
+    inactiveEmpl = [...inactiveEmpl, ...empls.filter(x => !allContracts.some(y => y.werknemer_id === x.id)).map(x => x.id)];
 
     setInactiveEmployees(inactiveEmpl);
 
@@ -91,7 +94,7 @@ const AllEmployees = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {Employees.filter(emp => !InactiveEmployees.some(x => x === emp.id)).map((employee) => (
+                  {Employees&& Employees.filter(emp => !InactiveEmployees.some(x => x === emp.id)).map((employee) => (
 
                     <tr>
                       <td>{employee.id}</td>
@@ -106,7 +109,7 @@ const AllEmployees = () => {
                     </tr>
 
                   ))}
-                  <tr data-widget="expandable-table" aria-expanded="false" onClick={()=>setToonInactieve(!ToonInactieve)} >
+                  <tr data-widget="expandable-table" aria-expanded="false" onClick={() => setToonInactieve(!ToonInactieve)} >
                     <td colSpan={4}>
                       <div>
                         <i className="expandable-table-caret fas fa-caret-right fa-fw"></i>
@@ -115,22 +118,22 @@ const AllEmployees = () => {
                     </td>
                   </tr>
 
-       
-                    {ToonInactieve && Employees.filter(emp => InactiveEmployees.some(x => x === emp.id)).map((employee) =>
 
-                      <tr  >
-                        <td>{employee.id}</td>
-                        <td>{employee.familienaam}</td>
-                        <td>{employee.voornaam}</td>
-                        <td>
-                          <Link to={"/werknemers/" + employee.id}>
-                            <i class="fas fa-edit"></i>
-                          </Link>
+                  {ToonInactieve &&Employees && Employees.filter(emp => InactiveEmployees.some(x => x === emp.id)).map((employee) =>
 
-                        </td>
-                      </tr>
+                    <tr  >
+                      <td>{employee.id}</td>
+                      <td>{employee.familienaam}</td>
+                      <td>{employee.voornaam}</td>
+                      <td>
+                        <Link to={"/werknemers/" + employee.id}>
+                          <i class="fas fa-edit"></i>
+                        </Link>
 
-                    )}
+                      </td>
+                    </tr>
+
+                  )}
 
                 </tbody>
                 <tfoot>

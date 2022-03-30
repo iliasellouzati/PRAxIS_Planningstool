@@ -39,7 +39,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
       .then(response => { progres = response.data[0].progress; })
       .catch(error => setHttp400Error([true, ['Foutmelding', error.response.data]]));
     if (progres === 0) {
-      await axios.post(`http://localhost:3001/api/statuscalendar/${year}/${month}/${version}`)
+      await axios.post(`http://localhost:3001/api/statuscalendar/${year}/${month}/${version}`, { "timestamp": moment().format("DD/MM/YYYY HH:MM") })
         .catch(error => setHttp400Error([true, ['Foutmelding', error.response.data]]));
     }
     await axios.post(`http://127.0.0.1:3001/api/calendar/global/year/${year}/calendarmonth/${month}`, calendarForDb)
@@ -85,7 +85,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
               <div className='card-footer'>
                 <div className="row">
                   {ShowFinalComment ?
-                  <SaveCalendarConfig setShowFinalComment={setShowFinalComment}/>
+                    <SaveCalendarConfig setShowFinalComment={setShowFinalComment} />
 
                     :
                     <React.Fragment>
@@ -97,9 +97,9 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
                         <RulesChecker setHighlightDay={setHighlightDay} setHighlightCustom={setHighlightCustom} />
 
                       </div>
-                      <div className="col-2" style={{display:"flex", justifyContent:"space-around", height:"150px"}}>
+                      <div className="col-2" style={{ display: "flex", justifyContent: "space-around", height: "150px" }}>
 
-                        <div className="btn-group-vertical" style={{ width:"100px" }}>
+                        <div className="btn-group-vertical" style={{ width: "100px" }}>
                           <button type="button" className="btn btn-danger">UNDO</button>
                           {false && <button type="button" className="btn btn-danger">REDO</button>}
                           <div className="btn-group">
@@ -107,7 +107,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
                               <i className='nav-icon fas fa-robot' />
                               <ul className="dropdown-menu">
                                 {Employees && Employees.map(emp =>
-                                  <li className="dropdown-item" id={emp.id} >Reset {emp.naam.substring(0, 8)}</li>)}
+                                  <li className="dropdown-item" id={emp.id} >Reset {emp.voornaam}</li>)}
                               </ul>
                             </button>
                           </div>
@@ -125,7 +125,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
                           </div>
                         </div>
 
-                        <div className="btn-group-vertical" style={{ width:"100px" }}>
+                        <div className="btn-group-vertical" style={{ width: "100px" }}>
                           <button type="button" className="btn btn-success" onClick={() => saveShiftsToDb()}>Tijdelijk opslaan</button>
                           <button type="button" className="btn btn-success" onClick={() => setShowFinalComment(true)} >Afwerken</button>
                           <div className="btn-group">

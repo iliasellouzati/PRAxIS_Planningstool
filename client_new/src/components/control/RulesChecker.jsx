@@ -37,11 +37,9 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
   const checkRegularPrio1 = () => {
     setPrio1({
       ...Prio1,
-      'STANDBY': StandbyControle(dataObject),
       '>4FOLLOWINGSHIFTS': Max4OperatorShifts(dataObject),
       'DayAfterNight': DagNaNacht(dataObject),
       'DubbeleOperatorShift': DubbeleOperatorShift(dataObject),
-      'OPERATORSHIFT': OperatorShiftenControle(dataObject),
       'BlankTussen3NachtEnDag': LegeShiftenTussen3NachtenEnDagShift(dataObject),
       '2BlankTussen4NachtEnDag': TweeLegeShiftenTussen4NachtenEnDagShift(dataObject),
       '2BlankTussen3NachtWeekendEnVolgendeShift':TweeBlancoShiftsNaWeekendMet3Nacht(dataObject),
@@ -50,7 +48,9 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
   }
   const checkFinalPrio1 = () => {
     setPrio1({
-      ...Prio1
+      ...Prio1,
+      'STANDBY': StandbyControle(dataObject),
+      'OPERATORSHIFT': OperatorShiftenControle(dataObject)
     })
   }
 
@@ -65,7 +65,6 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
   const checkRegularPrio2 = () => {
     setPrio2({
       ...Prio2,
-      'COOPMAN': CoopmanShiftControle(dataObject),
       'OverurenWeek': OverurenWeekControle(dataObject),
       'OverurenMaand': OverurenMaandControle(dataObject),
       '2BlankTussen3NachtEnDag': TweeLegeShiftenTussen3NachtenEnDagShift(dataObject),
@@ -73,7 +72,10 @@ const RulesChecker = ({ setHighlightDay, setHighlightCustom }) => {
     })
   }
   const checkFinalPrio2 = () => {
-
+    setPrio2({
+      ...Prio2,
+      'COOPMAN': CoopmanShiftControle(dataObject)
+    })
   }
 
   //--------------- PRIO 3 ----------------

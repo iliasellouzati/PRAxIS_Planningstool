@@ -6,9 +6,9 @@ const mapShiftsFromDbToCalendar = (dateString, calendarFromDb, Employees) => {
 
     let returnCalendar = [];
 
-    Employees.forEach(employee => {
+    Employees.filter(x=>["YES","PARTIAL"].includes(x.full_month_contract)).forEach(employee => {
         returnCalendar.push({
-            "employeeId": employee.id,
+            "employeeId": employee.employeeId,
             "calendar": getCalendarMonth_ArrayWithMoment(dateString)
         })
     });
@@ -27,7 +27,22 @@ const mapShiftsFromDbToCalendar = (dateString, calendarFromDb, Employees) => {
 
     return returnCalendar;
 }
+const mapShiftsFromDbToTableRowHistory = (dateString,calendarFromDb) => {
 
+    let returnCalendar = getCalendarMonth_ArrayWithMoment(dateString);
+
+
+        for (let index = 0; index < returnCalendar.length; index++) {
+            let shift = calendarFromDb === "" ? null : calendarFromDb.find(x => moment(x.datum, "YYYY-MM-DD").isSame(moment(returnCalendar[index].day, "DD-MM-YYYY"), 'day'));
+            if (shift) {
+                returnCalendar[index].shift = shift.shifttypes_naam;
+                returnCalendar[index].startmoment = shift.beginuur;
+                returnCalendar[index].endmoment = shift.einduur;
+            }
+        }
+        
+    return returnCalendar;
+}
 const mapShiftsFromDbToAutomatisation = (dateString, calendarFromDb, Employees) => {
     //  let calendarWithDays = getCalendarMonth_ArrayWithMoment(dateString);
 
@@ -105,5 +120,6 @@ const getCustom_ArrayWithMoment = dateString => {
 
 export {
     mapShiftsFromDbToCalendar,
-    mapShiftsFromDbToAutomatisation
+    mapShiftsFromDbToAutomatisation,
+    mapShiftsFromDbToTableRowHistory
 }

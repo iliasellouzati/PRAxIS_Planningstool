@@ -83,7 +83,6 @@ router.get("/individual/:employeeId/year/:year/calendarmonth/:month", async (req
 
 })
 
-
 router.get("/global/year/:year", async (req, res) => {
 
     try {
@@ -169,8 +168,6 @@ router.get("/global/custom/:begin/:end", async (req, res) => {
     }
 
 })
-
-
 router.post("/global/year/:year/calendarmonth/:month", async (req, res) => {
 
     try {

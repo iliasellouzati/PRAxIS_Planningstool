@@ -33,7 +33,7 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
             textAlign: 'center',
             verticalAlign: 'middle',
             height: "27px",
-            width: "45px",
+            minWidth: "45px",
             fontSize: Shift.standaardtekst !== "uur" ? "10px" : "",
             outline: Shift.border ? "1px solid black" : ""
         }
@@ -43,7 +43,7 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
             margin: '0px',
             textAlign: 'center',
             height: "100%",
-            width: "45px"
+            minWidth: "45px"
         };
 
     function over(e) {
