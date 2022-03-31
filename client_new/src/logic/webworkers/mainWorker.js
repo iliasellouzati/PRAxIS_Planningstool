@@ -85,7 +85,7 @@ export default () => {
         let filter = [];
 
         //controle 1shift/week enkel voor 4/5
-        if (employee.contracttype.trim() !== "4-5") {
+        if (employee.contracttype_id !== 5) {
             weeklyStructures.forEach((week) => {
                 let i = 0;
                 if (week.maandag !== "") {
@@ -117,7 +117,7 @@ export default () => {
         }
 
         //controle 4shift/week enkel niet voor 4/5
-        if (employee.contracttype.trim() === "4-5") {
+        if (employee.contracttype_id === 5) {
 
 
             for (let index = 0; index < weeklyStructures.length; index++) {

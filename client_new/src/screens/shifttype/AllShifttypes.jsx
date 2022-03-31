@@ -237,7 +237,7 @@ const AllShifttypes = () => {
                                       <td>{shift.beginuur ? shift.beginuur : "N.V.T."}</td>
                                       <td>{shift.einduur ? shift.einduur : "N.V.T."}</td>
                                       <td>
-                                       <ReadOnlyShift shift={shift} width="65px" />
+                                       <ReadOnlyShift shiftDay={false} shift={shift}  />
                                       </td>
                                       <td>
                                         <Link to={"/Shifttypes/" + shift.naam}>

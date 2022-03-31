@@ -193,6 +193,7 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
       let randomIndex = Math.floor(Math.random() * config.possibleWeekCombos.length);
       let randomWeekComboIndex = Math.floor(Math.random() * config.possibleWeekCombos[randomIndex].combinaties.length);
       config.comboWeek = config.possibleWeekCombos[randomIndex].combinaties[randomWeekComboIndex];
+    console.log(config);
       config.comboWeek.forEach((weekId, index) => {
         let week = config.weeklyStructures.find(x => x.id === weekId);
         dispatchWeek(config.WeekNumber, week, config.employees[index], date);

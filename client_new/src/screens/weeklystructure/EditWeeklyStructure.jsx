@@ -196,7 +196,7 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
                       {!AllShifts &&
                         verplichteShiften.map(dag =>
                           <div onClick={() => setSelectedShift(dag)} style={{ display: "inline-block", padding: "10px", margin: "10px", border: "1px dashed black" }}>
-                            <ReadOnlyShift shift={ShiftTypes.find(x => x.naam === dag)} width='65px' />
+                            <ReadOnlyShift shift={ShiftTypes.find(x => x.naam === dag)} shiftDay={false} />
                           </div>
                         )
                       }

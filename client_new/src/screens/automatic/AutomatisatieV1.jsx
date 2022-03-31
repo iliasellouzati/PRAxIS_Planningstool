@@ -76,7 +76,7 @@ const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
         employees.forEach(empl => {
             config.push({
                 "employeeId": empl.id,
-                "totalShifts": empl.contracttype.trim() === "operator" ? 14 : 11,
+                "totalShifts": empl.contracttype_id === 1 ? 14 : 11,
                 "1": {
                     "night": false,
                     "weekend": false
@@ -342,8 +342,9 @@ const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
     const fetchData = async () => {
         const employees = await axios.get('http://127.0.0.1:3001/api/employee')
             .then(response => {
-                setEmployees(response.data.filter(empl => ["operator", "4-5"].includes(empl.contracttype.trim())));
-                return response.data.filter(empl => ["operator", "4-5"].includes(empl.contracttype.trim()));
+                setEmployees(response.data.filter(empl => [1, 5].includes(empl.contracttype_id)));
+
+                return response.data.filter(empl => [1,5].includes(empl.contracttype_id));
             })
             .catch(error => setHttp500([true, error]));
 
@@ -413,12 +414,12 @@ const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
                                         {Employees.map((empl, index) =>
                                             <tr>
                                                 <td style={{ padding: "1px" }}>{empl.voornaam}</td>
-                                                <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"1"} /> : "N.V.T."}</td>
-                                                <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"2"} /> : "N.V.T."}</td>
-                                                <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"3"} /> : "N.V.T."}</td>
-                                                <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"4"} /> : "N.V.T."}</td>
-                                                {calendarMonthHelper.length > 28 && <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs index={index} config={Config} setConfig={setConfig} employeeId={empl.id} weekNumber={"5"} /> : "N.V.T."}</td>}
-                                                {calendarMonthHelper.length > 35 && <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs index={index} config={Config} setConfig={setConfig} employeeId={empl.id} weekNumber={"6"} /> : "N.V.T."}</td>}
+                                                <td style={{ padding: "1px" }}>{empl.contracttype_id === 1 ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"1"} /> : "N.V.T."}</td>
+                                                <td style={{ padding: "1px" }}>{empl.contracttype_id === 1 ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"2"} /> : "N.V.T."}</td>
+                                                <td style={{ padding: "1px" }}>{empl.contracttype_id === 1 ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"3"} /> : "N.V.T."}</td>
+                                                <td style={{ padding: "1px" }}>{empl.contracttype_id === 1 ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"4"} /> : "N.V.T."}</td>
+                                                {calendarMonthHelper.length > 28 && <td style={{ padding: "1px" }}>{empl.contracttype_id === 1 ? <WeeklyConfigs index={index} config={Config} setConfig={setConfig} employeeId={empl.id} weekNumber={"5"} /> : "N.V.T."}</td>}
+                                                {calendarMonthHelper.length > 35 && <td style={{ padding: "1px" }}>{empl.contracttype_id === 1 ? <WeeklyConfigs index={index} config={Config} setConfig={setConfig} employeeId={empl.id} weekNumber={"6"} /> : "N.V.T."}</td>}
                                                 {/* <td style={{ width: "30px" }}>
                                                                     <input type="number" id="BEGIN_UREN" value={Config[index].totalShifts} onChange={(e) => { }} />
                                                                 </td> */}

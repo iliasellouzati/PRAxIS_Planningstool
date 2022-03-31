@@ -93,43 +93,43 @@ const AllWeeklyStructures = () => {
                       <td><b>{weekstructuur.score}</b>/10</td>
                       <td>
                         {weekstructuur.maandag !== "" ?
-                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.maandag)} width="60px" />
+                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.maandag)} shiftDay={false} />
                           :
                           <i style={{ color: 'red' }} class="fas fa-times" />}
                       </td>
                       <td>
                         {weekstructuur.dinsdag !== "" ?
-                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.dinsdag)} width="60px" />
+                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.dinsdag)} shiftDay={false} />
                           :
                           <i style={{ color: 'red' }} class="fas fa-times" />}
                       </td>
                       <td>
                         {weekstructuur.woensdag !== "" ?
-                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.woensdag)} width="60px" />
+                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.woensdag)} shiftDay={false} />
                           :
                           <i style={{ color: 'red' }} class="fas fa-times" />}
                       </td>
                       <td>
                         {weekstructuur.donderdag !== "" ?
-                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.donderdag)} width="60px" />
+                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.donderdag)} shiftDay={false} />
                           :
                           <i style={{ color: 'red' }} class="fas fa-times" />}
                       </td>
                       <td>
                         {weekstructuur.vrijdag !== "" ?
-                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.vrijdag)} width="60px" />
+                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.vrijdag)} shiftDay={false} />
                           :
                           <i style={{ color: 'red' }} class="fas fa-times" />}
                       </td>
                       <td>
                         {weekstructuur.zaterdag !== "" ?
-                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.zaterdag)} width="60px" />
+                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.zaterdag)} shiftDay={false} />
                           :
                           <i style={{ color: 'red' }} class="fas fa-times" />}
                       </td>
                       <td>
                         {weekstructuur.zondag !== "" ?
-                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.zondag)} width="60px" />
+                          <ReadOnlyShift shift={Shifttypes.find(x => x.naam === weekstructuur.zondag)} shiftDay={false} />
                           :
                           <i style={{ color: 'red' }} class="fas fa-times" />}
                       </td>
