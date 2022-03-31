@@ -25,10 +25,10 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
   const [HighlightDay, setHighlightDay] = useState([false, []]);
   const [HighlightCustom, setHighlightCustom] = useState([false, []]);
   const [Employees, setEmployees] = useState([]);
+  const [Shifttypes, setShifttypes] = useState([]);
   const [ShowFinalComment, setShowFinalComment] = useState(false);
 
   const saveShiftsToDb = async () => {
-
     let calendarForDb = mapReduxCalendarToDb(calendar);
     await storeTempData(calendarForDb);
   }
@@ -48,18 +48,18 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
   }
 
 
-
-
-
-
-
   const fetchData = async () => {
+    await axios.get('http://127.0.0.1:3001/api/shifttype')
+      .then(response => setShifttypes(response.data))
+      .catch(error => setHttp400Error([true, ['foutmelding', error]]));
+
     await axios.get('http://127.0.0.1:3001/api/employee')
       .then(response => setEmployees(response.data))
       .catch(error => setHttp400Error([true, ['Foutmelding', ['Foutmelding', error]]]));
   }
 
   useEffect(() => {
+
     fetchData();
 
     if (date !== `${month}-${year}`) {
@@ -85,7 +85,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
               <div className='card-footer'>
                 <div className="row">
                   {ShowFinalComment ?
-                    <SaveCalendarConfig setShowFinalComment={setShowFinalComment} />
+                    <SaveCalendarConfig setShowSuccesModal={setShowSuccesModal} employees={Employees} shifttypes={Shifttypes} setShowFinalComment={setShowFinalComment} />
 
                     :
                     <React.Fragment>

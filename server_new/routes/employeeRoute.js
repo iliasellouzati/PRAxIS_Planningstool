@@ -189,7 +189,7 @@ router.get('/calendaremployees/:year/:month', async (req, res) => {
         inactiveEmpl.push({
 
           'employeeId': contract.werknemer_id,
-          'full_month_contract': "YES", 
+          'full_month_contract': "YES",
           'begin': null,
           'eind': null
 
@@ -200,8 +200,7 @@ router.get('/calendaremployees/:year/:month', async (req, res) => {
 
       //contract die eindigen voor start maand
       if (contract.einddatum !== null && moment(contract.einddatum, "DD/MM/YYYY").isBefore(moment(`${req.params.month}-${req.params.year}`, "MM-YYYY").startOf('month').startOf('isoWeek'), "day")) {
-        if(inactiveEmpl.some(x=>x.employeeId===contract.werknemer_id)&&
-          ["YES","PARTIAL"].includes(inactiveEmpl.find(x=>x.employeeId===contract.werknemer_id).full_month_contract)){
+        if (inactiveEmpl.some(x => x.employeeId === contract.werknemer_id) && ["YES", "PARTIAL"].includes(inactiveEmpl.find(x => x.employeeId === contract.werknemer_id).full_month_contract)) {
           return;
         }
 
@@ -209,7 +208,7 @@ router.get('/calendaremployees/:year/:month', async (req, res) => {
 
         inactiveEmpl.push({
           'employeeId': contract.werknemer_id,
-          'full_month_contract': "NO", //true voor ja, false voor partial, null voor nee 
+          'full_month_contract': "NO",
           'begin': null,
           'eind': null
         });
@@ -218,8 +217,7 @@ router.get('/calendaremployees/:year/:month', async (req, res) => {
 
       //contracten die starten na einde maand
       if (moment(contract.begindatum, "DD/MM/YYYY").isAfter(moment(`${req.params.month}-${req.params.year}`, "MM-YYYY").endOf('month').endOf('isoWeek'), "day")) {
-        if(inactiveEmpl.some(x=>x.employeeId===contract.werknemer_id)&&
-          ["YES","PARTIAL"].includes(inactiveEmpl.find(x=>x.employeeId===contract.werknemer_id).full_month_contract)){
+        if (inactiveEmpl.some(x => x.employeeId === contract.werknemer_id) && ["YES", "PARTIAL"].includes(inactiveEmpl.find(x => x.employeeId === contract.werknemer_id).full_month_contract)) {
           return;
         }
         inactiveEmpl = inactiveEmpl.filter(x => x.employeeId !== contract.werknemer_id);
@@ -238,13 +236,13 @@ router.get('/calendaremployees/:year/:month', async (req, res) => {
         moment(contract.begindatum, "DD/MM/YYYY").isBefore(moment(`${req.params.month}-${req.params.year}`, "MM-YYYY").endOf('month').endOf('isoWeek').add(1, 'day'), "day")
       ) {
 
-        
+
         inactiveEmpl = inactiveEmpl.filter(x => x.employeeId !== contract.werknemer_id);
         inactiveEmpl.push({
           'employeeId': contract.werknemer_id,
           'full_month_contract': "PARTIAL", //true voor ja, false voor partial, null voor nee 
           'begin': contract.begindatum,
-          'eind':contract.einddatum
+          'eind': contract.einddatum
         });
         return;
       }
@@ -261,7 +259,22 @@ router.get('/calendaremployees/:year/:month', async (req, res) => {
           'employeeId': contract.werknemer_id,
           'full_month_contract': "PARTIAL", //true voor ja, false voor partial, null voor nee 
           'begin': contract.begindatum,
-          'eind':contract.einddatum
+          'eind': contract.einddatum
+        });
+        return;
+      }
+
+      //contracten met startdatum voor de maand en einddatum na de maand
+      if (
+        moment(contract.begindatum, "DD/MM/YYYY").isBefore(moment(`${req.params.month}-${req.params.year}`, "MM-YYYY").startOf('month').startOf('isoWeek'), "day") &&
+        moment(contract.einddatum, "DD/MM/YYYY").isAfter(moment(`${req.params.month}-${req.params.year}`, "MM-YYYY").endOf('month').endOf('isoWeek'), "day")
+      ) {
+        inactiveEmpl = inactiveEmpl.filter(x => x.employeeId !== contract.werknemer_id);
+        inactiveEmpl.push({
+          'employeeId': contract.werknemer_id,
+          'full_month_contract': "YES",
+          'begin': null,
+          'eind': null
         });
         return;
       }

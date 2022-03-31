@@ -164,10 +164,10 @@ const AllCalendarStatusForYear = () => {
                                                                                 <th>Commentaar</th>
                                                                                 <th>Aangepaste operatoren</th>
 
-                                                                                <th style={{ color: 'green' }}>+</th>
-                                                                                <th style={{ color: 'red' }}>-</th>
-                                                                                <th style={{ color: 'orange' }}>§</th>
-                                                                                <th style={{ color: 'gray' }}>o</th>
+                                                                                <th title={'Nieuwe shiften'} style={{ color: 'green' }}>+</th>
+                                                                                <th title={'Verwijderde shiften'} style={{ color: 'red' }}>-</th>
+                                                                                <th title={'Aangepaste shiften'} style={{ color: 'orange' }}>§</th>
+                                                                                <th title={'Onveranderde shiften'} style={{ color: 'gray' }}>o</th>
                                                                                 <th>Bekijk/Aanpassen</th>
                                                                             </tr>
                                                                         </thead>
@@ -185,12 +185,12 @@ const AllCalendarStatusForYear = () => {
                                                                                         }[status.progress]
                                                                                     }
                                                                                     <td>{status.time_saved || "N.V.T."}</td>
-                                                                                    <td>{status.comment?.substring(0, 15) || "N.V.T."}</td>
+                                                                                    <td style={{ cursor:'default'}} title={status.comment|| "N.V.T."}>{status.comment?.substring(0, 15) || "N.V.T."}</td>
                                                                                     <td>{status.affected_employees || "N.V.T."}</td>
-                                                                                    {status.added_shifts ? <td style={{ color: 'green' }}>{status.added_shifts || "x"}</td> : <td colSpan={4}>N.V.T.</td>}
-                                                                                    {status.added_shifts && <td style={{ color: 'red' }}>{status.deleted_shifts || "x"}</td>}
-                                                                                    {status.added_shifts && <td style={{ color: 'orange' }}>{status.changed_shifts || "x"}</td>}
-                                                                                    {status.added_shifts && <td style={{ color: 'gray' }}>{status.same_shifts || "x"}</td>}
+                                                                                    {status.added_shifts ? <td title={'Nieuwe shiften'} style={{ color: 'green' }}>{status.added_shifts || "x"}</td> : <td colSpan={4}>N.V.T.</td>}
+                                                                                    {status.added_shifts && <td title={'Verwijderde shiften'} style={{ color: 'red' }}>{status.deleted_shifts || "x"}</td>}
+                                                                                    {status.added_shifts && <td title={'Aangepaste shiften'} style={{ color: 'orange' }}>{status.changed_shifts || "x"}</td>}
+                                                                                    {status.added_shifts && <td title={'Onveranderde shiften'} style={{ color: 'gray' }}>{status.same_shifts || "x"}</td>}
 
                                                                                     {
                                                                                         {
@@ -209,7 +209,7 @@ const AllCalendarStatusForYear = () => {
                                                                                             2:
 
                                                                                                 <td>
-                                                                                                    <Link to={`/planningen/${year}/historie/${status.month.substring(0, 2)}/${status.version}`}>
+                                                                                                    <Link to={`/historie/${year}/${status.month.substring(0, 2)}/${status.version}`}>
                                                                                                         <i className="fas fa-thin fa-glasses"></i>
                                                                                                     </Link>
 

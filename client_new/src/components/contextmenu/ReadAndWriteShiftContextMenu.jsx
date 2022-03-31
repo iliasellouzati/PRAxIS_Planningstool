@@ -119,7 +119,7 @@ const ReadAndWriteShiftContextMenu = ({ employees, setContextMenu, content }) =>
                             ID:
                         </label>
                         <p>
-                            {employees.find(x => x.id === content.employeeId).naam.substring(0, 10)}
+                            {employees.find(x => x.id === content.employeeId).voornaam}
                         </p>
                         <label>
                             DATUM:

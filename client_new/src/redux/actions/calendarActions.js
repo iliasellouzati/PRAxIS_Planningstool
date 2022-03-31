@@ -1,6 +1,6 @@
 import axios from "axios";
 import moment from 'moment';
-import {CALENDAR_REQUEST,CALENDAR_SUCCES,CALENDAR_FAIL,ADD_SHIFT,CHANGE_CALENDARSHIFT_TYPE} from '../constants/calendarConstants';
+import {CALENDAR_REQUEST,CALENDAR_SUCCES,CALENDAR_FAIL,ADD_SHIFT,CHANGE_CALENDARSHIFT_TYPE, SET_SAVED_CALENDAR} from '../constants/calendarConstants';
 import { mapShiftsFromDbToCalendar } from "../../mappers/calendar/DatabaseToReduxMapper"; 
 
 const getCalendarShifts = (datum) => async (dispatch) => {
@@ -19,6 +19,13 @@ const getCalendarShifts = (datum) => async (dispatch) => {
     }
 }
 
+const setSavedCalendar =(calendar,date)=>async (dispatch)=>{
+
+        dispatch({type:SET_SAVED_CALENDAR, datum:date , payload:calendar});
+}
+
+
+
 
 const addShift =(object) => async (dispatch)=>{
 
@@ -32,5 +39,6 @@ const changeCalenderShiftType= shiftName => async (dispatch) => {
 export {
     getCalendarShifts,
     addShift,
-    changeCalenderShiftType
+    changeCalenderShiftType,
+    setSavedCalendar
 }

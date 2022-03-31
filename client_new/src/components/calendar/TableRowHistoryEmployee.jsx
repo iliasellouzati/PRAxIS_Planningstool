@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import ReadOnlyShift from '../shift/ReadOnlyShift';
+import ReadOnlyHistoryShift from '../shift/ReadOnlyHistoryShift';
 import axios from 'axios';
 import { mapShiftsFromDbToTableRowHistory } from '../../mappers/calendar/DatabaseToReduxMapper';
 
@@ -81,7 +81,7 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes }) => {
             {!Loading && History && History.map(shiftDay =>
 
                 <td style={moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 7 ? { outline: '1px solid darkgreen', padding: "1px", width: "27px" } : { padding: "1px", width: "27px" }}>
-                    <ReadOnlyShift shift={shiftDay.shift !== "" ? shifttypes.find(x => x.naam === shiftDay.shift) : null} shiftDay={shiftDay} />
+                    <ReadOnlyHistoryShift shift={shiftDay.shift !== "" ? shifttypes.find(x => x.naam === shiftDay.shift) : null} shiftDay={shiftDay} />
                 </td>
             )}
         </React.Fragment>

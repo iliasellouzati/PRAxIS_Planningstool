@@ -339,13 +339,15 @@ const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
         setConfig(config);
 
     }
-    const fetchData = useCallback(async () => {
+    const fetchData = async () => {
         const employees = await axios.get('http://127.0.0.1:3001/api/employee')
             .then(response => {
                 setEmployees(response.data.filter(empl => ["operator", "4-5"].includes(empl.contracttype.trim())));
                 return response.data.filter(empl => ["operator", "4-5"].includes(empl.contracttype.trim()));
             })
             .catch(error => setHttp500([true, error]));
+
+            
         await axios.get('http://127.0.0.1:3001/api/weeklystructure')
             .then(response =>
                 setWeeklyStructures(response.data)
@@ -357,11 +359,11 @@ const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
         setLoading(false);
 
 
-    }, [])
+    }
 
 
     useEffect(() => {
-        fetchData().catch(console.error);
+        fetchData();
         return () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -410,7 +412,7 @@ const AutomatisatieV1 = ({ INIT_StartUpMainWorkerForAutomatisation }) => {
                                     <tbody>
                                         {Employees.map((empl, index) =>
                                             <tr>
-                                                <td style={{ padding: "1px" }}>{empl.naam.substring(0, 8)}</td>
+                                                <td style={{ padding: "1px" }}>{empl.voornaam}</td>
                                                 <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"1"} /> : "N.V.T."}</td>
                                                 <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"2"} /> : "N.V.T."}</td>
                                                 <td style={{ padding: "1px" }}>{empl.contracttype.trim() === "operator" ? <WeeklyConfigs config={Config} index={index} setConfig={setConfig} employeeId={empl.id} weekNumber={"3"} /> : "N.V.T."}</td>

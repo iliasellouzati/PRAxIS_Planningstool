@@ -66,7 +66,7 @@ function App() {
       <Header />
       <Sidebar />
       
-      <Route path="/planningen/:year/historie/:month/:version" >
+      <Route path="/historie/:year/:month/:version" >
         <ReadOnlyCalendarScreen setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal}  />
       </Route>
       <Route path="/planningen/:year/:month/:version" >

@@ -61,7 +61,7 @@ const ShiftSelector = () => {
 
 
                             <button type="button"
-                                style={{ marginRight: "5px", fontSize:'10px' }}
+                                style={{ marginRight: "2px", fontSize:'10px' }}
                                 class="btn btn-primary btn-sm daterange"
                                 onClick={() => {
                                     let hulpArr = [...ActiveCategieres];
@@ -81,7 +81,7 @@ const ShiftSelector = () => {
                         <button
                             type="button"
                             class="btn btn-primary btn-sm daterange"
-                            style={{ fontSize:'10px' }}
+                            style={{ fontSize:'10px', margin:"0px" }}
                             onClick={() => setInactive(!Inactive)}>
                             <span style={Inactive ? { fontWeight: 'bold', color: 'red' } : {}}> inactieve </span>
                         </button>

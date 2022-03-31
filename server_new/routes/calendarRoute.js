@@ -231,29 +231,32 @@ router.post("/global/year/:year/calendarmonth/:month", async (req, res) => {
                 });
             }
         });
-        
+
 
         storedShiften.forEach(storedShift => {
             if (!(
-                    newShifts.some(e =>moment(e.datum,"DD-MM-YYYY").format("YYYY-MM-DD").toString() == storedShift.datum && e.werknemers_id === storedShift.werknemers_id) ||
-                    sameShifts.some(e => moment(e.datum,"DD-MM-YYYY").format("YYYY-MM-DD").toString()  == storedShift.datum && e.werknemers_id === storedShift.werknemers_id) ||
-                    updatedShifts.some(e => moment(e.datum,"DD-MM-YYYY").format("YYYY-MM-DD").toString()  == storedShift.datum && e.werknemers_id === storedShift.werknemers_id)
+                    newShifts.some(e => moment(e.datum, "DD-MM-YYYY").format("YYYY-MM-DD").toString() == storedShift.datum && e.werknemers_id === storedShift.werknemers_id) ||
+                    sameShifts.some(e => moment(e.datum, "DD-MM-YYYY").format("YYYY-MM-DD").toString() == storedShift.datum && e.werknemers_id === storedShift.werknemers_id) ||
+                    updatedShifts.some(e => moment(e.datum, "DD-MM-YYYY").format("YYYY-MM-DD").toString() == storedShift.datum && e.werknemers_id === storedShift.werknemers_id)
                 )) {
-                deletedShifts.push({...storedShift,'datum':moment(storedShift.datum, "YYYY-MM-DD").format("DD-MM-YYYY").toString() });
+                deletedShifts.push({
+                    ...storedShift,
+                    'datum': moment(storedShift.datum, "YYYY-MM-DD").format("DD-MM-YYYY").toString()
+                });
             }
         })
-    
-        if (newShifts.length!==0) {
+
+        if (newShifts.length !== 0) {
             await Calendar_DB.saveNewShifts(newShifts);
         }
-        if (updatedShifts.length!==0) {
+        if (updatedShifts.length !== 0) {
             await Calendar_DB.saveUpdatedShifts(updatedShifts);
         }
-        if (deletedShifts.length!==0) {
+        if (deletedShifts.length !== 0) {
             await Calendar_DB.saveDeletedShifts(deletedShifts)
         }
 
-        res.send([`SAME: ${sameShifts.length}`,`NEW: ${newShifts.length}`,`UPDATED: ${updatedShifts.length}`,`DELETED: ${deletedShifts.length}`]);
+        res.send([`SAME: ${sameShifts.length}`, `NEW: ${newShifts.length}`, `UPDATED: ${updatedShifts.length}`, `DELETED: ${deletedShifts.length}`]);
 
     } catch (e) {
         res.status(500).send(`POST on ${hostUrl}/global/year/${req.params.year}/calendarmonth/${req.params.month} failed with error "${e.message}"`);
@@ -261,6 +264,27 @@ router.post("/global/year/:year/calendarmonth/:month", async (req, res) => {
     }
 
 })
+router.post("/global/year/:year/calendarmonth/:month/version/:version", async (req, res) => {
+    try {
 
+        let result = await Calendar_DB.saveShiftsToSavedCalendar(req.body.calendarForDb);
+        res.status(200).send(result);
+        
+    } catch (e) {
+        console.log(e);
+        res.status(500).send(e);
+    }
+})
 
+router.get("/global/year/:year/calendarmonth/:month/version/:version", async (req, res) => {
+    try {
+
+        let result = await Calendar_DB.getSavedCalendarShifts(`${req.params.month}-${req.params.year}_V${req.params.version}`);
+        res.status(200).send(result);
+        
+    } catch (e) {
+        console.log(e);
+        res.status(500).send(e);
+    }
+})
 export default router;

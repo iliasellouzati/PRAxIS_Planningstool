@@ -66,6 +66,29 @@ async function updateProgressForIndividualCalendarStatus(monthYear, version,time
         sql.close();
         throw new Error(error.message);
     }
+};
+
+async function finalizeIndividualCalendarStatus(monthYear,version,progress,comment,affected_employees,added_shifts,same_shifts,deleted_shifts,changed_shifts,time_saved){
+    try {
+
+        let pool = await sql.connect(config);
+        let status = await pool.request()
+            .input('month', sql.NVarChar(10), monthYear)
+            .input('version', sql.Int, version)
+            .input('progress', sql.Int, progress)
+            .input('comment', sql.VarChar(1500), comment)
+            .input('affected_employees', sql.Int, affected_employees)
+            .input('added_shifts', sql.Int, added_shifts)
+            .input('same_shifts', sql.Int, same_shifts)
+            .input('deleted_shifts', sql.Int, deleted_shifts)
+            .input('changed_shifts', sql.Int, changed_shifts)
+            .input('time_saved', sql.VarChar(50), time_saved)
+            .execute('finalizeIndividualCalendarStatus');
+        return status.rowsAffected[0];
+    } catch (error) {
+        sql.close();
+        throw new Error(error.message);
+    }
 }
 
 async function getLatestCalendarStatusForIndividualMonth(monthYear) {
@@ -86,5 +109,6 @@ export {
     addNewCalendarStatus,
     getIndividualCalendarStatus,
     updateProgressForIndividualCalendarStatus,
-    getLatestCalendarStatusForIndividualMonth
+    getLatestCalendarStatusForIndividualMonth,
+    finalizeIndividualCalendarStatus
 };

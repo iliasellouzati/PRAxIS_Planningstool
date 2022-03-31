@@ -79,6 +79,60 @@ const mapShiftsFromDbToAutomatisation = (dateString, calendarFromDb, Employees) 
     return returnCalendar;
 }
 
+const mapSavedShiftsFromDbToHistory = (savedShifts)=>{
+
+let shifttypes=[];
+let employees=[];
+
+
+let returnCalendar=[];
+
+savedShifts.forEach(shift=>{
+
+if(!employees.some(x=>x.id===shift.werknemer_id)){
+    employees.push({
+        'id':shift.werknemer_id,
+        'voornaam':shift.werknemer_voornaam,
+        'familienaam':shift.werknemer_familienaam
+      });
+      returnCalendar.push({
+        "employeeId":shift.werknemer_id,
+        "calendar": getCalendarMonth_ArrayWithMoment(shift.calendar_versie.substring(0,7))
+    })
+}
+if(!shifttypes.some(x=>x.naam===shift.shift_shifttypes_naam.trim())){
+    shifttypes.push({
+        "naam":shift.shift_shifttypes_naam.trim(),
+        "beginuur": shift.shifttypes_beginuur,
+        "einduur": shift.shifttypes_einduur,
+        "kleurcode": shift.shifttypes_kleurcode,
+        "verplicht": shift.shifttypes_verplicht,
+        "thuiswerk": shift.shifttypes_thuiswerk,
+        "aanpasbare_uren": shift.shifttypes_aanpasbare_uren,
+        "categorie": shift.shifttypes_categorie,
+        "tekstkleurcode": shift.shifttypes_tekstkleurcode,
+        "border": shift.shifttypes_border,
+        "standaardtekst": shift.shifttypes_standaardtekst,
+        "standby": shift.shifttypes_standby
+    })
+
+}
+
+let index1 = returnCalendar.findIndex(x=>x.employeeId===shift.werknemer_id);
+let index2 = returnCalendar[index1].calendar.findIndex(x=>moment(x.day, "DD-MM-YYYY").isSame(moment(shift.shift_datum, "DD-MM-YYYY"), 'day'));
+returnCalendar[index1].calendar[index2].shift = shift.shift_shifttypes_naam;
+returnCalendar[index1].calendar[index2].startmoment = shift.shift_beginuur||null;
+returnCalendar[index1].calendar[index2].endmoment = shift.shift_einduur||null;
+})
+
+return({
+    'calendar': returnCalendar,
+    'shifttypes': shifttypes,
+    'employees': employees
+})
+}
+
+
 const getCalendarMonth_ArrayWithMoment = dateString => {
     let calendar = [];
     const date = moment(dateString, "MM-YYYY");
@@ -121,5 +175,6 @@ const getCustom_ArrayWithMoment = dateString => {
 export {
     mapShiftsFromDbToCalendar,
     mapShiftsFromDbToAutomatisation,
-    mapShiftsFromDbToTableRowHistory
+    mapShiftsFromDbToTableRowHistory,
+    mapSavedShiftsFromDbToHistory
 }

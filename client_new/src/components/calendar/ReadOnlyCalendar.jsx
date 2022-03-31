@@ -6,6 +6,7 @@ import LoadingSpinner from '../../components/general/LoadingSpinner';
 import Http4XXAnd5XXError from '../../components/general/Http4XXAnd5XXError';
 import { getCalendarMoments_ArrayWithMoments } from './helpers';
 import ReadOnlyShift from '../shift/ReadOnlyShift';
+import moment from 'moment';
 
 const ReadOnlyCalendar = () => {
 
@@ -55,18 +56,18 @@ const ReadOnlyCalendar = () => {
                     <table className="table table-bordered table-hover">
 
                         {/* BOVENSTE INFORMATIEVE TABELRIJ MET DAGEN */}
-                        <thead>
+                        <thead  style={{ textAlign: 'center' }}>
                             <tr>
                                 <th rowSpan="2" style={{ padding: "1px", width: "10%" }}>Werknemers</th>
                                 {calendarMonthHelper.map((element, index) =>
-                                    <th key={index} style={element === "Z" ? { border: '2px solid green', padding: "1px", width: "100%" } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
+                                    <th key={index} style={element === "Z" ? { outline: '1px solid green', padding: "1px", width: "100%" } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
                                 )}
 
                             </tr>
                             <tr>
                                 {calendarMonthHelper.map((day, index) =>
 
-                                    <th key={index} style={day.isoWeekday() === 6 || day.isoWeekday() === 7 ? { border: '2px solid darkgreen', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}   >
+                                    <th key={index} style={day.isoWeekday() === 6 || day.isoWeekday() === 7 ? { outline: '1px solid darkgreen', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}   >
                                         {day.format("DD").toString()}
                                     </th>
                                 )}
@@ -79,11 +80,12 @@ const ReadOnlyCalendar = () => {
                             {calendar.map(individueleCalendar =>
                                 <tr>
                                     <td style={{ padding: "1px", width: { cssWidthDay } }}    >
-                                        {Employees.find(empl => empl.id === individueleCalendar.employeeId)?.naam.substring(0,10)}
+                                        {Employees.find(empl => empl.id === individueleCalendar.employeeId)?.voornaam}
                                     </td>
                                     {individueleCalendar.calendar.map(shiftDay =>
-                                        <td style={{ padding: "0px", maxWidth: { cssWidthDay }, height: "100%", margin: "0px" }}>
-                                            <ReadOnlyShift shift={shiftDay.shift !== "" ? ShiftTypes.find(x => x.naam === shiftDay.shift) : null} width={cssWidthDay} />
+                                        <td style={(moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 7) ? { outline: '2px solid darkgreen', padding: "0px", margin: "0px" } :
+                                        { padding: "0px", margin: "0px" }}>
+                                            <ReadOnlyShift shift={shiftDay.shift !== "" ? ShiftTypes.find(x => x.naam === shiftDay.shift) : null} shiftDay={shiftDay} />
                                         </td>
                                     )}
                                 </tr>

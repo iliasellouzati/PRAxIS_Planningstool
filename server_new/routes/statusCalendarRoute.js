@@ -7,10 +7,8 @@ const hostUrl = "http://localhost:3001/api/statuscalendar";
 
 router.get("/:year", async (req, res) => {
     try {
-
         if (isNaN(req.params.year) || req.params.year < 2015 || req.params.year > 2099)
             return res.status(400).send(`GET on ${hostUrl}/:year with year "${req.params.year}" failed  because year is not valid`);
-
         const statusCalendars = await Statuscalendars_DB.getAllStatusOfCalendarsByYear(req.params.year);
         statusCalendars.length ? res.status(200).send(statusCalendars) : res.status(204).send();
 
@@ -18,6 +16,7 @@ router.get("/:year", async (req, res) => {
         res.status(500).send(`GET on ${hostUrl}/:year  with year:"${req.params.year}" failed with error "${e.message}"`);
     }
 });
+
 router.get("/:year/:month", async (req, res) => {
     try {
 
@@ -27,12 +26,13 @@ router.get("/:year/:month", async (req, res) => {
             return res.status(400).send(`GET on ${hostUrl}/:year/:month with month "${req.params.year}" failed  because month is not valid`);
 
         const status = await Statuscalendars_DB.getLatestCalendarStatusForIndividualMonth(`${req.params.month}-${req.params.year}`);
-        status.length ? res.status(200).send(status) : res.status(400).send(`Calender Status does not exist yet for ${req.params.month}-${req.params.year}`);
+        status.length ? res.status(200).send(status) : res.status(204).send();
 
     } catch (e) {
         res.status(500).send(`GET on ${hostUrl}/:year/:month  year "${req.params.year}" and month "${req.params.month} failed with error "${e.message}"`);
     }
 });
+
 router.get("/:year/:month/:version", async (req, res) => {
     try {
 
@@ -51,7 +51,6 @@ router.get("/:year/:month/:version", async (req, res) => {
         res.status(500).send(`GET on ${hostUrl}/:year/:month/:version  year "${req.params.year}" and month "${req.params.month} and version "${req.params.version} failed with error "${e.message}"`);
     }
 });
-
 
 router.post("/:year/:month", async (req, res) => {
     try {
@@ -95,6 +94,32 @@ router.post("/:year/:month/:version", async (req, res) => {
 
     }
 });
+
+router.put("/:year/:month/:version", async (req, res) => {
+    try {
+
+        
+        const rowsAffected = await Statuscalendars_DB.finalizeIndividualCalendarStatus(
+            `${req.params.month}-${req.params.year}`,
+            req.params.version,
+            req.body.progress,
+            req.body.comment,
+            req.body.affected_employees,
+            req.body.added_shifts,
+            req.body.same_shifts,
+            req.body.deleted_shifts,
+            req.body.changed_shifts,
+            req.body.timestamp
+        );
+        rowsAffected ? res.status(204).send() : res.status(404).send(`Version ${req.params.version} was not updated for ${req.params.month}-${req.params.year}`);
+
+    } catch (e) {
+        
+
+        res.status(500).send(`PUT on ${hostUrl}/:year/:month/:version  year "${req.params.year}" and month "${req.params.month} and version "${req.params.version} failed with error "${e.message}"`);
+
+    }
+})
 
 
 

@@ -7,10 +7,10 @@ const MinimumOperators = ({
     let hulpArrMetDeDagen = [];
 
     for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
-        let minimum = 6;
+        let minimum = 4;
         let counter = 0;
         if ((calendarMonthHelper[individualDayLooper].isoWeekday() === 6 || calendarMonthHelper[individualDayLooper].isoWeekday() === 7)) {
-            minimum = 5;
+            minimum = 3;
         }
 
         for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {

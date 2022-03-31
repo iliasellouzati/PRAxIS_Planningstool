@@ -4,7 +4,8 @@ import {
     CALENDAR_SUCCES,
     CALENDAR_FAIL,
     ADD_SHIFT,
-    CHANGE_CALENDARSHIFT_TYPE
+    CHANGE_CALENDARSHIFT_TYPE,
+    SET_SAVED_CALENDAR
 } from '../constants/calendarConstants';
 
 function currentCalendarReducer(state = {
@@ -17,7 +18,7 @@ function currentCalendarReducer(state = {
 
         case CALENDAR_REQUEST:
             return {
-                ...state, loading: true, datum: action.datum
+                ...state, loading: true, date: action.datum
             };
 
         case CALENDAR_SUCCES:
@@ -28,6 +29,10 @@ function currentCalendarReducer(state = {
         case CALENDAR_FAIL:
             return {
                 loading: false, error: action.payload
+            };
+        case SET_SAVED_CALENDAR:
+            return{
+                ...state, date: action.datum, calendar: action.payload
             };
 
         case ADD_SHIFT:
