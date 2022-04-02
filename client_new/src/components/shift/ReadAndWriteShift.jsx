@@ -56,6 +56,7 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
         if (shiftDay.shift === "") {
             e.target.style.outline = "";
         }
+        
     }
 
     function roundToTwo(num) {    

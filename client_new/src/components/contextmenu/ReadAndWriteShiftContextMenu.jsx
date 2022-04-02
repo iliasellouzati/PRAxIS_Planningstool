@@ -41,8 +41,8 @@ const ReadAndWriteShiftContextMenu = ({ employees, setContextMenu, content }) =>
             case '1907':
                 shift = content.shifttypes.find(x => x.naam === content.shiftDay.shift);
                 setShift(shift);
-                setBegin(shift.beginuur);
-                setEnd(shift.einduur);
+                setBegin(content.shiftDay.startmoment|| shift.beginuur);
+                setEnd(content.shiftDay.endmoment||shift.einduur);
                 setOperatorShift(true);
 
                 break;

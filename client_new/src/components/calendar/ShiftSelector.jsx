@@ -104,7 +104,7 @@ const ShiftSelector = () => {
 
                                         <tr style={shift.naam === currentShift?{backgroundColor:'lightgray', border:'2px solid black'}:{}}>
                                             <td style={{ padding: "1px" }}>{shift.naam}</td>
-                                            <td style={{width:"70px", margin:'0px', padding:'1px' }} ><ReadOnlyShift shift={shift}  /></td>
+                                            <td style={{width:"70px", margin:'0px', padding:'1px' }} ><ReadOnlyShift shift={shift}  shiftDay={false}/></td>
                                             {/* <td style={{ padding: "1px" }}><div style={{ backgroundColor: shift.kleurcode, height: '30px', width: "65px", border: '1px solid black' }}></div></td> */}
                                             <td style={{ padding: "1px" }}>
                                                 <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.naam))}><i className={shift.naam === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>

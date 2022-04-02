@@ -6,7 +6,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { getCalendarMoments_ArrayWithMoments } from './helpers';
 import { mapReduxCalendarToSavedCalendarInDb } from '../../mappers/calendar/ReduxToDatabaseMapper'
 
-const SaveCalendarConfig = ({setShowSuccesModal, employees, shifttypes, setShowFinalComment }) => {
+const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShowFinalComment }) => {
 
     let { year, month, version } = useParams();
 
@@ -28,10 +28,21 @@ const SaveCalendarConfig = ({setShowSuccesModal, employees, shifttypes, setShowF
         const { data } = await axios.get(`http://localhost:3001/api/statuscalendar/${moment(`${month}-${year}`, "MM-YYYY").subtract(1, "month").format("YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").subtract(1, "month").format("MM")}`);
         if (data) {
             setLastMonth(data[0]);
+            if (data[0].progress === 2) {
+                checkDifferendeWithLastSavedCalendar(data[0].version);
+            }
             setDisabled(Disabled => Disabled + 1);
         } else {
             setLastMonth(false);
         }
+    }
+    const checkDifferendeWithLastSavedCalendar = async (lastVersion) => {
+        let { data } = await axios.get(`http://localhost:3001/api/calendar/global/year/${moment(`${month}-${year}`, "MM-YYYY").subtract(1, "month").format("YYYY")}/calendarmonth/${moment(`${month}-${year}`, "MM-YYYY").subtract(1, "month").format("MM")}/version/${lastVersion}`);
+        const beginDatumEersteWeek = moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'day');
+        const eindDatumEersteWeek = moment(`${month}-${year}`, "MM-YYYY").startOf('month').endOf('isoWeek').add(1, 'day');
+
+        data = data.filter(x => moment(x.shift_datum, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek))
+        const aantalShifts = data.length;
     }
 
     const postNewLastCalenderStatusIn = async () => {
@@ -45,17 +56,6 @@ const SaveCalendarConfig = ({setShowSuccesModal, employees, shifttypes, setShowF
             .then(() => { getlastCalendarStatusFromDB(); })
             .catch(error => console.log(error));
     }
-
-
-
-    const [ShowNextMonth, setShowNextMonth] = useState(true);
-    const [NextMonth, setNextMonth] = useState([]);
-    const [ShiftsInNextMonth, setShiftsInNextMonth] = useState(0);
-
-
-
-    const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
-
     const calculateShiftsInLastMonth = () => {
         const LastDayOflastMonth = moment(`${month}-${year}`, "MM-YYYY").subtract(1, "month").endOf('month').endOf('isoWeek').add(1, 'day');
         let counter = 0;
@@ -67,9 +67,52 @@ const SaveCalendarConfig = ({setShowSuccesModal, employees, shifttypes, setShowF
         setShiftsInLastMonth(counter);
     }
 
+
+    const [ShowNextMonth, setShowNextMonth] = useState(true);
+    const [NextMonth, setNextMonth] = useState([]);
+    const [ShiftsInNextMonth, setShiftsInNextMonth] = useState(0);
+
+
+
+    const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
+
+
+
     const getNextCalendarStatusFromDB = async () => {
+        const { data } = await axios.get(`http://localhost:3001/api/statuscalendar/${moment(`${month}-${year}`, "MM-YYYY").add(1, "month").format("YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").add(1, "month").format("MM")}`);
+        if (data) {
+            setNextMonth(data[0]);
+            setDisabled(Disabled => Disabled + 1);
+        } else {
+            setNextMonth(false);
+        }
 
     }
+
+    const postNewNextCalenderStatusIn = async () => {
+        await axios.post(
+            `http://127.0.0.1:3001/api/statuscalendar/${moment(`${month}-${year}`, "MM-YYYY").add(1, "month").format("YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").add(1, "month").format("MM")}`,
+            {
+                "timestamp": moment().format("DD/MM/YYYY HH:MM"),
+                "version": 1,
+                'progress': 1
+            })
+            .then(() => { getNextCalendarStatusFromDB(); })
+            .catch(error => console.log(error));
+    }
+    const calculateShiftsInNextMonth = () => {
+        const LastDayOflastMonth = moment(`${month}-${year}`, "MM-YYYY").add(1, "month").startOf('month').startOf('isoWeek').subtract(1, 'day');
+        let counter = 0;
+
+        calendar.forEach(indivCal => indivCal.calendar.forEach(shiftDay => {
+            if (shiftDay.shift !== '' && moment(shiftDay.day, "DD-MM-YYYY").isAfter(LastDayOflastMonth, 'day'))
+                counter++;
+        }))
+        setShiftsInNextMonth(counter);
+    }
+
+
+
 
     const saveCalendarInDb = async () => {
 
@@ -96,8 +139,8 @@ const SaveCalendarConfig = ({setShowSuccesModal, employees, shifttypes, setShowF
                 'deleted_shifts': 0,
                 'changed_shifts': 0,
                 'timestamp': moment().format("DD/MM/YYYY HH:MM")
-            }).then(()=>{
-                setShowSuccesModal([true,['Opgeslagen',`ID: ${month}-${year}_V${version}`,`Planning ${month}-${year}_V${version} met ${result} nieuwe shiften werd opgeslagen! `]]);
+            }).then(() => {
+                setShowSuccesModal([true, ['Opgeslagen', `ID: ${month}-${year}_V${version}`, `Planning ${month}-${year}_V${version} met ${result} nieuwe shiften werd opgeslagen! `]]);
                 history.push(`/planningen/${year}`);
             })
         }
@@ -119,6 +162,8 @@ const SaveCalendarConfig = ({setShowSuccesModal, employees, shifttypes, setShowF
             setShowNextMonth(false);
             setDisabled(Disabled => Disabled + 1);
         } else {
+            getNextCalendarStatusFromDB();
+            calculateShiftsInNextMonth();
 
         }
     }, [])
@@ -143,7 +188,11 @@ const SaveCalendarConfig = ({setShowSuccesModal, employees, shifttypes, setShowF
                                     <span style={{ color: 'red' }}>GEEN PLANNING</span>}</p>
                                 {(!LastMonth || LastMonth.progress !== 1) ?
                                     <React.Fragment>
-                                        <p style={{ margin: "0px" }}> Overlappende shifts: <span style={{ color: 'red' }}>{ShiftsInLastMonth}</span> </p>
+                                        {LastMonth.progress === 0 ?
+                                            <p style={{ margin: "0px" }}> Overlappende shifts: <span style={{ color: 'red' }}>{ShiftsInLastMonth}</span> </p>
+                                            :
+                                            <p style={{ margin: "0px" }}>Aangepaste shifts t.o.v. {`${LastMonth.month}_V${LastMonth.version}`}: <span style={{ color: 'red' }}>{ShiftsInLastMonth}</span> </p>
+                                        }
                                         <span style={{ alignItems: 'baseline' }} > Kalender aanmaken :
                                             <button type="button" class="btn  btn-warning btn-xs" onClick={() => { postNewLastCalenderStatusIn() }} style={{ width: '100px', marginLeft: '10px' }}> {moment(`${month}-${year}`, "MM-YYYY").subtract(1, "month").format("MM-YYYY")}_V1</button>
                                         </span>
@@ -157,7 +206,25 @@ const SaveCalendarConfig = ({setShowSuccesModal, employees, shifttypes, setShowF
                         {`Voor maand ${moment(`${month}-${year}`, 'MM-YYYY').add(1, 'month').format("MM-YYYY")}`}
                     </div>
                     <div className="card-body" style={{ textAlign: 'center' }}>
-                        {!ShowNextMonth ? <p>N.V.T.</p> : <p>Not Implemented yet</p>}
+                        {!ShowNextMonth ? <p>N.V.T.</p> :
+                            <React.Fragment>
+                                <p style={{ margin: "0px" }} > Huidige staat: {NextMonth ?
+                                    ({
+                                        undefined: <span className="badge bg-primary" style={{ marginLeft: "10px" }}>leeg</span>,
+                                        0: <span className="badge bg-primary" style={{ marginLeft: "10px" }}>leeg</span>,
+                                        1: <span className="badge bg-warning" style={{ marginLeft: "10px" }}>bezig</span>,
+                                        2: <span className="badge bg-success" style={{ marginLeft: "10px" }}>klaar</span>
+                                    }[NextMonth.progress]) :
+                                    <span style={{ color: 'red' }}>GEEN PLANNING</span>}</p>
+                                {(!NextMonth || NextMonth.progress !== 1) ?
+                                    <React.Fragment>
+                                        <p style={{ margin: "0px" }}> Overlappende shifts: <span style={{ color: 'red' }}>{ShiftsInNextMonth}</span> </p>
+                                        <span style={{ alignItems: 'baseline' }} > Kalender aanmaken :
+                                            <button type="button" class="btn  btn-warning btn-xs" onClick={() => { postNewNextCalenderStatusIn() }} style={{ width: '100px', marginLeft: '10px' }}> {moment(`${month}-${year}`, "MM-YYYY").add(1, "month").format("MM-YYYY")}_V1</button>
+                                        </span>
+                                    </React.Fragment> :
+                                    <p>Geen actie nodig</p>}
+                            </React.Fragment>}
                     </div>
                 </div>
             </div>

@@ -24,6 +24,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
     const [ShowExtraInforEmployees, setShowExtraInforEmployees] = useState([])
     const [ShiftTypes, setShiftTypes] = useState([]);
 
+
     const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
     const cssWidthDay = (90 / (calendarMonthHelper.length)) + "%";
 
@@ -57,7 +58,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
             {Loading ? <LoadingSpinner /> : Http500[0] ? <Http4XXAnd5XXError error={Http500[1]} setHttp4XXAnd5XX={setHttp500} /> : (
                 <React.Fragment>
                     {ContextMenu[0] && <ReadAndWriteShiftContextMenu employees={Employees} setContextMenu={setContextMenu} content={ContextMenu[1]} />}
-                    <table className="table table-bordered table-hover">
+                    <table className="table table-bordered table-hover ">
 
                         {/* BOVENSTE INFORMATIEVE TABELRIJ MET DAGEN */}
                         <thead style={{ textAlign: 'center' }}>
@@ -117,7 +118,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                                         ? { outline: "2px solid red", padding: "0px", margin: "0px" }
                                                         : (moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 7) ? { outline: '1px solid darkgreen', padding: "0px", margin: "0px" } :
                                                             { padding: "0px", margin: "0px" }}>
-                                                <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
+                                                <ReadAndWriteShift  setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
                                             </td>
                                         )}
                                     </tr>
