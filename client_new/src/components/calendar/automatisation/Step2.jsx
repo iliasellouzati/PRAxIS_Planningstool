@@ -1,22 +1,63 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getCalendarMoments_ArrayWithMoments } from '../helpers'
 
 const Step2 = ({ setStep }) => {
     let { year, month } = useParams();
 
+    const currentCalendar = useSelector((state) => state.currentCalendar);
+    const { calendar } = currentCalendar;
+
     const hulpKal = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
 
     const [Weeks, setWeeks] = useState([]);
+    const [MissingShifts, setMissingShifts] = useState([]);
     const [SelectedWeeks, setSelectedWeeks] = useState([]);
 
-    useEffect(() => {
+    const checkOntbrekendeShiften = () => {
 
-            for (let index = 0; index < hulpKal.length; index += 7) {
-                setWeeks(Weeks => [...Weeks, hulpKal[index]]);
+        let verplichteShiften = ['0618', '0719', '1806', '1907']
+        let hulpCalenderMetOntbrekendeShiften = [];
+
+        for (let index = 0; index < hulpKal.length; index += 7) {
+            hulpCalenderMetOntbrekendeShiften.push(Array(7).fill(0).map(() => verplichteShiften));
         }
 
+        calendar.forEach(empl => {
+            empl.calendar.forEach((shiftDay, index) => {
+
+                if (verplichteShiften.includes(shiftDay.shift)) {
+                    let hulpVal = hulpCalenderMetOntbrekendeShiften[Math.floor(index / 7)][index % 7];
+                    hulpVal = hulpVal.filter(x => x !== shiftDay.shift);
+                    hulpCalenderMetOntbrekendeShiften[Math.floor(index / 7)][index % 7] = hulpVal;
+                }
+            })
+        })
+        let missingShifts = [];
+        for (let index = 0; index < (hulpKal.length / 7); index++) {
+
+            let hulpValOntbrekendeShiften = hulpCalenderMetOntbrekendeShiften[index][0].length + hulpCalenderMetOntbrekendeShiften[index][1].length +
+                hulpCalenderMetOntbrekendeShiften[index][2].length + hulpCalenderMetOntbrekendeShiften[index][3].length +
+                hulpCalenderMetOntbrekendeShiften[index][4].length + hulpCalenderMetOntbrekendeShiften[index][5].length +
+                hulpCalenderMetOntbrekendeShiften[index][6].length;
+            missingShifts.push(hulpValOntbrekendeShiften);
+           ;
+
+        }
+        setMissingShifts(missingShifts);
+
+    }
+    useEffect(() => {
+
+        for (let index = 0; index < hulpKal.length; index += 7) {
+            setWeeks(Weeks => [...Weeks, hulpKal[index]]);
+        }
+        checkOntbrekendeShiften();
+
     }, [])
+
+
 
 
     return (
@@ -54,7 +95,7 @@ const Step2 = ({ setStep }) => {
                                     <td>{index + 1}</td>
                                     <td>{week.format("DD-MM-YYYY")}</td>
                                     <td>{week.clone().endOf('isoWeek').format("DD-MM-YYYY")}</td>
-                                    <td>0</td>
+                                    <td>{MissingShifts[index]}</td>
                                     <td>0</td>
 
                                 </tr>
@@ -70,7 +111,7 @@ const Step2 = ({ setStep }) => {
                         Overzicht:
                     </div>
                     <div className="card-body">
-                    <p>Aantal geselecteerde weken: <b>{SelectedWeeks.length}</b></p>
+                        <p>Aantal geselecteerde weken: <b>{SelectedWeeks.length}</b></p>
 
 
                         <div className="d-flex" style={{ justifyContent: 'space-around' }}>
