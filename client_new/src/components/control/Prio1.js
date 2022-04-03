@@ -15,7 +15,7 @@ const StandbyControle = ({calendar,calendarMonthHelper,shifttypes})  =>{
         for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
 
             let shift = calendar[employeeLooper].calendar[individualDayLooper].shift;
-            if(shift!=="" &&  shifttypes.find(s => s.naam === shift)?.categorie.trim() === "standby"){
+            if(shift!==false&&shift!=="" &&  shifttypes.find(s => s.naam === shift)?.categorie.trim() === "standby"){
                 hulpArrMetDeDagen.pop();
                 break;
             }

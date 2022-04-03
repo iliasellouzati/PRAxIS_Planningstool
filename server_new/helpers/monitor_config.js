@@ -19,7 +19,7 @@ export default {
     healthChecks: [{
         protocol: 'http',
         host: 'localhost',
-        path: '/api/employee/1',
+        path: '/api/employee/',
         port: '3001'
     }]
 }

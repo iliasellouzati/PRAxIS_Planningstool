@@ -23,7 +23,7 @@ const CoopmanShiftControle = ({
         for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
 
             let shift = calendar[employeeLooper].calendar[individualDayLooper].shift;
-            if (shift !== "" && shifttypes.find(s => s.naam === shift)?.categorie.trim() === "coopman") {
+            if (shift!==false&&shift !== "" && shifttypes.find(s => s.naam === shift)?.categorie.trim() === "coopman") {
                 hulpArrMetDeDagen.pop();
                 break;
             }
@@ -60,7 +60,7 @@ const OverurenWeekControle = ({
             let week = [shiftNameMa, shiftNameDi, shiftNameWo, shiftNameDo, shiftNameVr, shiftNameZa];
 
             week.forEach(shiftName => {
-                if (shiftName !== "") {
+                if (shiftName!==false&&shiftName !== "") {
                     let shift = shifttypes.find(x => x.naam === shiftName);
                     let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                         moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
@@ -69,7 +69,7 @@ const OverurenWeekControle = ({
                 }
             })
 
-            if (shiftNameZo !== "") {
+            if (shiftNameZo!==false&&shiftNameZo !== "") {
                 let shift = shifttypes.find(x => x.naam === shiftNameZo);
                 let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                     moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
@@ -111,7 +111,7 @@ const OverurenMaandControle = ({
             if (moment(calendar[employeeLooper].calendar[individualDayLooper].day, 'DD-MM-YYYY').isSame(currentMonth, 'month')) {
 
                 let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
-                if (shiftName === '') {
+                if (shiftName === '' || shiftName===false) {
                     continue;
                 }
 

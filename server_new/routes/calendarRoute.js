@@ -276,6 +276,7 @@ router.post("/global/year/:year/calendarmonth/:month/version/:version", async (r
     }
 })
 
+
 router.get("/global/year/:year/calendarmonth/:month/version/:version", async (req, res) => {
     try {
 

@@ -12,6 +12,7 @@ import axios from 'axios';
 import { mapReduxCalendarToDb } from '../../mappers/calendar/ReduxToDatabaseMapper';
 import moment from 'moment';
 import SaveCalendarConfig from '../../components/calendar/SaveCalendarConfig';
+import Automatisation from '../../components/calendar/automatisation/Automatisation';
 
 const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) => {
 
@@ -27,6 +28,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
   const [Employees, setEmployees] = useState([]);
   const [Shifttypes, setShifttypes] = useState([]);
   const [ShowFinalComment, setShowFinalComment] = useState(false);
+  const [ShowAutomatisation, setShowAutomatisation] = useState(true);
 
   const saveShiftsToDb = async () => {
     let calendarForDb = mapReduxCalendarToDb(calendar);
@@ -87,7 +89,10 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
                   {ShowFinalComment ?
                     <SaveCalendarConfig setShowSuccesModal={setShowSuccesModal} employees={Employees} shifttypes={Shifttypes} setShowFinalComment={setShowFinalComment} />
 
+                    :ShowAutomatisation?
+                    <Automatisation setShowAutomatisation={setShowAutomatisation}/>
                     :
+                    
                     <React.Fragment>
                       <div className="col-4">
                         <ShiftSelector />
@@ -132,8 +137,10 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
                             <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown">
                             </button>
                             <ul className="dropdown-menu">
-                              <li><a className="dropdown-item" href="#">...</a></li>
-                              <li><a className="dropdown-item" href="#">...</a></li>
+                              <li className='dropdown-item' onClick={()=>{setShowAutomatisation(true);}}>Automatiseer</li>
+                              <li className='dropdown-item'>Toon XXX</li>
+                              <li className='dropdown-item'>...</li>
+
                             </ul>
                           </div>
                         </div>

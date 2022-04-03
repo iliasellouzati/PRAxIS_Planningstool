@@ -5,7 +5,7 @@ const mapReduxCalendarToDb = (calendar) => {
 
     calendar.forEach(individualCalendar =>
         individualCalendar.calendar.forEach(shiftDay => {
-            if (shiftDay.shift !== '') {
+            if (shiftDay.shift !== ''&&shiftDay.shift!==false) {
                 shiftsToStore.push({
                     ...shiftDay,
                     "employeeId": individualCalendar.employeeId

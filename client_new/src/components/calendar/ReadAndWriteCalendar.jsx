@@ -107,19 +107,23 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                             {[Employees.find(empl => empl.id === individueleCalendar.employeeId)].map(em => `${em.voornaam[0].toUpperCase()}${em.voornaam.slice(1)} ${em.familienaam.substring(0, 1).toUpperCase()}.`)}
                                         </td>
                                         {individueleCalendar.calendar.map(shiftDay =>
-                                            <td
-                                                style={
-                                                    (HighlightDay[0] || HighlightCustom[0]) &&
-                                                        (
-                                                            (HighlightDay[0] && HighlightDay[1].isSame(moment(shiftDay.day, "DD-MM-YYYY"), 'day'))
-                                                            ||
-                                                            (HighlightCustom[0] && HighlightCustom[1].employeeId === individueleCalendar.employeeId && HighlightCustom[1].start.clone().subtract(1, 'day').isBefore(moment(shiftDay.day, 'DD-MM-YYYY'), 'day') && HighlightCustom[1].end.clone().add(1, 'day').isAfter(moment(shiftDay.day, 'DD-MM-YYYY'), 'day'))
-                                                        )
-                                                        ? { outline: "2px solid red", padding: "0px", margin: "0px" }
-                                                        : (moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 7) ? { outline: '1px solid darkgreen', padding: "0px", margin: "0px" } :
-                                                            { padding: "0px", margin: "0px" }}>
-                                                <ReadAndWriteShift  setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
-                                            </td>
+                                            shiftDay.shift === false ?
+                                                <td style={{backgroundColor:'black'}}>
+
+                                                </td> :
+                                                <td
+                                                    style={
+                                                        (HighlightDay[0] || HighlightCustom[0]) &&
+                                                            (
+                                                                (HighlightDay[0] && HighlightDay[1].isSame(moment(shiftDay.day, "DD-MM-YYYY"), 'day'))
+                                                                ||
+                                                                (HighlightCustom[0] && HighlightCustom[1].employeeId === individueleCalendar.employeeId && HighlightCustom[1].start.clone().subtract(1, 'day').isBefore(moment(shiftDay.day, 'DD-MM-YYYY'), 'day') && HighlightCustom[1].end.clone().add(1, 'day').isAfter(moment(shiftDay.day, 'DD-MM-YYYY'), 'day'))
+                                                            )
+                                                            ? { outline: "2px solid red", padding: "0px", margin: "0px" }
+                                                            : (moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 7) ? { outline: '1px solid darkgreen', padding: "0px", margin: "0px" } :
+                                                                { padding: "0px", margin: "0px" }}>
+                                                    <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
+                                                </td>
                                         )}
                                     </tr>
                                     {/* TABELRIJ MET HISTORIEKE PLANNING VAN WERKNEMER */}
