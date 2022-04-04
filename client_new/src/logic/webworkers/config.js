@@ -1,7 +1,7 @@
 let config = {
     "weeklyStructures": [],
     "employees": [],
-    "config": [],
+    "logaritme": {},
     "previousWeeks": [],
     "missingShiftsWeek": [],
     "WeekNumber": "",
@@ -9,7 +9,9 @@ let config = {
     "possibleWeekIDs": [],
     "amountOfWorkerResponses": 0,
     "comboWeek": [],
-    "numberOfWeeks": 0
+    "weeksToCheck": [],
+    "filters": [],
+    "separateEmployees": []
 }
 
 export default config;

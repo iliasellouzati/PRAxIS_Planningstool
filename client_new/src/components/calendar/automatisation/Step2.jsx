@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getCalendarMoments_ArrayWithMoments } from '../helpers'
 
-const Step2 = ({ setStep }) => {
+const Step2 = ({ setStep, SelectedWeeks, setSelectedWeeks, setMissingShifts, MissingShifts }) => {
     let { year, month } = useParams();
 
     const currentCalendar = useSelector((state) => state.currentCalendar);
@@ -12,8 +12,6 @@ const Step2 = ({ setStep }) => {
     const hulpKal = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
 
     const [Weeks, setWeeks] = useState([]);
-    const [MissingShifts, setMissingShifts] = useState([]);
-    const [SelectedWeeks, setSelectedWeeks] = useState([]);
 
     const checkOntbrekendeShiften = () => {
 
@@ -42,7 +40,7 @@ const Step2 = ({ setStep }) => {
                 hulpCalenderMetOntbrekendeShiften[index][4].length + hulpCalenderMetOntbrekendeShiften[index][5].length +
                 hulpCalenderMetOntbrekendeShiften[index][6].length;
             missingShifts.push(hulpValOntbrekendeShiften);
-           ;
+            ;
 
         }
         setMissingShifts(missingShifts);
@@ -52,12 +50,15 @@ const Step2 = ({ setStep }) => {
 
         for (let index = 0; index < hulpKal.length; index += 7) {
             setWeeks(Weeks => [...Weeks, hulpKal[index]]);
+            if (index !== 0 && !SelectedWeeks.some(x=>hulpKal[index].isSame(x,'day'))) {
+                setSelectedWeeks(SelectedWeeks => [...SelectedWeeks, hulpKal[index]]);
+            }
         }
         checkOntbrekendeShiften();
 
+
+
     }, [])
-
-
 
 
     return (
@@ -85,7 +86,7 @@ const Step2 = ({ setStep }) => {
                                                 class="custom-control-input custom-control-input-danger custom-control-input-outline"
                                                 type="checkbox"
                                                 id={`customCheckbox_${week.format("DD-MM-YYYY")}`}
-                                                checked={SelectedWeeks.includes(week)}
+                                                checked={SelectedWeeks.some(x=>week.isSame(x,'day'))}
                                                 onClick={() => { SelectedWeeks.includes(week) ? setSelectedWeeks(SelectedWeeks.filter(x => x !== week)) : setSelectedWeeks([...SelectedWeeks, week]) }} />
                                             <label for={`customCheckbox_${week.format("DD-MM-YYYY")}`} class="custom-control-label"></label>
 

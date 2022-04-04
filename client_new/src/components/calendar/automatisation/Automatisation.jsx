@@ -5,11 +5,15 @@ import { useParams } from 'react-router-dom';
 import LoadingSpinner from '../../general/LoadingSpinner';
 import Step1 from './Step1';
 import Step2 from './Step2';
+import Step3 from './Step3';
+import Step4 from './Step4';
+import Step5 from './Step5';
+import configInterface from '../../../logic/webworkers/config';
 
 const Automatisation = ({ setShowAutomatisation }) => {
   let { year, month } = useParams();
 
-  const [StepsText, setStepsText] = useState(['bepaal operatoren', 'bepaling weken', 'bepalen logaritme'])
+  const [StepsText, setStepsText] = useState(['bepaal operatoren', 'bepaling weken', 'bepalen filters', 'bepalen logaritme', 'overzicht', 'resultaat'])
   const [Step, setStep] = useState(0);
   const [Loading, setLoading] = useState(true);
 
@@ -19,7 +23,46 @@ const Automatisation = ({ setShowAutomatisation }) => {
   const [Employees, setEmployees] = useState([]);
   const [SelectedEmployees, setSelectedEmployees] = useState([]);
   const [EmployeesContracts, setEmployeesContracts] = useState([]);
-  const [ContractTypes, setContractTypes] = useState([])
+  const [SelectedWeeks, setSelectedWeeks] = useState([]);
+  const [MissingShifts, setMissingShifts] = useState([]);
+  const [ContractTypes, setContractTypes] = useState([]);
+  const [WeeklyStructures, setWeeklyStructures] = useState([]);
+  const [Logaritme, setLogaritme] = useState({
+    "name": "WEEKS_BETWEEN_DAY_AND_NIGHT",
+    "data": {
+      'minWeeks': 1,
+      'maxWeeks': 5
+    }
+  });
+  const [Config, setConfig] = useState([]);
+
+
+  const [SelectedFilters, setSelectedFilters] = useState([]);
+  const [SeparateEmployees, setSeparateEmployees] = useState([])
+
+
+  const createConfigFile = () => {
+
+    let config = configInterface;
+    config.weeklyStructures = WeeklyStructures;
+    config.employees = SelectedEmployees;
+    config.logaritme = Logaritme;
+    config.previousWeeks = null;
+    config.missingShiftsWeek = MissingShifts;
+    config.WeekNumber = null;
+    config.possibleWeekCombos = null;
+    config.possibleWeekIDs = null;
+    config.amountOfWorkerResponses = null;
+    config.comboWeek = null;
+    config.weeksToCheck = SelectedEmployees;
+    config.filters = SelectedFilters;
+    config.separateEmployees = SeparateEmployees;
+
+    setConfig(config);
+    console.log(config);
+
+  }
+
 
 
   const fetchData = async () => {
@@ -36,13 +79,17 @@ const Automatisation = ({ setShowAutomatisation }) => {
       });
 
     await axios.get('http://127.0.0.1:3001/api/contracttype')
-      .then(response => { setContractTypes(response.data); }).finally(setLoading(false));
+      .then(response => { setContractTypes(response.data); });
+
+    await axios.get('http://127.0.0.1:3001/api/weeklystructure')
+      .then(response => { setWeeklyStructures(response.data); });
+
+    await axios.get('http://127.0.0.1:3001/api/contracttype')
+      .then(response => setContractTypes(response.data)).finally(setLoading(false));
+
+
+
   }
-
-
-
-
-
 
   useEffect(() => {
     fetchData();
@@ -80,10 +127,28 @@ const Automatisation = ({ setShowAutomatisation }) => {
                       EmployeesContracts={EmployeesContracts}
                       SelectedEmployees={SelectedEmployees}
                       Employees={Employees}
-                      setSelectedEmployees={setSelectedEmployees} 
+                      setSelectedEmployees={setSelectedEmployees}
                       setStep={setStep} />,
-                    1:<Step2 setStep={setStep}/>,
-                    2: <span className="badge bg-success" style={{ marginLeft: "10px" }}>klaar</span>
+                    1: <Step2
+                      setStep={setStep}
+                      SelectedWeeks={SelectedWeeks}
+                      setSelectedWeeks={setSelectedWeeks}
+                      setMissingShifts={setMissingShifts}
+                      MissingShifts={MissingShifts} />,
+                    2: <Step3
+                      setStep={setStep}
+                      setSelectedFilters={setSelectedFilters}
+                      SelectedFilters={SelectedFilters}
+                      contracts={EmployeesContracts}
+                      employees={Employees}
+                      setSeparateEmployees={setSeparateEmployees}
+                      SeparateEmployees={SeparateEmployees} />,
+                    3: <Step4
+                      setStep={setStep}
+                      Logaritme={Logaritme}
+                      setLogaritme={setLogaritme} />,
+                    4: <Step5 setStep={setStep} createConfigFile={createConfigFile} Config={Config} />,
+                    5: <p>Not yet implemented <button onClick={() => setStep(2)}> return</button></p>
                   }[Step]
                 }
 
