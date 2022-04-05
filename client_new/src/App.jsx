@@ -70,7 +70,7 @@ function App() {
         <ReadOnlyCalendarScreen setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal}  />
       </Route>
       <Route path="/planningen/:year/:month/:version" >
-        <ReadAndWriteCalendarScreen setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal}  />
+        <ReadAndWriteCalendarScreen setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} INIT_StartUpMainWorkerForAutomatisation={WebWorkerModule.INIT_StartUpMainWorkerForAutomatisation}  />
       </Route>
 
     <Route path="/planningen/:year" component={AllCalendarStatusForYear} exact={true}/>

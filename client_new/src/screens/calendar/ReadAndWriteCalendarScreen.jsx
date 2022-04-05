@@ -14,7 +14,7 @@ import moment from 'moment';
 import SaveCalendarConfig from '../../components/calendar/SaveCalendarConfig';
 import Automatisation from '../../components/calendar/automatisation/Automatisation';
 
-const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) => {
+const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INIT_StartUpMainWorkerForAutomatisation }) => {
 
   let { year, month, version } = useParams();
 
@@ -28,7 +28,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
   const [Employees, setEmployees] = useState([]);
   const [Shifttypes, setShifttypes] = useState([]);
   const [ShowFinalComment, setShowFinalComment] = useState(false);
-  const [ShowAutomatisation, setShowAutomatisation] = useState(true);
+  const [ShowAutomatisation, setShowAutomatisation] = useState(false);
 
   const saveShiftsToDb = async () => {
     let calendarForDb = mapReduxCalendarToDb(calendar);
@@ -90,7 +90,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal }) 
                     <SaveCalendarConfig setShowSuccesModal={setShowSuccesModal} employees={Employees} shifttypes={Shifttypes} setShowFinalComment={setShowFinalComment} />
 
                     :ShowAutomatisation?
-                    <Automatisation setShowAutomatisation={setShowAutomatisation}/>
+                    <Automatisation INIT_StartUpMainWorkerForAutomatisation={INIT_StartUpMainWorkerForAutomatisation} setShowAutomatisation={setShowAutomatisation}/>
                     :
                     
                     <React.Fragment>

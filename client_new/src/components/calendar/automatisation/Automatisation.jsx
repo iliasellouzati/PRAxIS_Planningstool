@@ -9,8 +9,9 @@ import Step3 from './Step3';
 import Step4 from './Step4';
 import Step5 from './Step5';
 import configInterface from '../../../logic/webworkers/config';
+import Step6 from './Step6';
 
-const Automatisation = ({ setShowAutomatisation }) => {
+const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutomatisation }) => {
   let { year, month } = useParams();
 
   const [StepsText, setStepsText] = useState(['bepaal operatoren', 'bepaling weken', 'bepalen filters', 'bepalen logaritme', 'overzicht', 'resultaat'])
@@ -27,6 +28,7 @@ const Automatisation = ({ setShowAutomatisation }) => {
   const [MissingShifts, setMissingShifts] = useState([]);
   const [ContractTypes, setContractTypes] = useState([]);
   const [WeeklyStructures, setWeeklyStructures] = useState([]);
+  
   const [Logaritme, setLogaritme] = useState({
     "name": "WEEKS_BETWEEN_DAY_AND_NIGHT",
     "data": {
@@ -54,7 +56,7 @@ const Automatisation = ({ setShowAutomatisation }) => {
     config.possibleWeekIDs = null;
     config.amountOfWorkerResponses = null;
     config.comboWeek = null;
-    config.weeksToCheck = SelectedEmployees;
+    config.weeksToCheck = SelectedWeeks;
     config.filters = SelectedFilters;
     config.separateEmployees = SeparateEmployees;
 
@@ -72,6 +74,7 @@ const Automatisation = ({ setShowAutomatisation }) => {
       setEmployeesContracts(contracts);
 
     });
+
     await axios.get('http://127.0.0.1:3001/api/employee')
       .then(response => {
         setEmployees(response.data);
@@ -86,8 +89,6 @@ const Automatisation = ({ setShowAutomatisation }) => {
 
     await axios.get('http://127.0.0.1:3001/api/contracttype')
       .then(response => setContractTypes(response.data)).finally(setLoading(false));
-
-
 
   }
 
@@ -148,7 +149,7 @@ const Automatisation = ({ setShowAutomatisation }) => {
                       Logaritme={Logaritme}
                       setLogaritme={setLogaritme} />,
                     4: <Step5 setStep={setStep} createConfigFile={createConfigFile} Config={Config} />,
-                    5: <p>Not yet implemented <button onClick={() => setStep(2)}> return</button></p>
+                    5: <Step6 Config={Config} INIT_StartUpMainWorkerForAutomatisation={INIT_StartUpMainWorkerForAutomatisation}  />
                   }[Step]
                 }
 

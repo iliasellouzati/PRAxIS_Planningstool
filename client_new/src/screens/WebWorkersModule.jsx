@@ -230,6 +230,8 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
    
 
   }
+
+  
   const dispatchWeek = (weekNumber, week, employee, date) => {
 
     week.maandag !== '' && dispatch(addShift({

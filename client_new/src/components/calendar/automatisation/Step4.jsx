@@ -49,6 +49,8 @@ const Step4 = ({ setStep, setLogaritme, Logaritme }) => {
             Overzicht:
           </div>
           <div className="card-body">
+          <p>Minimum: <b>{Logaritme["data"].minWeeks}</b></p>
+          <p>Maximum: <b>{Logaritme["data"].maxWeeks}</b></p>
 
 
             <div className="d-flex" style={{ justifyContent: 'space-around' }}>
