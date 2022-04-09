@@ -16,7 +16,7 @@ const header = () => {
         <li className="nav-item d-none d-sm-inline-block">
           <a className="nav-link">Home</a>
         </li>
-        <li className="nav-item d-none d-sm-inline-block"><FPSStats top={'5px'} left={'700px'} /></li>
+        {/* <li className="nav-item d-none d-sm-inline-block"><FPSStats top={'5px'} left={'700px'} /></li> */}
 
       </ul>
       {/* Right navbar links */}

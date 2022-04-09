@@ -11,7 +11,7 @@ const Step6 = ({Config,INIT_StartUpMainWorkerForAutomatisation}) => {
 
     useEffect(() => {
   
-        INIT_StartUpMainWorkerForAutomatisation(["INIT",Config]);
+        INIT_StartUpMainWorkerForAutomatisation(Config);
         
         return () => {
           

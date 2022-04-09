@@ -2,7 +2,7 @@ let config = {
     "weeklyStructures": [],
     "employees": [],
     "logaritme": {},
-    "previousWeeks": [],
+    "history": [],
     "missingShiftsWeek": [],
     "WeekNumber": "",
     "possibleWeekCombos": [],

@@ -27,7 +27,7 @@ const mapReduxCalendarToSavedCalendarInDb = ({
 
     calendar.forEach(individualCalendar =>
         individualCalendar.calendar.forEach(shiftDay => {
-            if (shiftDay.shift !== '') {
+            if (shiftDay.shift !== ''&& shiftDay.shift!== false) {
                 let shift = shifttypes.find(x => x.naam === shiftDay.shift);
                 let employee = employees.find(x => x.id === individualCalendar.employeeId);
                 shiftsToStore.push({

@@ -32,6 +32,9 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
       sendReponseMainWorkerToCalculationWorkers(message.data);
     }
   };
+  mainWorker.onerror= (message)=>{
+    console.log(message);
+  }
 
 
   //functions
@@ -92,15 +95,9 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
   //MAIN WORKERS
 
   const INIT_StartUpMainWorkerForAutomatisation = (message) => {
-    config.weeklyStructures = message[1]["weeklyStructures"];
-    config.employees = message[1]["employees"];
-    config.config = message[1]["config"];
-    config.previousWeeks = message[1]["previousWeeks"];
-    config.missingShiftsWeek = message[1]["missingShiftsWeek"];
-    config.WeekNumber = message[1]["WeekNumber"];
-    config.numberOfWeeks = message[1]["numberOfWeeks"];
-    setShowProgressBar([true, [0, (parseInt(config.numberOfWeeks) * 5)]]);
-    mainWorker.postMessage([message[0], config]);
+
+    setShowProgressBar([true, [0,  message.weeksToCheck.length* 5]]);
+    mainWorker.postMessage(["INIT",message]);
   }
   const sendReponseMainWorkerToCalculationWorkers = (respons) => {
 

@@ -28,7 +28,6 @@ app.use((req, res, next) => {
 });
 
 
-
 app.use('/api/calendar', calendarRoute);
 app.use('/api/weeklystructure', weeklystructureRoute);
 app.use('/api/contracttype', contracttypeRoute);

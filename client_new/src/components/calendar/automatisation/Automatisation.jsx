@@ -10,6 +10,8 @@ import Step4 from './Step4';
 import Step5 from './Step5';
 import configInterface from '../../../logic/webworkers/config';
 import Step6 from './Step6';
+import moment from 'moment';
+import { makeObjectForAutomatisation } from '../../../mappers/statistics/DatabaseToStatisticsMapper';
 
 const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutomatisation }) => {
   let { year, month } = useParams();
@@ -28,7 +30,9 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
   const [MissingShifts, setMissingShifts] = useState([]);
   const [ContractTypes, setContractTypes] = useState([]);
   const [WeeklyStructures, setWeeklyStructures] = useState([]);
-  
+  const [Shifttypes, setShifttypes] = useState([]);
+  const [History, setHistory] = useState({});
+
   const [Logaritme, setLogaritme] = useState({
     "name": "WEEKS_BETWEEN_DAY_AND_NIGHT",
     "data": {
@@ -40,7 +44,9 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
 
 
   const [SelectedFilters, setSelectedFilters] = useState([]);
-  const [SeparateEmployees, setSeparateEmployees] = useState([])
+  const [SeparateEmployees, setSeparateEmployees] = useState([]);
+
+
 
 
   const createConfigFile = () => {
@@ -49,7 +55,7 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
     config.weeklyStructures = WeeklyStructures;
     config.employees = SelectedEmployees;
     config.logaritme = Logaritme;
-    config.previousWeeks = null;
+    config.history = History;
     config.missingShiftsWeek = MissingShifts;
     config.WeekNumber = null;
     config.possibleWeekCombos = null;
@@ -61,7 +67,7 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
     config.separateEmployees = SeparateEmployees;
 
     setConfig(config);
-    console.log(config);
+
 
   }
 
@@ -69,6 +75,8 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
 
   const fetchData = async () => {
     let contracts;
+    let shifttypes;
+
     await axios.get(`http://127.0.0.1:3001/api/employee/calendaremployees/${year}/${month}`).then(response => {
       contracts = response.data.filter(x => ["YES", "PARTIAL"].includes(x.full_month_contract));
       setEmployeesContracts(contracts);
@@ -89,6 +97,18 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
 
     await axios.get('http://127.0.0.1:3001/api/contracttype')
       .then(response => setContractTypes(response.data)).finally(setLoading(false));
+
+    await axios.get('http://127.0.0.1:3001/api/shifttype')
+      .then(response => {
+        setShifttypes(response.data);
+        shifttypes = response.data;
+      })
+
+    const { data } = await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').format('DD-MM-YYYY')}`);
+
+    let hulpval = makeObjectForAutomatisation(data,shifttypes,`${month}-${year}`)
+
+    setHistory(hulpval);
 
   }
 
@@ -149,7 +169,7 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
                       Logaritme={Logaritme}
                       setLogaritme={setLogaritme} />,
                     4: <Step5 setStep={setStep} createConfigFile={createConfigFile} Config={Config} />,
-                    5: <Step6 Config={Config} INIT_StartUpMainWorkerForAutomatisation={INIT_StartUpMainWorkerForAutomatisation}  />
+                    5: <Step6 Config={Config} INIT_StartUpMainWorkerForAutomatisation={INIT_StartUpMainWorkerForAutomatisation} />
                   }[Step]
                 }
 

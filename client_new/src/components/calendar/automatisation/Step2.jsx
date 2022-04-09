@@ -50,8 +50,8 @@ const Step2 = ({ setStep, SelectedWeeks, setSelectedWeeks, setMissingShifts, Mis
 
         for (let index = 0; index < hulpKal.length; index += 7) {
             setWeeks(Weeks => [...Weeks, hulpKal[index]]);
-            if (index !== 0 && !SelectedWeeks.some(x=>hulpKal[index].isSame(x,'day'))) {
-                setSelectedWeeks(SelectedWeeks => [...SelectedWeeks, hulpKal[index]]);
+            if (index !== 0 && !SelectedWeeks.some(x=>hulpKal[index].format('DD-MM-YYYY')===x)) {
+                setSelectedWeeks(SelectedWeeks => [...SelectedWeeks, hulpKal[index].format('DD-MM-YYYY')]);
             }
         }
         checkOntbrekendeShiften();
@@ -86,8 +86,8 @@ const Step2 = ({ setStep, SelectedWeeks, setSelectedWeeks, setMissingShifts, Mis
                                                 class="custom-control-input custom-control-input-danger custom-control-input-outline"
                                                 type="checkbox"
                                                 id={`customCheckbox_${week.format("DD-MM-YYYY")}`}
-                                                checked={SelectedWeeks.some(x=>week.isSame(x,'day'))}
-                                                onClick={() => { SelectedWeeks.includes(week) ? setSelectedWeeks(SelectedWeeks.filter(x => x !== week)) : setSelectedWeeks([...SelectedWeeks, week]) }} />
+                                                checked={SelectedWeeks.some(x=>week.format('DD-MM-YYYY')==x)}
+                                                onClick={() => { SelectedWeeks.includes(week.format("DD-MM-YYYY")) ? setSelectedWeeks(SelectedWeeks.filter(x => x != week.format("DD-MM-YYYY"))) : setSelectedWeeks([...SelectedWeeks, week.format('DD-MM-YYYY')]) }} />
                                             <label for={`customCheckbox_${week.format("DD-MM-YYYY")}`} class="custom-control-label"></label>
 
                                         </div>
