@@ -14,9 +14,9 @@ const Step5 = ({ setStep, createConfigFile, Config }) => {
       <div className="col-8">
         {Config.length !== 0 &&
           <React.Fragment>
-            <p>Aantal werknemers te bepalen: <b>{Config.employees.length}</b></p>
+            <p>Aantal werknemers te bepalen: <b>{Config.employeesSelectedIDs.length}</b></p>
             <p>Aantal geselecteerde filters: <b>{Config.filters.length}</b></p>
-            <p>Aantal weken te bepalen: <b>{Config.weeksToCheck.length}</b></p>
+            <p>Aantal weken te bepalen: <b>{Config.selectedWeeks.length}</b></p>
             <p>Minimaal <b>{Config.logaritme.data.minWeeks}</b> en maximaal <b>{Config.logaritme.data.maxWeeks}</b> weken tussen omschakelingen </p>
 
 

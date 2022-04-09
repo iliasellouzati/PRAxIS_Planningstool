@@ -53,16 +53,27 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
 
     let config = configInterface;
     config.weeklyStructures = WeeklyStructures;
-    config.employees = SelectedEmployees;
+    config.contractTypes = ContractTypes;
+    config.employeesDB = Employees;
+    config.employeesSelectedIDs = SelectedEmployees;
     config.logaritme = Logaritme;
     config.history = History;
-    config.missingShiftsWeek = MissingShifts;
+    config.missingShiftsWeek =
+      [...MissingShifts].filter(
+        (x, index) =>
+          SelectedWeeks.includes(
+            moment(`${month}-${year}`, "MM-YYYY")
+              .startOf('month')
+              .startOf('isoWeek')
+              .add((index), 'week')
+              .format("DD-MM-YYYY")
+          ));
     config.WeekNumber = null;
     config.possibleWeekCombos = null;
     config.possibleWeekIDs = null;
     config.amountOfWorkerResponses = null;
     config.comboWeek = null;
-    config.weeksToCheck = SelectedWeeks;
+    config.selectedWeeks = SelectedWeeks;
     config.filters = SelectedFilters;
     config.separateEmployees = SeparateEmployees;
 
@@ -104,9 +115,9 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
         shifttypes = response.data;
       })
 
-    const { data } = await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').format('DD-MM-YYYY')}`);
+    const { data } = await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").endOf('month').endOf('isoWeek').format('DD-MM-YYYY')}`);
 
-    let hulpval = makeObjectForAutomatisation(data,shifttypes,`${month}-${year}`)
+    let hulpval = makeObjectForAutomatisation(data, shifttypes, `${month}-${year}`)
 
     setHistory(hulpval);
 

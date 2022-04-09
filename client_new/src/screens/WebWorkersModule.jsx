@@ -27,12 +27,12 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
 
   mainWorker.onmessage = (message) => {
     if (message) {
-      console.log(message.data[1]);
+      console.log(message);
       incrementProgress();
       sendReponseMainWorkerToCalculationWorkers(message.data);
     }
   };
-  mainWorker.onerror= (message)=>{
+  mainWorker.onerror = (message) => {
     console.log(message);
   }
 
@@ -96,18 +96,25 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
 
   const INIT_StartUpMainWorkerForAutomatisation = (message) => {
 
-    setShowProgressBar([true, [0,  message.weeksToCheck.length* 5]]);
-    mainWorker.postMessage(["INIT",message]);
+    setShowProgressBar([true, [0, message.selectedWeeks.length * 5]]);
+    config = message;
+    mainWorker.postMessage(["INIT", message]);
   }
   const sendReponseMainWorkerToCalculationWorkers = (respons) => {
 
     fireUpCalculationsWorkers();
 
+
     switch (respons[0]) {
       case "LAST_POSSIBLE_IDS_FOUND":
         mainWorker.terminate();
 
-      
+      // eslint-disable-next-line no-fallthrough
+      case "FIRST_POSSIBLE_IDS_FOUND":
+      config.incompatibelWeeks=respons[2];
+      console.log(respons[2]);
+
+
       // eslint-disable-next-line no-fallthrough
       case "POSSIBLE_IDS_FOUND":
 
@@ -127,8 +134,11 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         hulpValWorker1[0].possibleWeeks = hulpValWorker1[0].possibleWeeks.slice(startIndex, endIndex);
         calculationWorker1.postMessage(["ALLE_MOGELIJKHEDEN", {
           "possibleWeekIDs": hulpValWorker1,
-          "missingShiftsWeek": config.missingShiftsWeek[parseInt(config.WeekNumber) - 1],
-          "weeklyStructures": config.weeklyStructures
+          "weeklyStructures": config.weeklyStructures,
+          "incompatibelWeeks": config.incompatibelWeeks,
+          "filters": config.filters,
+          "missingShiftsWeek": config.missingShiftsWeek
+
         }]);
         restPerWorker !== 0 && restPerWorker--;
 
@@ -140,8 +150,10 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         hulpValWorker2[0].possibleWeeks = hulpValWorker2[0].possibleWeeks.slice(startIndex, endIndex);
         calculationWorker2.postMessage(["ALLE_MOGELIJKHEDEN", {
           "possibleWeekIDs": hulpValWorker2,
-          "missingShiftsWeek": config.missingShiftsWeek[parseInt(config.WeekNumber) - 1],
-          "weeklyStructures": config.weeklyStructures
+          "weeklyStructures": config.weeklyStructures,
+          "incompatibelWeeks": config.incompatibelWeeks,
+          "filters": config.filters,
+          "missingShiftsWeek": config.missingShiftsWeek
         }]);
         restPerWorker !== 0 && restPerWorker--;
 
@@ -153,8 +165,10 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         hulpValWorker3[0].possibleWeeks = hulpValWorker3[0].possibleWeeks.slice(startIndex, endIndex);
         calculationWorker3.postMessage(["ALLE_MOGELIJKHEDEN", {
           "possibleWeekIDs": hulpValWorker3,
-          "missingShiftsWeek": config.missingShiftsWeek[parseInt(config.WeekNumber) - 1],
-          "weeklyStructures": config.weeklyStructures
+          "weeklyStructures": config.weeklyStructures,
+          "incompatibelWeeks": config.incompatibelWeeks,
+          "filters": config.filters,
+          "missingShiftsWeek": config.missingShiftsWeek
         }]);
         restPerWorker !== 0 && restPerWorker--;
 
@@ -165,8 +179,10 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         hulpValWorker4[0].possibleWeeks = hulpValWorker4[0].possibleWeeks.slice(startIndex, endIndex);
         calculationWorker4.postMessage(["ALLE_MOGELIJKHEDEN", {
           "possibleWeekIDs": hulpValWorker4,
-          "missingShiftsWeek": config.missingShiftsWeek[parseInt(config.WeekNumber) - 1],
-          "weeklyStructures": config.weeklyStructures
+          "weeklyStructures": config.weeklyStructures,
+          "incompatibelWeeks": config.incompatibelWeeks,
+          "filters": config.filters,
+          "missingShiftsWeek": config.missingShiftsWeek
         }]);
         restPerWorker !== 0 && restPerWorker--;
 
@@ -181,26 +197,26 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
   const handleEndOfCalculationWorkers = () => {
 
     killAllCalculationsWorkers();
-    if(config.possibleWeekCombos.length===0){
-      setShowDangerModal([true,["Fout!",`maand: ${date}`,`De planning voor de operatoren is mislukt wegens te weinig mogelijkheden`]])
+    if (config.possibleWeekCombos.length === 0) {
+      setShowDangerModal([true, ["Fout!", `maand: ${date}`, `De planning voor de operatoren is mislukt wegens te weinig mogelijkheden`]])
       mainWorker.terminate();
-    } else{
+    } else {
 
       config.amountOfWorkerResponses = 0;
       let randomIndex = Math.floor(Math.random() * config.possibleWeekCombos.length);
       let randomWeekComboIndex = Math.floor(Math.random() * config.possibleWeekCombos[randomIndex].combinaties.length);
       config.comboWeek = config.possibleWeekCombos[randomIndex].combinaties[randomWeekComboIndex];
-    console.log(config);
+      console.log(config);
       config.comboWeek.forEach((weekId, index) => {
         let week = config.weeklyStructures.find(x => x.id === weekId);
         dispatchWeek(config.WeekNumber, week, config.employees[index], date);
       })
-  
+
       setTimeout(function () {
         config.comboWeek = [];
         config.possibleWeekCombos = [];
         let newPreviousWeeks = [];
-  
+
         calendar.filter(x => config.employees.some(empl => empl.id === x.employeeId)).forEach(emplCal => {
           let hulpcal = emplCal.calendar.slice((parseInt(config.WeekNumber) - 1) * 7, (parseInt(config.WeekNumber) * 7));
           hulpcal = hulpcal.map(x => x.shift);
@@ -209,26 +225,26 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
             "week": hulpcal
           })
         })
-  
+
         config.previousWeeks = newPreviousWeeks;
-  
+
         config.WeekNumber = `${parseInt(config.WeekNumber) + 1}`;
         if (parseInt(config.WeekNumber) < config.numberOfWeeks) {
           mainWorker.postMessage(["CONTINU", config]);
-        } else if(parseInt(config.WeekNumber) === config.numberOfWeeks) {
+        } else if (parseInt(config.WeekNumber) === config.numberOfWeeks) {
           mainWorker.postMessage(["LAST_ONE", config]);
-        }else{
-          setShowSuccesModal([true,["Klaar!",`maand: ${date}`,`De planningvoor de operatoren werd aangemaakt`]])
+        } else {
+          setShowSuccesModal([true, ["Klaar!", `maand: ${date}`, `De planningvoor de operatoren werd aangemaakt`]])
         }
       }, 250);
 
     }
 
-   
+
 
   }
 
-  
+
   const dispatchWeek = (weekNumber, week, employee, date) => {
 
     week.maandag !== '' && dispatch(addShift({

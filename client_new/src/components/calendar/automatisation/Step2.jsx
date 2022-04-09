@@ -43,7 +43,7 @@ const Step2 = ({ setStep, SelectedWeeks, setSelectedWeeks, setMissingShifts, Mis
             ;
 
         }
-        setMissingShifts(missingShifts);
+        setMissingShifts(hulpCalenderMetOntbrekendeShiften);
 
     }
     useEffect(() => {
@@ -96,7 +96,7 @@ const Step2 = ({ setStep, SelectedWeeks, setSelectedWeeks, setMissingShifts, Mis
                                     <td>{index + 1}</td>
                                     <td>{week.format("DD-MM-YYYY")}</td>
                                     <td>{week.clone().endOf('isoWeek').format("DD-MM-YYYY")}</td>
-                                    <td>{MissingShifts[index]}</td>
+                                    <td>{MissingShifts[index][0].length+MissingShifts[index][1].length+MissingShifts[index][2].length+MissingShifts[index][3].length+MissingShifts[index][4].length+MissingShifts[index][5].length+MissingShifts[index][6].length}</td>
                                     <td>0</td>
 
                                 </tr>
