@@ -77,21 +77,25 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
   }
   const handleCalculationWorkerResponse = (respons) => {
     incrementProgress();
+    let totaal = 0;
     respons?.forEach(element => {
 
-      if ( !config.possibleWeekCombos?.some(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften)) {
-        config.possibleWeekCombos.push(element)
+      if (!config.possibleWeekCombos?.some(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften)) {
+        config.possibleWeekCombos.push(element);
+        totaal += element.combinaties.length;
       } else {
         let hulpIndex = config.possibleWeekCombos.findIndex(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften);
         config.possibleWeekCombos[hulpIndex].combinaties.push(...element.combinaties);
+        totaal += config.possibleWeekCombos[hulpIndex].combinaties.length;
+
       }
     });
 
-    console.log('TOTAAL AAANTAL :');
+    console.log('TOTAAL AAANTAL : ' + totaal);
 
     console.log(config.possibleWeekCombos)
 
-    // config.amountOfWorkerResponses === 3 ? handleEndOfCalculationWorkers() : config.amountOfWorkerResponses++;
+    config.amountOfWorkerResponses === 3 ? handleEndOfCalculationWorkers() : config.amountOfWorkerResponses++;
 
 
   }
@@ -116,7 +120,6 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
       // eslint-disable-next-line no-fallthrough
       case "FIRST_POSSIBLE_IDS_FOUND":
         config.incompatibelWeeks = respons[2];
-        console.log(respons[2]);
 
 
       // eslint-disable-next-line no-fallthrough
@@ -211,36 +214,36 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
       let randomWeekComboIndex = Math.floor(Math.random() * config.possibleWeekCombos[randomIndex].combinaties.length);
       config.comboWeek = config.possibleWeekCombos[randomIndex].combinaties[randomWeekComboIndex];
       console.log(config);
-      config.comboWeek.forEach((weekId, index) => {
-        let week = config.weeklyStructures.find(x => x.id === weekId);
-        dispatchWeek(config.WeekNumber, week, config.employees[index], date);
+      config.comboWeek.forEach(weekCombo => {
+        let week = config.weeklyStructures.find(x => x.id === weekCombo.weekId);
+        dispatchWeek(config.selectedWeeks[0], week, weekCombo.empId);
       })
 
-      setTimeout(function () {
-        config.comboWeek = [];
-        config.possibleWeekCombos = [];
-        let newPreviousWeeks = [];
+      // setTimeout(function () {
+      //   config.comboWeek = [];
+      //   config.possibleWeekCombos = [];
+      //   let newPreviousWeeks = [];
 
-        calendar.filter(x => config.employees.some(empl => empl.id === x.employeeId)).forEach(emplCal => {
-          let hulpcal = emplCal.calendar.slice((parseInt(config.WeekNumber) - 1) * 7, (parseInt(config.WeekNumber) * 7));
-          hulpcal = hulpcal.map(x => x.shift);
-          newPreviousWeeks.push({
-            "employeeId": emplCal.employeeId,
-            "week": hulpcal
-          })
-        })
+      //   calendar.filter(x => config.employees.some(empl => empl.id === x.employeeId)).forEach(emplCal => {
+      //     let hulpcal = emplCal.calendar.slice((parseInt(config.WeekNumber) - 1) * 7, (parseInt(config.WeekNumber) * 7));
+      //     hulpcal = hulpcal.map(x => x.shift);
+      //     newPreviousWeeks.push({
+      //       "employeeId": emplCal.employeeId,
+      //       "week": hulpcal
+      //     })
+      //   })
 
-        config.previousWeeks = newPreviousWeeks;
+      //   config.previousWeeks = newPreviousWeeks;
 
-        config.WeekNumber = `${parseInt(config.WeekNumber) + 1}`;
-        if (parseInt(config.WeekNumber) < config.numberOfWeeks) {
-          mainWorker.postMessage(["CONTINU", config]);
-        } else if (parseInt(config.WeekNumber) === config.numberOfWeeks) {
-          mainWorker.postMessage(["LAST_ONE", config]);
-        } else {
-          setShowSuccesModal([true, ["Klaar!", `maand: ${date}`, `De planningvoor de operatoren werd aangemaakt`]])
-        }
-      }, 250);
+      //   config.WeekNumber = `${parseInt(config.WeekNumber) + 1}`;
+      //   if (parseInt(config.WeekNumber) < config.numberOfWeeks) {
+      //     mainWorker.postMessage(["CONTINU", config]);
+      //   } else if (parseInt(config.WeekNumber) === config.numberOfWeeks) {
+      //     mainWorker.postMessage(["LAST_ONE", config]);
+      //   } else {
+      //     setShowSuccesModal([true, ["Klaar!", `maand: ${date}`, `De planningvoor de operatoren werd aangemaakt`]])
+      //   }
+      // }, 250);
 
     }
 
@@ -249,44 +252,47 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
   }
 
 
-  const dispatchWeek = (weekNumber, week, employee, date) => {
+
+  const dispatchWeek = (datum, week, employeeId) => {
+console.log(`Werknemer : ${employeeId}`);
+    console.log(week);
 
     week.maandag !== '' && dispatch(addShift({
-      'id': employee.id,
-      'day': moment(date, "MM-YYYY").startOf("month").startOf('isoWeek').add(parseInt(weekNumber) - 1, "week").format("DD-MM-YYYY"),
-      'shift': week.maandag
+      'id': employeeId,
+      'day': "DD-MM-YYYY",
+      'shift': week.maandag, 'startmoment': null, 'endmoment': null
     }));
     week.dinsdag !== '' && dispatch(addShift({
-      'id': employee.id,
-      'day': moment(date, "MM-YYYY").startOf("month").startOf('isoWeek').add(parseInt(weekNumber) - 1, "week").add(1, "day").format("DD-MM-YYYY"),
-      'shift': week.dinsdag
+      'id': employeeId,
+      'day': moment(datum, "DD-MM-YYYY").add(1,'day').format("DD-MM-YYYY"),
+      'shift': week.dinsdag, 'startmoment': null, 'endmoment': null
     }));
     week.woensdag !== '' && dispatch(addShift({
-      'id': employee.id,
-      'day': moment(date, "MM-YYYY").startOf("month").startOf('isoWeek').add(parseInt(weekNumber) - 1, "week").add(2, "day").format("DD-MM-YYYY"),
-      'shift': week.woensdag
+      'id': employeeId,
+      'day': moment(datum, "DD-MM-YYYY").add(2,'day').format("DD-MM-YYYY"),
+      'shift': week.woensdag, 'startmoment': null, 'endmoment': null
     }));
     week.donderdag !== '' && dispatch(addShift({
-      'id': employee.id,
-      'day': moment(date, "MM-YYYY").startOf("month").startOf('isoWeek').add(parseInt(weekNumber) - 1, "week").add(3, "day").format("DD-MM-YYYY"),
-      'shift': week.donderdag
+      'id': employeeId,
+      'day': moment(datum, "DD-MM-YYYY").add(3,'day').format("DD-MM-YYYY"),
+      'shift': week.donderdag, 'startmoment': null, 'endmoment': null
     }));
     week.vrijdag !== '' && dispatch(addShift({
-      'id': employee.id,
-      'day': moment(date, "MM-YYYY").startOf("month").startOf('isoWeek').add(parseInt(weekNumber) - 1, "week").add(4, "day").format("DD-MM-YYYY"),
-      'shift': week.vrijdag
+      'id': employeeId,
+      'day': moment(datum, "DD-MM-YYYY").add(4,'day').format("DD-MM-YYYY"),
+      'shift': week.vrijdag, 'startmoment': null, 'endmoment': null
     }));
 
     week.zaterdag !== '' && dispatch(addShift({
-      'id': employee.id,
-      'day': moment(date, "MM-YYYY").startOf("month").startOf('isoWeek').add(parseInt(weekNumber) - 1, "week").add(5, "day").format("DD-MM-YYYY"),
-      'shift': week.zaterdag
+      'id': employeeId,
+      'day': moment(datum, "DD-MM-YYYY").add(5,'day').format("DD-MM-YYYY"),
+      'shift': week.zaterdag, 'startmoment': null, 'endmoment': null
     }));
 
     week.zondag !== '' && dispatch(addShift({
-      'id': employee.id,
-      'day': moment(date, "MM-YYYY").startOf("month").startOf('isoWeek').add(parseInt(weekNumber) - 1, "week").add(6, "day").format("DD-MM-YYYY"),
-      'shift': week.zondag
+      'id': employeeId,
+      'day': moment(datum, "DD-MM-YYYY").add(6,'day').format("DD-MM-YYYY"),
+      'shift': week.zondag, 'startmoment': null, 'endmoment': null
     }));
 
   }
