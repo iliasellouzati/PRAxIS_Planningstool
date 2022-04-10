@@ -68,11 +68,6 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
               .add((index), 'week')
               .format("DD-MM-YYYY")
           ));
-    config.WeekNumber = null;
-    config.possibleWeekCombos = null;
-    config.possibleWeekIDs = null;
-    config.amountOfWorkerResponses = null;
-    config.comboWeek = null;
     config.selectedWeeks = SelectedWeeks;
     config.filters = SelectedFilters;
     config.separateEmployees = SeparateEmployees;

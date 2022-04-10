@@ -37,6 +37,8 @@ export default () => {
 
     }
 
+    
+
     const checkPossibleWeeklyStructures = ({
         weeklyStructures,
         employeesDB,
@@ -70,7 +72,6 @@ export default () => {
 
         return possibleWeeklyStructures;
     }
-
     const checkPossibleWeeklyStructuresIndividualy = (weeklyStructures, employee, logaritme, history, missingShiftsWeek, selectedWeeks, employeesDB, contractTypes) => {
 
         let employeeObj = employeesDB.find(x => x.id === employee);
@@ -205,7 +206,6 @@ export default () => {
 
 
     }
-
     const controleTweeShiftenOpEenDag = (week, history) => {
 
         if (week.maandag !== "" && history[history.length - 7] !== "") {
@@ -241,7 +241,6 @@ export default () => {
 
 
     }
-
     const controleOperatorShiftReedsGepland = (week, missingShiftsWeek) => {
 
         if (week.maandag !== "" && !missingShiftsWeek[0].includes(week.maandag)) {
@@ -319,7 +318,6 @@ export default () => {
         }
         return true;
     }
-
     const get1DayEarlierFromString = (date) => {
         let OldDay = date.substring(0, 2);
         let OldMonth = date.substring(3, 5);

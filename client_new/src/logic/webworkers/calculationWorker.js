@@ -1,9 +1,10 @@
+/* eslint-disable no-loop-func */
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
 
 
 
-//   eslint-disable-next-line no-restricted-globals
+  //   eslint-disable-next-line no-restricted-globals
   self.onmessage = (message) => {
     let mogelijkeCombinaties = berekenMogelijkeCombinaties(message);
     postMessage(mogelijkeCombinaties);
@@ -11,217 +12,614 @@ export default () => {
   }
 
 
-const berekenMogelijkeCombinaties = (message) => {
-  let possibleWeekIDs = message.data[1].possibleWeekIDs;
-  let missingShiftsWeek = message.data[1].missingShiftsWeek;
-  let weeklyStructures = message.data[1].weeklyStructures;
-  let mogelijkeCombinaties = [];
+  const berekenMogelijkeCombinaties = (message) => {
+    let possibleWeekIDs = message.data[1].possibleWeekIDs;
+    let missingShiftsWeek = message.data[1].missingShiftsWeek;
+    let weeklyStructures = message.data[1].weeklyStructures;
+    let incompatibelWeeks = message.data[1].incompatibelWeeks;
+    let filters = message.data[1].filters;
+
+    let mogelijkeCombinaties = [];
 
 
-  let ontbrekendeShiften = [...missingShiftsWeek]
-  let i = 0;
-  //-----------------------------------------loop1----------------------------------------------------------------------------
-  for (let index1 = 0; index1 < possibleWeekIDs[0].possibleWeeks.length; index1++) {
+    let IDS = possibleWeekIDs.filter(x => x.possibleWeeks.length !== 0);
 
-    let teBehalenWeekIndex1 = [...ontbrekendeShiften];
-    let weekIndex1 = weeklyStructures.find(x => x.id === possibleWeekIDs[0].possibleWeeks[index1]);
-    teBehalenWeekIndex1 = checkWeekVoorWerknemer(weekIndex1, teBehalenWeekIndex1);
-    if (teBehalenWeekIndex1 === false) {
-      continue;
-    };
+    let employeesSize = IDS.length;
 
-  //  -----------------------------------------loop2----------------------------------------------------------------------------
-    for (let index2 = 0; index2 < possibleWeekIDs[1].possibleWeeks.length; index2++) {
+    if (employeesSize < 3 || employeesSize > 15) {
+      return null
+    }
 
-      let weekIndex2 = weeklyStructures.find(x => x.id === possibleWeekIDs[1].possibleWeeks[index2]);
-      let teBehalenWeekIndex2 = [...teBehalenWeekIndex1];
-      teBehalenWeekIndex2 = checkWeekVoorWerknemer(weekIndex2, teBehalenWeekIndex2);
-      if (teBehalenWeekIndex2 === false) {
-        continue;
-      };
 
-     // -----------------------------------------loop3----------------------------------------------------------------------------
-      for (let index3 = 0; index3 < possibleWeekIDs[2].possibleWeeks.length; index3++) {
 
-        let weekIndex3 = weeklyStructures.find(x => x.id === possibleWeekIDs[2].possibleWeeks[index3]);
-        let teBehalenWeekIndex3 = [...teBehalenWeekIndex2];
-        teBehalenWeekIndex3 = checkWeekVoorWerknemer(weekIndex3, teBehalenWeekIndex3);
-        if (teBehalenWeekIndex3 === false) {
-          continue;
-        };
 
-      //  -----------------------------------------loop4---------------------------------------------------------------------------
-        for (let index4 = 0; index4 < possibleWeekIDs[3].possibleWeeks.length; index4++) {
 
-          let weekIndex4 = weeklyStructures.find(x => x.id === possibleWeekIDs[3].possibleWeeks[index4]);
-          let teBehalenWeekIndex4 = [...teBehalenWeekIndex3];
-          teBehalenWeekIndex4 = checkWeekVoorWerknemer(weekIndex4, teBehalenWeekIndex4);
-          if (teBehalenWeekIndex4 === false) {
-            continue;
-          };
 
-          //-----------------------------------------loop5---------------------------------------------------------------------------
-          for (let index5 = 0; index5 < possibleWeekIDs[4].possibleWeeks.length; index5++) {
+    //-----------------------------------------loop1----------------------------------------------------------------------------
+    for (let index1 = 0; index1 < IDS[0].possibleWeeks.length; index1++) {
+      //  -----------------------------------------loop2----------------------------------------------------------------------------
+      for (let index2 = 0; index2 < IDS[1].possibleWeeks.filter(x =>
+          !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x)).length; index2++) {
+        // -----------------------------------------loop3----------------------------------------------------------------------------
+        for (let index3 = 0; index3 < IDS[2].possibleWeeks.filter(x =>
+            !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+            !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x)
+          ).length; index3++) {
+          if (employeesSize > 3) {
+            //  -----------------------------------------loop4---------------------------------------------------------------------------
+            for (let index4 = 0; index4 < IDS[3].possibleWeeks.filter(x =>
+                !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x)
+              ).length; index4++) {
+              if (employeesSize > 4) {
+                //-----------------------------------------loop5---------------------------------------------------------------------------
+                for (let index5 = 0; index5 < IDS[4].possibleWeeks.filter(x =>
+                    !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                    !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                    !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                    !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x)
+                  ).length; index5++) {
+                  if (employeesSize > 5) {
+                    //-----------------------------------------loop6---------------------------------------------------------------------------
+                    for (let index6 = 0; index6 < IDS[5].possibleWeeks.filter(x =>
+                        !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                        !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                        !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                        !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                        !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x)
+                      ).length; index6++) {
+                      if (employeesSize > 6) {
+                        //-----------------------------------------loop7---------------------------------------------------------------------------
+                        for (let index7 = 0; index7 < IDS[6].possibleWeeks.filter(x =>
+                            !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                            !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                            !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                            !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                            !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                            !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x)
+                          ).length; index7++) {
+                          if (employeesSize > 7) {
+                            //-----------------------------------------loop8--------------------------------------------------------------------------
+                            for (let index8 = 0; index8 < IDS[7].possibleWeeks.filter(x =>
+                                !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                                !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                                !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                                !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                                !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                                !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x) ||
+                                !incompatibelWeeks[`${IDS[6].possibleWeeks[index7]}`].includes(x)
+                              ).length; index8++) {
+                              if (employeesSize > 8) {
+                                //-----------------------------------------loop9--------------------------------------------------------------------------
+                                for (let index9 = 0; index9 < IDS[8].possibleWeeks.filter(x =>
+                                    !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                                    !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                                    !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                                    !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                                    !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                                    !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x) ||
+                                    !incompatibelWeeks[`${IDS[6].possibleWeeks[index7]}`].includes(x) ||
+                                    !incompatibelWeeks[`${IDS[7].possibleWeeks[index8]}`].includes(x)
+                                  ).length; index9++) {
+                                  if (employeesSize > 9) {
+                                    //-----------------------------------------loop10--------------------------------------------------------------------------
+                                    for (let index10 = 0; index10 < IDS[9].possibleWeeks.filter(x =>
+                                        !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                                        !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                                        !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                                        !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                                        !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                                        !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x) ||
+                                        !incompatibelWeeks[`${IDS[6].possibleWeeks[index7]}`].includes(x) ||
+                                        !incompatibelWeeks[`${IDS[7].possibleWeeks[index8]}`].includes(x) ||
+                                        !incompatibelWeeks[`${IDS[8].possibleWeeks[index9]}`].includes(x)
+                                      ).length; index10++) {
+                                      if (employeesSize > 10) {
+                                        //-----------------------------------------loop11--------------------------------------------------------------------------
+                                        for (let index11 = 0; index11 < IDS[10].possibleWeeks.filter(x =>
+                                            !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[6].possibleWeeks[index7]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[7].possibleWeeks[index8]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[8].possibleWeeks[index9]}`].includes(x) ||
+                                            !incompatibelWeeks[`${IDS[9].possibleWeeks[index10]}`].includes(x)
+                                          ).length; index11++) {
+                                          if (employeesSize > 11) {
+                                            //-----------------------------------------loop12--------------------------------------------------------------------------
+                                            for (let index12 = 0; index12 < IDS[11].possibleWeeks.filter(x =>
+                                                !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[6].possibleWeeks[index7]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[7].possibleWeeks[index8]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[8].possibleWeeks[index9]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[9].possibleWeeks[index10]}`].includes(x) ||
+                                                !incompatibelWeeks[`${IDS[10].possibleWeeks[index11]}`].includes(x)
+                                              ).length; index12++) {
+                                              if (employeesSize > 12) {
+                                                //-----------------------------------------loop13--------------------------------------------------------------------------
+                                                for (let index13 = 0; index13 < IDS[12].possibleWeeks.filter(x =>
+                                                    !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[6].possibleWeeks[index7]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[7].possibleWeeks[index8]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[8].possibleWeeks[index9]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[9].possibleWeeks[index10]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[10].possibleWeeks[index11]}`].includes(x) ||
+                                                    !incompatibelWeeks[`${IDS[11].possibleWeeks[index12]}`].includes(x)
+                                                  ).length; index13++) {
+                                                  if (employeesSize > 13) {
+                                                    //-----------------------------------------loop14--------------------------------------------------------------------------
+                                                    for (let index14 = 0; index14 < IDS[13].possibleWeeks.filter(x =>
+                                                        !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[6].possibleWeeks[index7]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[7].possibleWeeks[index8]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[8].possibleWeeks[index9]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[9].possibleWeeks[index10]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[10].possibleWeeks[index11]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[11].possibleWeeks[index12]}`].includes(x) ||
+                                                        !incompatibelWeeks[`${IDS[12].possibleWeeks[index13]}`].includes(x)
+                                                      ).length; index14++) {
+                                                      if (employeesSize > 14) {
+                                                        //-----------------------------------------loop15--------------------------------------------------------------------------
+                                                        for (let index15 = 0; index15 < IDS[14].possibleWeeks.filter(x =>
+                                                            !incompatibelWeeks[`${IDS[0].possibleWeeks[index1]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[1].possibleWeeks[index2]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[2].possibleWeeks[index3]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[3].possibleWeeks[index4]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[4].possibleWeeks[index5]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[5].possibleWeeks[index6]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[6].possibleWeeks[index7]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[7].possibleWeeks[index8]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[8].possibleWeeks[index9]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[9].possibleWeeks[index10]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[10].possibleWeeks[index11]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[11].possibleWeeks[index12]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[12].possibleWeeks[index13]}`].includes(x) ||
+                                                            !incompatibelWeeks[`${IDS[13].possibleWeeks[index14]}`].includes(x)).length; index15++) {
 
-            let weekIndex5 = weeklyStructures.find(x => x.id === possibleWeekIDs[4].possibleWeeks[index5]);
-            let teBehalenWeekIndex5 = [...teBehalenWeekIndex4];
-            teBehalenWeekIndex5 = checkWeekVoorWerknemer(weekIndex5, teBehalenWeekIndex5);
-            if (teBehalenWeekIndex5 === false) {
-              continue;
-            };
+                                                          let respons = berekenEindeLoop({
+                                                            'arrayWeekIdCombo': [
+                                                              IDS[0].possibleWeeks[index1],
+                                                              IDS[1].possibleWeeks[index2],
+                                                              IDS[2].possibleWeeks[index3],
+                                                              IDS[3].possibleWeeks[index4],
+                                                              IDS[4].possibleWeeks[index5],
+                                                              IDS[5].possibleWeeks[index6],
+                                                              IDS[6].possibleWeeks[index7],
+                                                              IDS[7].possibleWeeks[index8],
+                                                              IDS[8].possibleWeeks[index9],
+                                                              IDS[9].possibleWeeks[index10],
+                                                              IDS[10].possibleWeeks[index11],
+                                                              IDS[11].possibleWeeks[index12],
+                                                              IDS[12].possibleWeeks[index13],
+                                                              IDS[13].possibleWeeks[index14],
+                                                              IDS[14].possibleWeeks[index15]
+                                                            ],
+                                                            'weeklyStructures': weeklyStructures,
+                                                            'filters': filters,
+                                                            'missingShiftsWeek': missingShiftsWeek
+                                                          });
+                                                          if (respons !== false) {
+                                                            if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                                              mogelijkeCombinaties.push(respons)
+                                                            } else {
+                                                              let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                                              mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                                                            }
+                                                          }
 
-           // -----------------------------------------loop6---------------------------------------------------------------------------
-            for (let index6 = 0; index6 < possibleWeekIDs[5].possibleWeeks.length; index6++) {
+                                                          //end loop15
+                                                        }
+                                                      } else {
+                                                        let respons = berekenEindeLoop({
+                                                          'arrayWeekIdCombo': [
+                                                            IDS[0].possibleWeeks[index1],
+                                                            IDS[1].possibleWeeks[index2],
+                                                            IDS[2].possibleWeeks[index3],
+                                                            IDS[3].possibleWeeks[index4],
+                                                            IDS[4].possibleWeeks[index5],
+                                                            IDS[5].possibleWeeks[index6],
+                                                            IDS[6].possibleWeeks[index7],
+                                                            IDS[7].possibleWeeks[index8],
+                                                            IDS[8].possibleWeeks[index9],
+                                                            IDS[9].possibleWeeks[index10],
+                                                            IDS[10].possibleWeeks[index11],
+                                                            IDS[11].possibleWeeks[index12],
+                                                            IDS[12].possibleWeeks[index13],
+                                                            IDS[13].possibleWeeks[index14]
+                                                          ],
+                                                          'weeklyStructures': weeklyStructures,
+                                                          'filters': filters,
+                                                          'missingShiftsWeek': missingShiftsWeek
+                                                        });
+                                                        if (respons !== false) {
+                                                          if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                                            mogelijkeCombinaties.push(respons)
+                                                          } else {
+                                                            let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                                            mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                                                          }                                                        }
 
-              let weekIndex6 = weeklyStructures.find(x => x.id === possibleWeekIDs[5].possibleWeeks[index6]);
-              let teBehalenWeekIndex6 = [...teBehalenWeekIndex5];
-              teBehalenWeekIndex6 = checkWeekVoorWerknemer(weekIndex6, teBehalenWeekIndex6);
-              if (teBehalenWeekIndex6 === false) {
-                continue;
-              };
+                                                      }
+                                                      //end loop14
+                                                    }
+                                                  } else {
+                                                    let respons = berekenEindeLoop({
+                                                      'arrayWeekIdCombo': [
+                                                        IDS[0].possibleWeeks[index1],
+                                                        IDS[1].possibleWeeks[index2],
+                                                        IDS[2].possibleWeeks[index3],
+                                                        IDS[3].possibleWeeks[index4],
+                                                        IDS[4].possibleWeeks[index5],
+                                                        IDS[5].possibleWeeks[index6],
+                                                        IDS[6].possibleWeeks[index7],
+                                                        IDS[7].possibleWeeks[index8],
+                                                        IDS[8].possibleWeeks[index9],
+                                                        IDS[9].possibleWeeks[index10],
+                                                        IDS[10].possibleWeeks[index11],
+                                                        IDS[11].possibleWeeks[index12],
+                                                        IDS[12].possibleWeeks[index13]
+                                                      ],
+                                                      'weeklyStructures': weeklyStructures,
+                                                      'filters': filters,
+                                                      'missingShiftsWeek': missingShiftsWeek
+                                                    });
+                                                    if (respons !== false) {
+                                                      if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                                        mogelijkeCombinaties.push(respons)
+                                                      } else {
+                                                        let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                                        mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                                                      }                                                    }
+                                                  }
+                                                  //end loop13
+                                                }
+                                              } else {
+                                                let respons = berekenEindeLoop({
+                                                  'arrayWeekIdCombo': [
+                                                    IDS[0].possibleWeeks[index1],
+                                                    IDS[1].possibleWeeks[index2],
+                                                    IDS[2].possibleWeeks[index3],
+                                                    IDS[3].possibleWeeks[index4],
+                                                    IDS[4].possibleWeeks[index5],
+                                                    IDS[5].possibleWeeks[index6],
+                                                    IDS[6].possibleWeeks[index7],
+                                                    IDS[7].possibleWeeks[index8],
+                                                    IDS[8].possibleWeeks[index9],
+                                                    IDS[9].possibleWeeks[index10],
+                                                    IDS[10].possibleWeeks[index11],
+                                                    IDS[11].possibleWeeks[index12]
+                                                  ],
+                                                  'weeklyStructures': weeklyStructures,
+                                                  'filters': filters,
+                                                  'missingShiftsWeek': missingShiftsWeek
+                                                });
+                                                if (respons !== false) {
+                                                  if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                                    mogelijkeCombinaties.push(respons)
+                                                  } else {
+                                                    let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                                    mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                                                  }                                                }
+                                              }
+                                              //end loop12
+                                            }
+                                          } else {
+                                            let respons = berekenEindeLoop({
+                                              'arrayWeekIdCombo': [
+                                                IDS[0].possibleWeeks[index1],
+                                                IDS[1].possibleWeeks[index2],
+                                                IDS[2].possibleWeeks[index3],
+                                                IDS[3].possibleWeeks[index4],
+                                                IDS[4].possibleWeeks[index5],
+                                                IDS[5].possibleWeeks[index6],
+                                                IDS[6].possibleWeeks[index7],
+                                                IDS[7].possibleWeeks[index8],
+                                                IDS[8].possibleWeeks[index9],
+                                                IDS[9].possibleWeeks[index10],
+                                                IDS[10].possibleWeeks[index11]
+                                              ],
+                                              'weeklyStructures': weeklyStructures,
+                                              'filters': filters,
+                                              'missingShiftsWeek': missingShiftsWeek
+                                            });
+                                            if (respons !== false) {
+                                              if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                                mogelijkeCombinaties.push(respons)
+                                              } else {
+                                                let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                                mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                                              }                                            }
+                                          }
+                                          //end loop11
+                                        }
+                                      } else {
+                                        let respons = berekenEindeLoop({
+                                          'arrayWeekIdCombo': [
+                                            IDS[0].possibleWeeks[index1],
+                                            IDS[1].possibleWeeks[index2],
+                                            IDS[2].possibleWeeks[index3],
+                                            IDS[3].possibleWeeks[index4],
+                                            IDS[4].possibleWeeks[index5],
+                                            IDS[5].possibleWeeks[index6],
+                                            IDS[6].possibleWeeks[index7],
+                                            IDS[7].possibleWeeks[index8],
+                                            IDS[8].possibleWeeks[index9],
+                                            IDS[9].possibleWeeks[index10]
+                                          ],
+                                          'weeklyStructures': weeklyStructures,
+                                          'filters': filters,
+                                          'missingShiftsWeek': missingShiftsWeek
+                                        });
+                                        if (respons !== false) {
+                                          if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                            mogelijkeCombinaties.push(respons)
+                                          } else {
+                                            let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                            mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                                          }                                        }
+                                      }
+                                      //end loop10
+                                    }
+                                  } else {
+                                    let respons = berekenEindeLoop({
+                                      'arrayWeekIdCombo': [
+                                        IDS[0].possibleWeeks[index1],
+                                        IDS[1].possibleWeeks[index2],
+                                        IDS[2].possibleWeeks[index3],
+                                        IDS[3].possibleWeeks[index4],
+                                        IDS[4].possibleWeeks[index5],
+                                        IDS[5].possibleWeeks[index6],
+                                        IDS[6].possibleWeeks[index7],
+                                        IDS[7].possibleWeeks[index8],
+                                        IDS[8].possibleWeeks[index9]
+                                      ],
+                                      'weeklyStructures': weeklyStructures,
+                                      'filters': filters,
+                                      'missingShiftsWeek': missingShiftsWeek
+                                    });
+                                    if (respons !== false) {
+                                      if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                        mogelijkeCombinaties.push(respons)
+                                      } else {
+                                        let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                        mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                                      }                                    }
+                                  }
+                                  //end loop9
+                                }
+                              } else {
+                                let respons = berekenEindeLoop({
+                                  'arrayWeekIdCombo': [
+                                    IDS[0].possibleWeeks[index1],
+                                    IDS[1].possibleWeeks[index2],
+                                    IDS[2].possibleWeeks[index3],
+                                    IDS[3].possibleWeeks[index4],
+                                    IDS[4].possibleWeeks[index5],
+                                    IDS[5].possibleWeeks[index6],
+                                    IDS[6].possibleWeeks[index7],
+                                    IDS[7].possibleWeeks[index8]
+                                  ],
+                                  'weeklyStructures': weeklyStructures,
+                                  'filters': filters,
+                                  'missingShiftsWeek': missingShiftsWeek
+                                });
+                                if (respons !== false) {
+                                  if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                    mogelijkeCombinaties.push(respons)
+                                  } else {
+                                    let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                    mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                                  }                                }
+                                                                                 
+                                                                             
+                                                                 
+                                index6 = 1000;
+                                index7 = 1000;
+                                index8 = 1000;
 
-          //    -----------------------------------------loop7---------------------------------------------------------------------------
-              for (let index7 = 0; index7 < possibleWeekIDs[6].possibleWeeks.length; index7++) {
+                              }
+                              //end loop8
+                            }
+                          } else {
+                            let respons = berekenEindeLoop({
+                              'arrayWeekIdCombo': [
+                                IDS[0].possibleWeeks[index1],
+                                IDS[1].possibleWeeks[index2],
+                                IDS[2].possibleWeeks[index3],
+                                IDS[3].possibleWeeks[index4],
+                                IDS[4].possibleWeeks[index5],
+                                IDS[5].possibleWeeks[index6],
+                                IDS[6].possibleWeeks[index7]
+                              ],
+                              'weeklyStructures': weeklyStructures,
+                              'filters': filters,
+                              'missingShiftsWeek': missingShiftsWeek
+                            });
+                            if (respons !== false) {
+                              if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                                mogelijkeCombinaties.push(respons)
+                              } else {
+                                let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                                mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                              }                            }
+                                                                             
+                                                                         
+                                                             
+                            index6 = 1000;
+                            index7 = 1000;
 
-                let weekIndex7 = weeklyStructures.find(x => x.id === possibleWeekIDs[6].possibleWeeks[index7]);
-                let teBehalenWeekIndex7 = [...teBehalenWeekIndex6];
-                teBehalenWeekIndex7 = checkWeekVoorWerknemer(weekIndex7, teBehalenWeekIndex7);
-                if (teBehalenWeekIndex7 === false) {
-                  continue;
-                };
-
-            //    -----------------------------------------loop8--------------------------------------------------------------------------
-                for (let index8 = 0; index8 < possibleWeekIDs[7].possibleWeeks.length; index8++) {
-
-                  let weekIndex8 = weeklyStructures.find(x => x.id === possibleWeekIDs[7].possibleWeeks[index8]);
-                  let teBehalenWeekIndex8 = [...teBehalenWeekIndex7];
-                  teBehalenWeekIndex8 = checkWeekVoorWerknemer(weekIndex8, teBehalenWeekIndex8);
-                  if (teBehalenWeekIndex8 === false) {
-                    continue;
-                  };
-
-                  let nietIngevuldeShiften = teBehalenWeekIndex8[0].length + teBehalenWeekIndex8[1].length + teBehalenWeekIndex8[2].length + teBehalenWeekIndex8[3].length + teBehalenWeekIndex8[4].length + teBehalenWeekIndex8[5].length + teBehalenWeekIndex8[6].length;
-
-                  let hhulpVal = [
-                    possibleWeekIDs[0].possibleWeeks[index1],
-                    possibleWeekIDs[1].possibleWeeks[index2],
-                    possibleWeekIDs[2].possibleWeeks[index3],
-                    possibleWeekIDs[3].possibleWeeks[index4],
-                    possibleWeekIDs[4].possibleWeeks[index5],
-                    possibleWeekIDs[5].possibleWeeks[index6],
-                    possibleWeekIDs[6].possibleWeeks[index7],
-                    possibleWeekIDs[7].possibleWeeks[index8]
-                  ]
-                  if (!mogelijkeCombinaties.some(x => x.nietIngevuldeShiften === nietIngevuldeShiften)) {
-                    mogelijkeCombinaties.push({
-                      "nietIngevuldeShiften": nietIngevuldeShiften,
-                      "combinaties": [hhulpVal],
-
-                    })
+                          }
+                          //end loop7   
+                        }
+                      } else {
+                        let respons = berekenEindeLoop({
+                          'arrayWeekIdCombo': [
+                            IDS[0].possibleWeeks[index1],
+                            IDS[1].possibleWeeks[index2],
+                            IDS[2].possibleWeeks[index3],
+                            IDS[3].possibleWeeks[index4],
+                            IDS[4].possibleWeeks[index5],
+                            IDS[5].possibleWeeks[index6]
+                          ],
+                          'weeklyStructures': weeklyStructures,
+                          'filters': filters,
+                          'missingShiftsWeek': missingShiftsWeek
+                        });
+                        if (respons !== false) {
+                          if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                            mogelijkeCombinaties.push(respons)
+                          } else {
+                            let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                            mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                          }                        }
+                                                                         
+                                                                     
+                        index5 = 1000;
+                        index6 = 1000;
+                      }
+                      //end loop6
+                    }
                   } else {
-                    let hulpIndex = mogelijkeCombinaties.findIndex(x => x.nietIngevuldeShiften === nietIngevuldeShiften);
-
-                    mogelijkeCombinaties[hulpIndex].combinaties.push(hhulpVal)
+                    let respons = berekenEindeLoop({
+                      'arrayWeekIdCombo': [
+                        IDS[0].possibleWeeks[index1],
+                        IDS[1].possibleWeeks[index2],
+                        IDS[2].possibleWeeks[index3],
+                        IDS[3].possibleWeeks[index4],
+                        IDS[4].possibleWeeks[index5]
+                      ],
+                      'weeklyStructures': weeklyStructures,
+                      'filters': filters,
+                      'missingShiftsWeek': missingShiftsWeek
+                    });
+                    if (respons !== false) {
+                      if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                        mogelijkeCombinaties.push(respons)
+                      } else {
+                        let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                        mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                      }                    }
+                                                                     
+                                                                 
+                    index5 = 1000;
                   }
-
-                  index3++;
-                  index4 = 1000;
-                  index5 = 1000;
-                  index6 = 1000;
-                  index7 = 1000;
-                  index8 = 1000;
-
+                  //end loop5
                 }
+              } else {
+                let respons = berekenEindeLoop({
+                  'arrayWeekIdCombo': [
+                    IDS[0].possibleWeeks[index1],
+                    IDS[1].possibleWeeks[index2],
+                    IDS[2].possibleWeeks[index3],
+                    IDS[3].possibleWeeks[index4]
+                  ],
+                  'weeklyStructures': weeklyStructures,
+                  'filters': filters,
+                  'missingShiftsWeek': missingShiftsWeek
+                });
+                if (respons !== false) {
+                  if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                    mogelijkeCombinaties.push(respons)
+                  } else {
+                    let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                    mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+                  }                }
+                                                                 
               }
+              //end loop4 
             }
+          } else {
+            let respons = berekenEindeLoop({
+              'arrayWeekIdCombo': [
+                IDS[0].possibleWeeks[index1],
+                IDS[1].possibleWeeks[index2],
+                IDS[2].possibleWeeks[index3]
+              ],
+              'weeklyStructures': weeklyStructures,
+              'filters': filters,
+              'missingShiftsWeek': missingShiftsWeek
+            });
+            if (respons !== false) {
+              if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
+                mogelijkeCombinaties.push(respons)
+              } else {
+                let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
+                mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
+              }            }
+
+                                                             
+
           }
+          //end loop3
         }
+        //end loop2
       }
+      //end loop1   
     }
 
-
-
+    return mogelijkeCombinaties;
   }
 
-  return mogelijkeCombinaties;
-}
+  const berekenEindeLoop = ({
+    arrayWeekIdCombo,
+    weeklyStructures,
+    filters,
+    missingShiftsWeek
+  }) => {
 
-const checkWeekVoorWerknemer = (weekIndex, teBehalenWeekIndex) => {
-  if (weekIndex.maandag !== "") {
+    let totaalShiften = 0;
 
-    if (teBehalenWeekIndex[0].includes(weekIndex.maandag)) {
-      let hulpDag = teBehalenWeekIndex[0];
-      hulpDag = hulpDag.filter(x => weekIndex.maandag !== x);
-      teBehalenWeekIndex[0] = hulpDag;
-    } else {
-      return false;
-    }
+    arrayWeekIdCombo.forEach(weekId => {
+      let week = weeklyStructures.find(x => x.id === weekId);
 
-  }
-  if (weekIndex.dinsdag !== "") {
-    if (teBehalenWeekIndex[1].includes(weekIndex.dinsdag)) {
-      let hulpDag = teBehalenWeekIndex[1];
-      hulpDag = hulpDag.filter(x => x !== weekIndex.dinsdag);
-      teBehalenWeekIndex[1] = hulpDag;
-    } else {
-      return false;
-    }
+      if (week.maandag !== '') {
+        totaalShiften++;
+      }
+      if (week.dinsdag !== '') {
+        totaalShiften++;
+      }
+      if (week.woensdag !== '') {
+        totaalShiften++;
+      }
+      if (week.donderdag !== '') {
+        totaalShiften++;
+      }
+      if (week.vrijdag !== '') {
+        totaalShiften++;
+      }
+      if (week.zaterdag !== '') {
+        totaalShiften++;
+      }
+      if (week.zondag !== '') {
+        totaalShiften++;
+      }
 
-  }
-  if (weekIndex.woensdag !== "") {
-    if (teBehalenWeekIndex[2].includes(weekIndex.woensdag)) {
-      let hulpDag = teBehalenWeekIndex[2];
-      hulpDag = hulpDag.filter(x => x !== weekIndex.woensdag);
-      teBehalenWeekIndex[2] = hulpDag;
-    } else {
-      return false;
-    }
+    });
 
-  }
-  if (weekIndex.donderdag !== "") {
-    if (teBehalenWeekIndex[3].includes(weekIndex.donderdag)) {
-      let hulpDag = teBehalenWeekIndex[3];
-      hulpDag = hulpDag.filter(x => x !== weekIndex.donderdag);
-      teBehalenWeekIndex[3] = hulpDag;
-    } else {
-      return false;
+    return {
+      "ingevuldeOperatorShiften": totaalShiften,
+      "combinaties": arrayWeekIdCombo,
     }
 
   }
-  if (weekIndex.vrijdag !== "") {
-    if (teBehalenWeekIndex[4].includes(weekIndex.vrijdag)) {
-      let hulpDag = teBehalenWeekIndex[4];
-      hulpDag = hulpDag.filter(x => x !== weekIndex.vrijdag);
-      teBehalenWeekIndex[4] = hulpDag;
-    } else {
-      return false;
-    }
-
-  }
-  if (weekIndex.zaterdag !== "") {
-    if (teBehalenWeekIndex[5].includes(weekIndex.zaterdag)) {
-      let hulpDag = teBehalenWeekIndex[5];
-      hulpDag = hulpDag.filter(x => x !== weekIndex.zaterdag);
-      teBehalenWeekIndex[5] = hulpDag;
-    } else {
-      return false;
-    }
-
-  }
-  if (weekIndex.zondag !== "") {
-    if (teBehalenWeekIndex[6].includes(weekIndex.zondag)) {
-      let hulpDag = teBehalenWeekIndex[6];
-      hulpDag = hulpDag.filter(x => x !== weekIndex.zondag);
-      teBehalenWeekIndex[6] = hulpDag;
-    } else {
-      return false;
-    }
-
-  }
-
-  return teBehalenWeekIndex;
-
 
 }
-
-};

@@ -79,15 +79,19 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     incrementProgress();
     respons?.forEach(element => {
 
-      if (!config.possibleWeekCombos.some(x => x.nietIngevuldeShiften === element.nietIngevuldeShiften)) {
+      if ( !config.possibleWeekCombos?.some(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften)) {
         config.possibleWeekCombos.push(element)
       } else {
-        let hulpIndex = config.possibleWeekCombos.findIndex(x => x.nietIngevuldeShiften === element.nietIngevuldeShiften);
+        let hulpIndex = config.possibleWeekCombos.findIndex(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften);
         config.possibleWeekCombos[hulpIndex].combinaties.push(...element.combinaties);
       }
     });
 
-    config.amountOfWorkerResponses === 3 ? handleEndOfCalculationWorkers() : config.amountOfWorkerResponses++;
+    console.log('TOTAAL AAANTAL :');
+
+    console.log(config.possibleWeekCombos)
+
+    // config.amountOfWorkerResponses === 3 ? handleEndOfCalculationWorkers() : config.amountOfWorkerResponses++;
 
 
   }
@@ -111,8 +115,8 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
 
       // eslint-disable-next-line no-fallthrough
       case "FIRST_POSSIBLE_IDS_FOUND":
-      config.incompatibelWeeks=respons[2];
-      console.log(respons[2]);
+        config.incompatibelWeeks = respons[2];
+        console.log(respons[2]);
 
 
       // eslint-disable-next-line no-fallthrough
