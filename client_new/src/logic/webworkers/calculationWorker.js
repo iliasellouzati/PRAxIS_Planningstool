@@ -43,7 +43,7 @@ export default () => {
       });;
 
       //  -----------------------------------------loop2----------------------------------------------------------------------------
-      for (let index2 = 0; index2 < IDS[1].possibleWeeks.filter(x => !filterTillEmployee1.includes(x)).length; index2++) {
+      for (let index2 = 0; index2 < IDS[1].possibleWeeks.filter(x => !filterTillEmployee1.includes(x)).length; index2+=3) {
 
         let weekId2 = IDS[1].possibleWeeks.filter(x => !filterTillEmployee1.includes(x))[index2];
         let filterTillEmployee2 = [...filterTillEmployee1, weekId2, ...incompatibelWeeks[`${weekId2}`]];
@@ -53,7 +53,7 @@ export default () => {
 
 
         // -----------------------------------------loop3----------------------------------------------------------------------------
-        for (let index3 = 0; index3 < IDS[2].possibleWeeks.filter(x => !filterTillEmployee2.includes(x)).length; index3++) {
+        for (let index3 = 0; index3 < IDS[2].possibleWeeks.filter(x => !filterTillEmployee2.includes(x)).length; index3+=2) {
 
           let weekId3 = IDS[2].possibleWeeks.filter(x => !filterTillEmployee2.includes(x))[index3];
 
@@ -435,14 +435,14 @@ export default () => {
                                     let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                     mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                   }
-                                  
+                                  index4 = 1000;
                                   index6 = 1000;
                                   index7 = 1000;
                                   index8 = 1000;
                                   index5 = 1000;
                                 }
 
-                                
+
 
                               }
                               //end loop8
@@ -470,6 +470,7 @@ export default () => {
                                 let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                 mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                               }
+                              index4 = 1000;
                               index5 = 1000;
                               index6 = 1000;
                               index7 = 1000;
@@ -502,9 +503,9 @@ export default () => {
                             let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                             mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                           }
-                          
-                                                  index5 = 1000;
-                                                  index6 = 1000;
+                          index4 = 1000;
+                          index5 = 1000;
+                          index6 = 1000;
                         }
 
                       }
@@ -531,8 +532,8 @@ export default () => {
                         let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                         mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                       }
-                      
-                                          index5 = 1000;
+                      index4 = 1000;
+                      index5 = 1000;
                     }
 
                   }
@@ -558,6 +559,8 @@ export default () => {
                     let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                     mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                   }
+
+                  index4 = 1000;
                 }
 
               }
@@ -688,7 +691,6 @@ export default () => {
       )) {
       return false;
     }
-
 
     return {
       "ingevuldeOperatorShiften": totaalShiften,

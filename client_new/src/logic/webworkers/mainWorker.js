@@ -197,11 +197,36 @@ export default () => {
                 continue;
             }
 
+            if (!DagNaNacht(week, historyIndividualEmployee)) {
+                filter.push(week.id);
+                continue;
+            }
+            if (!OverurenWeekControle(week, historyIndividualEmployee)) {
+                filter.push(week.id);
+                continue;
+            }
+            if (!TweeLegeShiftenTussen3NachtenEnDagShift(week, historyIndividualEmployee)) {
+                filter.push(week.id);
+                continue;
+            }
+            if (!DrieLegeShiftenTussen4NachtenEnDagShift(week, historyIndividualEmployee)) {
+                filter.push(week.id);
+                continue;
+            }
+            if (!Max4OperatorShifts(week, historyIndividualEmployee)) {
+                filter.push(week.id);
+                continue;
+            }
+            if (!TweeBlancoShiftsNaWeekendMet3Nacht(week, historyIndividualEmployee)) {
+                filter.push(week.id);
+                continue;
+            }
+
+            
             if (!filter.some(x => x === week.id)) {
                 possible_IDs.push(week.id)
 
             }
-
 
 
         }
@@ -400,5 +425,203 @@ export default () => {
 
 
     }
+
+    const OverurenWeekControle = (week, history) => {
+
+
+        return true;
+    }
+
+    const TweeLegeShiftenTussen3NachtenEnDagShift = (week, history) => {
+        let hulpHistory = [...history];
+
+        if (week.maandag !== "") {
+            hulpHistory[history.length - 7] = week.maandag;
+        }
+        if (week.dinsdag !== "") {
+            hulpHistory[history.length - 6] = week.dinsdag;
+        }
+        if (week.woensdag !== "") {
+            hulpHistory[history.length - 5] = week.woensdag;
+        }
+        if (week.donderdag !== "") {
+            hulpHistory[history.length - 4] = week.donderdag;
+        }
+        if (week.vrijdag !== "") {
+            hulpHistory[history.length - 3] = week.vrijdag;
+        }
+        if (week.zaterdag !== "") {
+            hulpHistory[history.length - 2] = week.zaterdag;
+        }
+        if (week.zondag !== "") {
+            hulpHistory[history.length - 1] = week.zondag;
+        }
+        let opeenVolgendeNachtenShiften = 0;
+        let blankoShift = 0;
+
+        for (let individualDayLooper = hulpHistory.length - 10; individualDayLooper < hulpHistory.length; individualDayLooper++) {
+
+            if (["1806", "1907"].includes(hulpHistory[individualDayLooper]) && blankoShift !== 0 && opeenVolgendeNachtenShiften !== 0) {
+                blankoShift = 0;
+                opeenVolgendeNachtenShiften = 1;
+                continue;
+            } else if (["1806", "1907"].includes(hulpHistory[individualDayLooper])) {
+                opeenVolgendeNachtenShiften++;
+                continue;
+            } else if (hulpHistory[individualDayLooper] === '' && opeenVolgendeNachtenShiften !== 0) {
+                blankoShift++;
+                continue;
+            }
+            if (opeenVolgendeNachtenShiften === 3 && blankoShift < 2) {
+                return false;
+
+            }
+        }
+        return true;
+    }
+
+    const DrieLegeShiftenTussen4NachtenEnDagShift = (week, history) => {
+        let hulpHistory = [...history];
+
+        if (week.maandag !== "") {
+            hulpHistory[history.length - 7] = week.maandag;
+        }
+        if (week.dinsdag !== "") {
+            hulpHistory[history.length - 6] = week.dinsdag;
+        }
+        if (week.woensdag !== "") {
+            hulpHistory[history.length - 5] = week.woensdag;
+        }
+        if (week.donderdag !== "") {
+            hulpHistory[history.length - 4] = week.donderdag;
+        }
+        if (week.vrijdag !== "") {
+            hulpHistory[history.length - 3] = week.vrijdag;
+        }
+        if (week.zaterdag !== "") {
+            hulpHistory[history.length - 2] = week.zaterdag;
+        }
+        if (week.zondag !== "") {
+            hulpHistory[history.length - 1] = week.zondag;
+        }
+        let opeenVolgendeNachtenShiften = 0;
+        let blankoShift = 0;
+
+        for (let individualDayLooper = hulpHistory.length - 11; individualDayLooper < hulpHistory.length; individualDayLooper++) {
+
+            if (["1806", "1907"].includes(hulpHistory[individualDayLooper]) && blankoShift !== 0 && opeenVolgendeNachtenShiften !== 0) {
+                blankoShift = 0;
+                opeenVolgendeNachtenShiften = 1;
+                continue;
+            } else if (["1806", "1907"].includes(hulpHistory[individualDayLooper])) {
+                opeenVolgendeNachtenShiften++;
+                continue;
+            } else if (hulpHistory[individualDayLooper] === '' && opeenVolgendeNachtenShiften !== 0) {
+                blankoShift++;
+                continue;
+            }
+            if (opeenVolgendeNachtenShiften === 4 && blankoShift < 3) {
+                return false;
+
+            }
+        }
+        return true;
+    }
+
+    const Max4OperatorShifts = (week, history) => {
+
+        let hulpHistory = [...history];
+
+        if (week.maandag !== "") {
+            hulpHistory[history.length - 7] = week.maandag;
+        }
+        if (week.dinsdag !== "") {
+            hulpHistory[history.length - 6] = week.dinsdag;
+        }
+        if (week.woensdag !== "") {
+            hulpHistory[history.length - 5] = week.woensdag;
+        }
+        if (week.donderdag !== "") {
+            hulpHistory[history.length - 4] = week.donderdag;
+        }
+        if (week.vrijdag !== "") {
+            hulpHistory[history.length - 3] = week.vrijdag;
+        }
+        if (week.zaterdag !== "") {
+            hulpHistory[history.length - 2] = week.zaterdag;
+        }
+        if (week.zondag !== "") {
+            hulpHistory[history.length - 1] = week.zondag;
+        }
+        let shiftCounter = 0;
+        for (let individualDayLooper = hulpHistory.length - 10; individualDayLooper < hulpHistory.length; individualDayLooper++) {
+
+
+            if (["0618", "0719", "1806", "1907"].some(x => x === hulpHistory[individualDayLooper])) {
+                shiftCounter++;
+            } else {
+                shiftCounter = 0;
+            }
+
+            if (shiftCounter > 4) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    const DagNaNacht = (week, history) => {
+
+        let hulpHistory = [...history];
+
+        if (week.maandag !== "") {
+            hulpHistory[history.length - 7] = week.maandag;
+        }
+        if (week.dinsdag !== "") {
+            hulpHistory[history.length - 6] = week.dinsdag;
+        }
+        if (week.woensdag !== "") {
+            hulpHistory[history.length - 5] = week.woensdag;
+        }
+        if (week.donderdag !== "") {
+            hulpHistory[history.length - 4] = week.donderdag;
+        }
+        if (week.vrijdag !== "") {
+            hulpHistory[history.length - 3] = week.vrijdag;
+        }
+        if (week.zaterdag !== "") {
+            hulpHistory[history.length - 2] = week.zaterdag;
+        }
+        if (week.zondag !== "") {
+            hulpHistory[history.length - 1] = week.zondag;
+        }
+
+        for (let individualDayLooper = hulpHistory.length - 7; individualDayLooper < hulpHistory.length; individualDayLooper++) {
+
+
+            let shift = hulpHistory[individualDayLooper]
+            let passedShift = hulpHistory[individualDayLooper - 1]
+            if (["1806", "1907"].some(x => x === passedShift) && ["0618", "0719"].some(x => x === shift)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    const TweeBlancoShiftsNaWeekendMet3Nacht = (week, history) => {
+
+        if (["1806", "1907"].includes(history[history.length - 8]) && ["1806", "1907"].includes(history[history.length - 9]) && ["1806", "1907"].includes(history[history.length - 10])) {
+
+            if (week.maandag !== "" || week.dinsdag !== "") {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
 
 };
