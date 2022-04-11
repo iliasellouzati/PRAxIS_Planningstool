@@ -15,7 +15,7 @@ const Step3 = ({ setStep, SelectedFilters, setSelectedFilters, employees, contra
     return (
 
         <div className="row">
-            <div className="col-6">
+            <div className="col-9">
                 <div class="card-body p-0">
                     <table class="table table-striped table-sm">
                         <thead>
@@ -163,12 +163,12 @@ const Step3 = ({ setStep, SelectedFilters, setSelectedFilters, employees, contra
                     </table>
                 </div>
             </div>
-            <div className="col-6">
+            <div className="col-3">
                 <div className="card">
                     <div className="card-header">
                         Overzicht:
                     </div>
-                    <div className="card-body">
+                    <div className="card-body"  style={{minHeight:'250px'}}>
                         <p>Aantal geselecteerde filters: <b>{SelectedFilters.length}</b></p>
 
 

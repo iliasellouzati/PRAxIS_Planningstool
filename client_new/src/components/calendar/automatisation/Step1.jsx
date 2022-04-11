@@ -3,7 +3,7 @@ import React from 'react'
 const Step1 = ({ EmployeesContracts, SelectedEmployees, Employees, setSelectedEmployees, setStep }) => {
     return (
         <div className="row">
-            <div className="col-6">
+            <div className="col-9">
                 <div class="card-body p-0">
                     <table class="table table-striped table-sm">
                         <thead>
@@ -41,12 +41,12 @@ const Step1 = ({ EmployeesContracts, SelectedEmployees, Employees, setSelectedEm
                     </table>
                 </div>
             </div>
-            <div className="col-6">
+            <div className="col-3">
                 <div className="card">
                     <div className="card-header">
                         Overzicht:
                     </div>
-                    <div className="card-body">
+                    <div className="card-body" style={{minHeight:'250px'}}>
 
                         <p>Aantal met operator contract: <b>{SelectedEmployees.filter(x => Employees.find(y => y.id === x).contracttype_id === 1).length}</b></p>
                         <p>Aantal met 4-5'en  contract:  <b>{SelectedEmployees.filter(x => Employees.find(y => y.id === x).contracttype_id === 5).length}</b></p>

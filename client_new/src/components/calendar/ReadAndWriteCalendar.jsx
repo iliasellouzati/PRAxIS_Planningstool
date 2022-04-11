@@ -104,7 +104,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                         >
                                             <i className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-table-caret fas fa-caret-down fa-fw" : "expandable-table-caret fas fa-caret-right fa-fw"}></i>
 
-                                            {[Employees.find(empl => empl.id === individueleCalendar.employeeId)].map(em => `${em.voornaam[0].toUpperCase()}${em.voornaam.slice(1)} ${em.familienaam.substring(0, 1).toUpperCase()}.`)}
+                                            {[Employees.find(empl => empl.id === individueleCalendar.employeeId)].map(em => `${em.voornaam[0].toUpperCase()}${em.voornaam.slice(1)} ${em.familienaam.substring(0, 1).toUpperCase()}. id:${individueleCalendar.employeeId}`)}
                                         </td>
                                         {individueleCalendar.calendar.map(shiftDay =>
                                             shiftDay.shift === false ?

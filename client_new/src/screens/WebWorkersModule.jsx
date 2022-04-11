@@ -254,44 +254,44 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
 
 
   const dispatchWeek = (datum, week, employeeId) => {
-console.log(`Werknemer : ${employeeId}`);
+    console.log(`Werknemer : ${employeeId}`);
     console.log(week);
 
     week.maandag !== '' && dispatch(addShift({
       'id': employeeId,
-      'day': "DD-MM-YYYY",
+      'day': datum,
       'shift': week.maandag, 'startmoment': null, 'endmoment': null
     }));
     week.dinsdag !== '' && dispatch(addShift({
       'id': employeeId,
-      'day': moment(datum, "DD-MM-YYYY").add(1,'day').format("DD-MM-YYYY"),
+      'day': moment(datum, "DD-MM-YYYY").add(1, 'day').format("DD-MM-YYYY"),
       'shift': week.dinsdag, 'startmoment': null, 'endmoment': null
     }));
     week.woensdag !== '' && dispatch(addShift({
       'id': employeeId,
-      'day': moment(datum, "DD-MM-YYYY").add(2,'day').format("DD-MM-YYYY"),
+      'day': moment(datum, "DD-MM-YYYY").add(2, 'day').format("DD-MM-YYYY"),
       'shift': week.woensdag, 'startmoment': null, 'endmoment': null
     }));
     week.donderdag !== '' && dispatch(addShift({
       'id': employeeId,
-      'day': moment(datum, "DD-MM-YYYY").add(3,'day').format("DD-MM-YYYY"),
+      'day': moment(datum, "DD-MM-YYYY").add(3, 'day').format("DD-MM-YYYY"),
       'shift': week.donderdag, 'startmoment': null, 'endmoment': null
     }));
     week.vrijdag !== '' && dispatch(addShift({
       'id': employeeId,
-      'day': moment(datum, "DD-MM-YYYY").add(4,'day').format("DD-MM-YYYY"),
+      'day': moment(datum, "DD-MM-YYYY").add(4, 'day').format("DD-MM-YYYY"),
       'shift': week.vrijdag, 'startmoment': null, 'endmoment': null
     }));
 
     week.zaterdag !== '' && dispatch(addShift({
       'id': employeeId,
-      'day': moment(datum, "DD-MM-YYYY").add(5,'day').format("DD-MM-YYYY"),
+      'day': moment(datum, "DD-MM-YYYY").add(5, 'day').format("DD-MM-YYYY"),
       'shift': week.zaterdag, 'startmoment': null, 'endmoment': null
     }));
 
     week.zondag !== '' && dispatch(addShift({
       'id': employeeId,
-      'day': moment(datum, "DD-MM-YYYY").add(6,'day').format("DD-MM-YYYY"),
+      'day': moment(datum, "DD-MM-YYYY").add(6, 'day').format("DD-MM-YYYY"),
       'shift': week.zondag, 'startmoment': null, 'endmoment': null
     }));
 

@@ -63,7 +63,7 @@ const Step2 = ({ setStep, SelectedWeeks, setSelectedWeeks, setMissingShifts, Mis
 
     return (
         <div className="row">
-            <div className="col-6">
+            <div className="col-9">
                 <div class="card-body p-0">
                     <table class="table table-striped table-sm">
                         <thead>
@@ -106,12 +106,12 @@ const Step2 = ({ setStep, SelectedWeeks, setSelectedWeeks, setMissingShifts, Mis
                     </table>
                 </div>
             </div>
-            <div className="col-6">
+            <div className="col-3">
                 <div className="card">
                     <div className="card-header">
                         Overzicht:
                     </div>
-                    <div className="card-body">
+                    <div className="card-body"  style={{minHeight:'250px'}}>
                         <p>Aantal geselecteerde weken: <b>{SelectedWeeks.length}</b></p>
 
 

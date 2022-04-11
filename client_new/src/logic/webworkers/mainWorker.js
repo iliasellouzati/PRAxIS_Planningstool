@@ -37,7 +37,7 @@ export default () => {
 
     }
 
-    
+
 
     const checkPossibleWeeklyStructures = ({
         weeklyStructures,
@@ -114,7 +114,12 @@ export default () => {
                     if (nightShifts.includes(historyIndividualEmployee[index])) {
                         momenteelInDagStructuur = false;
                     }
+                    if (counter > 7) {
+                        counter -= 7;
+                    }
 
+                } else if (!eersteShiftGevonden) {
+                    continue;
                 }
 
                 if (momenteelInDagStructuur && nightShifts.includes(historyIndividualEmployee[index])) {
@@ -122,7 +127,7 @@ export default () => {
                         verplichtDAG = true;
                         break;
                     } else {
-                        counter = 1;
+                        break;
                     }
                 }
 
@@ -131,7 +136,7 @@ export default () => {
                         verplichtNACHT = true;
                         break;
                     } else {
-                        counter = 1;
+                        break;
                     }
                 }
 
@@ -200,6 +205,9 @@ export default () => {
 
 
         }
+        possible_IDs = possible_IDs.sort(function (a, b) {
+            return a - b;
+        })
 
         return possible_IDs;
 
@@ -371,13 +379,13 @@ export default () => {
             weeklyStructures.filter(x => x.id !== week.id).forEach((incompWeek) => {
 
                 if (
-                  (week.maandag !=='' &&  week.maandag === incompWeek.maandag )||
-                  (week.dinsdag !=='' &&  week.dinsdag === incompWeek.dinsdag) ||
-                  (week.woensdag !=='' &&  week.woensdag === incompWeek.woensdag) ||
-                  (week.donderdag !=='' &&  week.donderdag === incompWeek.donderdag) ||
-                  (week.vrijdag !=='' &&  week.vrijdag === incompWeek.vrijdag) ||
-                  (week.zaterdag !=='' &&  week.zaterdag === incompWeek.zaterdag) ||
-                  (week.zondag !=='' &&  week.zondag === incompWeek.zondag)
+                    (week.maandag !== '' && week.maandag === incompWeek.maandag) ||
+                    (week.dinsdag !== '' && week.dinsdag === incompWeek.dinsdag) ||
+                    (week.woensdag !== '' && week.woensdag === incompWeek.woensdag) ||
+                    (week.donderdag !== '' && week.donderdag === incompWeek.donderdag) ||
+                    (week.vrijdag !== '' && week.vrijdag === incompWeek.vrijdag) ||
+                    (week.zaterdag !== '' && week.zaterdag === incompWeek.zaterdag) ||
+                    (week.zondag !== '' && week.zondag === incompWeek.zondag)
                 ) {
                     incompatibelWeeks.push(incompWeek.id);
                 }

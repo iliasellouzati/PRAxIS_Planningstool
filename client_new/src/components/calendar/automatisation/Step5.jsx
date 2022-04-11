@@ -11,7 +11,7 @@ const Step5 = ({ setStep, createConfigFile, Config }) => {
 
   return (
     <div className="row">
-      <div className="col-8">
+      <div className="col-9">
         {Config.length !== 0 &&
           <React.Fragment>
             <p>Aantal werknemers te bepalen: <b>{Config.employeesSelectedIDs.length}</b></p>
@@ -24,12 +24,12 @@ const Step5 = ({ setStep, createConfigFile, Config }) => {
           </React.Fragment>}
 
       </div>
-      <div className="col-4">
+      <div className="col-3">
         <div className="card">
           <div className="card-header">
             Overzicht:
           </div>
-          <div className="card-body" style={{ textAlign: 'center' }}>
+          <div className="card-body" style={{ textAlign: 'center', minHeight:'250px' }}>
 
             <div className="d-flex" style={{ justifyContent: 'space-around' }}>
               <button type="button" className="btn btn-warning" onClick={() => setStep(3)} >Vorige stap</button>
