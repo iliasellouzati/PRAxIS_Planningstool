@@ -275,8 +275,6 @@ router.post("/global/year/:year/calendarmonth/:month/version/:version", async (r
         res.status(500).send(e);
     }
 })
-
-
 router.get("/global/year/:year/calendarmonth/:month/version/:version", async (req, res) => {
     try {
 

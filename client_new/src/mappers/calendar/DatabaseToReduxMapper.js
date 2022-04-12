@@ -139,6 +139,40 @@ const mapSavedShiftsFromDbToHistory = (savedShifts) => {
     })
 }
 
+const mapShiftsFromDbToTotalHours = (dataString, calendarFromDb, shifttypes) => {
+    let returnValue = {};
+    let currentMonth = moment(dataString, "MM-YYYY");
+
+
+    calendarFromDb.forEach(shiftDay => {
+
+        let shift_datum = moment(shiftDay.datum, "YYYY-MM-DD");
+        let shift = shifttypes.find(x => x.naam === shiftDay.shifttypes_naam);
+        let duration;
+        if (shift_datum.isBefore(currentMonth, 'month')) {
+
+            if (moment.duration(moment((shiftDay.einduur ? `${shiftDay.datum}-${shiftDay.einduur}` : `${shiftDay.datum}-${shift.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDay.beginuur ? `${shiftDay.datum}-${shiftDay.beginuur}` : `${shiftDay.datum}-${shift.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() < 0) {
+                duration = moment.duration(moment((shiftDay.einduur ? `${shiftDay.datum}-${shiftDay.einduur}` : `${shiftDay.datum}-${shift.einduur}`), "YYYY-MM-DD-hh:mm").add(1, "day").diff(moment(shiftDay.datum, "YYYY-MM-DD").add(1, 'day').startOf('day'))).asHours();
+            } else {
+                return;
+            }
+        } else {
+            duration = moment.duration(moment((shiftDay.einduur ? `${shiftDay.datum}-${shiftDay.einduur}` : `${shiftDay.datum}-${shift.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDay.beginuur ? `${shiftDay.datum}-${shiftDay.beginuur}` : `${shiftDay.datum}-${shift.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() >= 0 ?
+                moment.duration(moment((shiftDay.einduur ? `${shiftDay.datum}-${shiftDay.einduur}` : `${shiftDay.datum}-${shift.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDay.beginuur ? `${shiftDay.datum}-${shiftDay.beginuur}` : `${shiftDay.datum}-${shift.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() :
+                moment.duration(moment((shiftDay.einduur ? `${shiftDay.datum}-${shiftDay.einduur}` : `${shiftDay.datum}-${shift.einduur}`), "YYYY-MM-DD-hh:mm").add(1, "day").diff(moment((shiftDay.beginuur ? `${shiftDay.datum}-${shiftDay.beginuur}` : `${shiftDay.datum}-${shift.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
+        }
+
+        if (returnValue[`${shiftDay.werknemers_id}`] === undefined) {
+            returnValue[`${shiftDay.werknemers_id}`] = duration;
+        } else {
+            returnValue[`${shiftDay.werknemers_id}`] += duration;
+        }
+    })
+
+    return returnValue;
+
+
+}
 
 const getCalendarMonth_ArrayWithMoment = dateString => {
     let calendar = [];
@@ -166,8 +200,8 @@ const getPartialCalendarMonth_ArrayWithMoment = (dateString, begin, eind) => {
     let startDay = date.clone().startOf('month').startOf('isoWeek');
     const endDay = date.clone().endOf('month').endOf('isoWeek').add(1, 'day');
 
-    const beginContract = moment(begin, "DD/MM/YYYY").subtract(1,'day');
-    const eindContract = moment(eind, "DD/MM/YYYY").add(1,'day');
+    const beginContract = moment(begin, "DD/MM/YYYY").subtract(1, 'day');
+    const eindContract = moment(eind, "DD/MM/YYYY").add(1, 'day');
 
 
     while (startDay.isBefore(endDay, 'day')) {
@@ -206,5 +240,6 @@ export {
     mapShiftsFromDbToCalendar,
     mapShiftsFromDbToAutomatisation,
     mapShiftsFromDbToTableRowHistory,
-    mapSavedShiftsFromDbToHistory
+    mapSavedShiftsFromDbToHistory,
+    mapShiftsFromDbToTotalHours
 }

@@ -10,6 +10,10 @@ import ReadAndWriteShift from '../shift/ReadAndWriteShift';
 import ReadAndWriteShiftContextMenu from '../contextmenu/ReadAndWriteShiftContextMenu';
 import TableRowHistoryEmployee from '../calendar/TableRowHistoryEmployee';
 import moment from 'moment';
+import { makeObjectForAutomatisation } from '../../mappers/statistics/DatabaseToStatisticsMapper';
+import LastMonthHours from './LastMonthHours';
+import CurrentMonthHours from './CurrentMonthHours';
+import { mapShiftsFromDbToTotalHours } from '../../mappers/calendar/DatabaseToReduxMapper';
 
 const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
 
@@ -23,22 +27,34 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
     const [Employees, setEmployees] = useState([]);
     const [ShowExtraInforEmployees, setShowExtraInforEmployees] = useState([])
     const [ShiftTypes, setShiftTypes] = useState([]);
-
+    const [ExtraHistoryCurrentYearEmployees, setExtraHistoryCurrentYearEmployees] = useState([]);
+    const [ExtraHistoryLastMonth, setExtraHistoryLastMonth] = useState([]);
 
     const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
     const cssWidthDay = (90 / (calendarMonthHelper.length)) + "%";
 
-
-
-
     const fetchData = async () => {
+        let shifttypes = [];
         await axios.get('http://127.0.0.1:3001/api/employee')
             .then(response => { setEmployees(response.data); setShowExtraInforEmployees(response.data.map((x) => ({ 'id': x.id, 'show': false }))) })
             .catch(error => setHttp500([true, error]));
 
         await axios.get('http://127.0.0.1:3001/api/shifttype')
-            .then(response => setShiftTypes(response.data))
+            .then(response => {
+                setShiftTypes(response.data);
+                shifttypes = response.data;
+            })
             .catch(error => setHttp500([true, error]));
+
+        await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').format('DD-MM-YYYY')}`)
+            .then(response => setExtraHistoryCurrentYearEmployees(makeObjectForAutomatisation(response.data, shifttypes, `${month}-${year}`)))
+            .catch(error => setHttp500([true, error]));
+
+        await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${month}-${year}`, 'MM-YYYY').subtract(1, 'month').startOf('month').startOf('isoWeek').subtract(1, 'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'day').format('DD-MM-YYYY')}`)
+            .then(response => setExtraHistoryLastMonth(mapShiftsFromDbToTotalHours(moment(`${month}-${year}`,"MM-YYYY").subtract(1,'month').format("MM-YYYY"), response.data, shifttypes)))
+            .catch(error => setHttp500([true, error]));
+
+
 
 
         setLoading(false);
@@ -62,11 +78,14 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
 
                         {/* BOVENSTE INFORMATIEVE TABELRIJ MET DAGEN */}
                         <thead style={{ textAlign: 'center' }}>
-                            <tr>
+                            <tr >
                                 <th rowSpan="2" style={{ padding: "1px", width: "10%" }}>Werknemers</th>
                                 {calendarMonthHelper.map((element, index) =>
                                     <th key={index} style={HighlightDay[0] && HighlightDay[1].isSame(element, 'day') ? { outline: "2px solid red", padding: "1px", width: { cssWidthDay } } : (element.isoWeekday() === 6 || element.isoWeekday() === 7) ? { outline: '1px solid darkgreen', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
                                 )}
+                                <th rowSpan="2" style={{ padding: "1px", minWidth: "38px" }}>{moment(month, "MM").subtract(1, 'month').format("MM")}<p style={{ padding: "0px", margin: "0px" }}>&#x027EA;</p></th>
+                                <th rowSpan="2" style={{ padding: "1px", minWidth: "38px", }}>{month}<p style={{ padding: "0px", margin: "0px" }}>&#x021D3;</p></th>
+
 
                             </tr>
                             <tr>
@@ -86,21 +105,26 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                     </th>
                                 )}
 
+
+
                             </tr>
                         </thead>
+
+
 
                         {/* INDIVIDUELE TABELRIJEN MET PLANNING/EXTRA INFO VAN WERKNEMER */}
                         <tbody>
                             {calendar.map(individueleCalendar =>
                                 <React.Fragment>
                                     <tr>
-                                        <td style={{ padding: "1px", width: { cssWidthDay } }}
+                                        <td style={{ padding: "1px", width: '10%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                                             onClick={() => {
                                                 let index = ShowExtraInforEmployees.findIndex(x => x.id === individueleCalendar.employeeId);
                                                 let object = [...ShowExtraInforEmployees];
                                                 object[index].show = !object[index].show;
                                                 setShowExtraInforEmployees(object);
                                             }}
+
                                         >
                                             <i className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-table-caret fas fa-caret-down fa-fw" : "expandable-table-caret fas fa-caret-right fa-fw"}></i>
 
@@ -108,7 +132,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                         </td>
                                         {individueleCalendar.calendar.map(shiftDay =>
                                             shiftDay.shift === false ?
-                                                <td style={{backgroundColor:'black'}}>
+                                                <td style={{ backgroundColor: 'black' }}>
 
                                                 </td> :
                                                 <td
@@ -125,6 +149,8 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                                     <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
                                                 </td>
                                         )}
+                                        <td style={{ padding: "1px", minWidth: "38px", textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
+                                        <td style={{ padding: "1px", minWidth: "38px", textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} shifttypes={ShiftTypes} /></td>
                                     </tr>
                                     {/* TABELRIJ MET HISTORIEKE PLANNING VAN WERKNEMER */}
                                     <tr className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-body" : "expandable-body d-none"}>

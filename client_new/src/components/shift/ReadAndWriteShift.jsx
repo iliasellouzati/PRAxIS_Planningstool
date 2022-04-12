@@ -33,7 +33,7 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
             textAlign: 'center',
             verticalAlign: 'middle',
             height: "27px",
-            minWidth: "45px",
+            minWidth: "42px",
             fontSize: Shift.standaardtekst !== "uur" ? "10px" : "",
             outline: Shift.border ? "1px solid black" : ""
         }
