@@ -29,6 +29,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
     const [ShiftTypes, setShiftTypes] = useState([]);
     const [ExtraHistoryCurrentYearEmployees, setExtraHistoryCurrentYearEmployees] = useState([]);
     const [ExtraHistoryLastMonth, setExtraHistoryLastMonth] = useState([]);
+    const [ContractTypes, setContractTypes] = useState([]);
 
     const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
     const cssWidthDay = (90 / (calendarMonthHelper.length)) + "%";
@@ -51,10 +52,12 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
             .catch(error => setHttp500([true, error]));
 
         await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${month}-${year}`, 'MM-YYYY').subtract(1, 'month').startOf('month').startOf('isoWeek').subtract(1, 'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'day').format('DD-MM-YYYY')}`)
-            .then(response => setExtraHistoryLastMonth(mapShiftsFromDbToTotalHours(moment(`${month}-${year}`,"MM-YYYY").subtract(1,'month').format("MM-YYYY"), response.data, shifttypes)))
+            .then(response => setExtraHistoryLastMonth(mapShiftsFromDbToTotalHours(moment(`${month}-${year}`, "MM-YYYY").subtract(1, 'month').format("MM-YYYY"), response.data, shifttypes)))
             .catch(error => setHttp500([true, error]));
 
-
+        await axios.get('http://127.0.0.1:3001/api/contracttype')
+            .then(response => setContractTypes(response.data))
+            .catch(error => setHttp500([true, error]));
 
 
         setLoading(false);
@@ -149,8 +152,8 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                                     <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
                                                 </td>
                                         )}
-                                        <td style={{ padding: "1px", minWidth: "38px", textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
-                                        <td style={{ padding: "1px", minWidth: "38px", textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} shifttypes={ShiftTypes} /></td>
+                                        <td style={{ padding: "1px", minWidth: "38px", textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
+                                        <td style={{ padding: "1px", minWidth: "38px", textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} shifttypes={ShiftTypes} /></td>
                                     </tr>
                                     {/* TABELRIJ MET HISTORIEKE PLANNING VAN WERKNEMER */}
                                     <tr className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-body" : "expandable-body d-none"}>
@@ -162,7 +165,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                         <td colSpan={calendarMonthHelper.length + 1}>
                                             <div style={{ backgroundColor: "cyan", height: '50px' }}>
                                                 hier komt extra info later
-                                            </div>
+-                                            </div>
                                         </td>
                                     </tr>
 

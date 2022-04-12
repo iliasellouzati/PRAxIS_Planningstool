@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-const LastMonthHours = ({ employeeId, extrahistory, shifttypes }) => {
+const LastMonthHours = ({ employeeId, extrahistory, employees, shifttypes, contracttypes }) => {
 
   const currentCalendar = useSelector((state) => state.currentCalendar);
   const { calendar } = currentCalendar;
   const { month, year } = useParams();
   const [CurrentCalendarHours, setCurrentCalendarHours] = useState(0);
+  const [Percentage, setPercentage] = useState(0);
+  const [MaandurenVolgensContract, setMaandurenVolgensContract] = useState(0);
 
   const calcHours = () => {
 
@@ -37,6 +39,14 @@ const LastMonthHours = ({ employeeId, extrahistory, shifttypes }) => {
     })
 
     setCurrentCalendarHours(total);
+    return total;
+  }
+
+  const calcPiePercentage = (total) => {
+    let contracturen = Math.round(parseInt(contracttypes.find(x => x.id === employees.find(y => y.id === employeeId).contracttype_id).wekelijkse_contract_uren) * (moment(`${month}-${year}`, "MM-YYYY").daysInMonth() / 7));
+
+    setPercentage(Math.round((extrahistory ? extrahistory + total : total) * 100 / contracturen));
+    setMaandurenVolgensContract(contracturen);
   }
 
   function roundToTwo(num) {
@@ -44,7 +54,8 @@ const LastMonthHours = ({ employeeId, extrahistory, shifttypes }) => {
   }
 
   useEffect(() => {
-    calcHours();
+    let total = calcHours();
+    calcPiePercentage(total);
 
     return () => {
 
@@ -54,8 +65,26 @@ const LastMonthHours = ({ employeeId, extrahistory, shifttypes }) => {
 
   return (
     <React.Fragment>
-      <div style={{ margin: '0px', padding: '0px' }} title={roundToTwo(extrahistory ? extrahistory + CurrentCalendarHours : CurrentCalendarHours)}>
-        {Math.round(extrahistory ? extrahistory + CurrentCalendarHours : CurrentCalendarHours)}
+      <div style={{ margin: '0px', padding: '0px', width: '100%', height: '100%', cursor: 'default', display: 'flex', justifyContent: 'space-around' }}
+        title={`${roundToTwo(extrahistory ? extrahistory + CurrentCalendarHours : CurrentCalendarHours)} / ${MaandurenVolgensContract}  (${Percentage}%)`}>
+
+        {Percentage !== 0 && Percentage < 100 && <div id="my-pie-chart"
+          style={{
+            height: '25px',
+            width: '25px',
+            opacity: '30%',
+            borderRadius: '50%',
+            position: 'absolute',
+            zIndex: 0,
+            background: 'conic-gradient(#7CFC00 0.00% ' + Percentage + '%,  #FF0000 ' + Percentage + '%)'
+            , textAlign: 'center', alignItems: 'center', alignContent: 'center'
+          }}>
+
+        </div>}
+        <div style={extrahistory + CurrentCalendarHours > 180 ? {color:'red', opacity: '100%', zIndex: 1 } : { opacity: '100%', zIndex: 1 }}>
+          <b>{Math.round(extrahistory ? extrahistory + CurrentCalendarHours : CurrentCalendarHours)}</b>
+
+        </div>
 
       </div>
     </React.Fragment>
