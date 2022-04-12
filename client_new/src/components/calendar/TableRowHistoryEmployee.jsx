@@ -5,7 +5,7 @@ import ReadOnlyHistoryShift from '../shift/ReadOnlyHistoryShift';
 import axios from 'axios';
 import { mapShiftsFromDbToTableRowHistory } from '../../mappers/calendar/DatabaseToReduxMapper';
 
-const TableRowHistoryEmployee = ({ employeeId, shifttypes }) => {
+const TableRowHistoryEmployee = ({ employeeId, shifttypes, length }) => {
 
     let { year, month } = useParams();
 
@@ -18,7 +18,7 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes }) => {
         try {
             const { data } = await axios.get(`http://localhost:3001/api/calendar/individual/${employeeId}/year/${moment(datum, "MM-YYYY").format("YYYY")}/calendarmonth/${moment(datum, "MM-YYYY").format("MM")}`);
             let history = mapShiftsFromDbToTableRowHistory(datum, data);
-            setHistory(history);
+            setHistory(history.length > length ? history.slice(0, length) : history);
 
         } catch (e) {
             setHistory([]);
@@ -30,6 +30,7 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes }) => {
 
 
     useEffect(() => {
+
         getHistorie(`${month}-${year}`).then(setLoading(false));
     }, [])
 
@@ -84,6 +85,12 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes }) => {
                     <ReadOnlyHistoryShift shift={shiftDay.shift !== "" ? shifttypes.find(x => x.naam === shiftDay.shift) : null} shiftDay={shiftDay} />
                 </td>
             )}
+            <td colSpan={2} style={{ padding: "0px", margin: '0px' ,textAlign:'center'}}>
+                <span style={{ fontSize: '12px' }}><b>{`${moment(VisualDate, "MM-YYYY").startOf('month').startOf('isoWeek').format("DD/MM")}`}</b></span>
+                <span style={{ fontSize: '10px' }}>-</span>
+                <span style={{ fontSize: '12px' }}><b>{`${moment(VisualDate, "MM-YYYY").startOf('month').startOf('isoWeek').add(length-1, 'days').format("DD/MM")}`}</b></span>
+
+            </td>
         </React.Fragment>
     )
 }

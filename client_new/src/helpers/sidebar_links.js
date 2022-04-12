@@ -7,16 +7,6 @@ const SideBarLinks = [
         "link": "/"
     },
     {
-        "naam": "automatisch",
-        "icon": "fas fa-magic",
-        "link": "/automatisatie/2021/03"
-    },
-    {
-        "naam": "manueel",
-        "icon": "fas fa-magic",
-        "link": "/manueel"
-    },
-    {
         "naam": "planningen",
         "icon": "fas fa-table",
         "link": "/planningen/"+moment().format("YYYY")
@@ -48,7 +38,7 @@ const SideBarLinks = [
     },
     {
         "naam": "rapporten",
-        "icon": "fas fa-file-exc-el",
+        "icon": "fas fa-file-excel",
         "link": "/rapporten"
     }
 ]

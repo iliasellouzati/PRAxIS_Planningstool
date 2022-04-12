@@ -157,12 +157,12 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                     </tr>
                                     {/* TABELRIJ MET HISTORIEKE PLANNING VAN WERKNEMER */}
                                     <tr className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-body" : "expandable-body d-none"}>
-                                        <TableRowHistoryEmployee shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
+                                        <TableRowHistoryEmployee shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} length={calendarMonthHelper.length} />
                                     </tr>
 
                                     {/* TABELRIJ MET EXTRA INFO VAN WERKNEMER */}
                                     <tr className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-body" : "expandable-body d-none"}>
-                                        <td colSpan={calendarMonthHelper.length + 1}>
+                                        <td colSpan={calendarMonthHelper.length + 3}>
                                             <div style={{ backgroundColor: "cyan", height: '50px' }}>
                                                 hier komt extra info later
 -                                            </div>

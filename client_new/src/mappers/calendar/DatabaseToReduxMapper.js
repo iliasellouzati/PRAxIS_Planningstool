@@ -143,6 +143,9 @@ const mapShiftsFromDbToTotalHours = (dataString, calendarFromDb, shifttypes) => 
     let returnValue = {};
     let currentMonth = moment(dataString, "MM-YYYY");
 
+    if(calendarFromDb.length===0){
+        return {};
+    }
 
     calendarFromDb.forEach(shiftDay => {
 
