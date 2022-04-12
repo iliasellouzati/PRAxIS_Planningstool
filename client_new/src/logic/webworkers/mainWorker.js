@@ -554,7 +554,7 @@ export default () => {
             hulpHistory[history.length - 1] = week.zondag;
         }
         let shiftCounter = 0;
-        for (let individualDayLooper = hulpHistory.length - 10; individualDayLooper < hulpHistory.length; individualDayLooper++) {
+        for (let individualDayLooper = hulpHistory.length - 11; individualDayLooper < hulpHistory.length; individualDayLooper++) {
 
 
             if (["0618", "0719", "1806", "1907"].some(x => x === hulpHistory[individualDayLooper])) {

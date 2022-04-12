@@ -14,6 +14,7 @@ import { makeObjectForAutomatisation } from '../../mappers/statistics/DatabaseTo
 import LastMonthHours from './LastMonthHours';
 import CurrentMonthHours from './CurrentMonthHours';
 import { mapShiftsFromDbToTotalHours } from '../../mappers/calendar/DatabaseToReduxMapper';
+import ExtraInfoTableRow from './ExtraInfoEmployee/ExtraInfoTableRow';
 
 const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
 
@@ -163,9 +164,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                     {/* TABELRIJ MET EXTRA INFO VAN WERKNEMER */}
                                     <tr className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-body" : "expandable-body d-none"}>
                                         <td colSpan={calendarMonthHelper.length + 3}>
-                                            <div style={{ backgroundColor: "cyan", height: '50px' }}>
-                                                hier komt extra info later
--                                            </div>
+                                            <ExtraInfoTableRow  />
                                         </td>
                                     </tr>
 
