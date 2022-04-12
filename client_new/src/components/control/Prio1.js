@@ -135,8 +135,12 @@ const LegeShiftenTussen3NachtenEnDagShift = ({
     let blankoShift = 0;
 
         for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
+        
 
             let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            if(shiftName===false){
+                continue;
+            }
             
             if (nightShifts.includes(shiftName) && blankoShift!==0 && opeenVolgendeNachtenShiften!==0) {
                 blankoShift=0;
@@ -147,7 +151,7 @@ const LegeShiftenTussen3NachtenEnDagShift = ({
            else if (nightShifts.includes(shiftName)) {
                 opeenVolgendeNachtenShiften++;
                 continue;
-            } else if (shiftName === '' && opeenVolgendeNachtenShiften !== 0) {
+            } else if ((shiftName === ''||['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie)) && opeenVolgendeNachtenShiften !== 0) {
                 blankoShift++;
                 continue;
             }
@@ -183,6 +187,9 @@ const TweeLegeShiftenTussen4NachtenEnDagShift = ({
         for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
 
             let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            if(shiftName===false){
+                continue;
+            }
 
 
             if (nightShifts.includes(shiftName) && blankoShift!==0 && opeenVolgendeNachtenShiften!==0) {
@@ -193,7 +200,7 @@ const TweeLegeShiftenTussen4NachtenEnDagShift = ({
            else if (nightShifts.includes(shiftName)) {
                 opeenVolgendeNachtenShiften++;
                 continue;
-            } else if (shiftName === '' && opeenVolgendeNachtenShiften !== 0) {
+            } else if ((shiftName === ''||['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie)) && opeenVolgendeNachtenShiften !== 0) {
                 blankoShift++;
                 continue;
             }
@@ -210,14 +217,7 @@ const TweeLegeShiftenTussen4NachtenEnDagShift = ({
     }
     return result;
 }
-const CorrectePlaatsingStandyControle = ({
-    calendar,
-    calendarMonthHelper,
-    shifttypes
-}) => {
-    
 
-}
 const TweeBlancoShiftsNaWeekendMet3Nacht = ({
     calendar,
     calendarMonthHelper,
@@ -232,13 +232,16 @@ const TweeBlancoShiftsNaWeekendMet3Nacht = ({
         for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
 
             let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            if(shiftName===false){
+                continue;
+            }
             
             if (nightShifts.includes(shiftName)&&blankoShift===0 && (calendarMonthHelper[individualDayLooper].isoWeekday() === 5 || calendarMonthHelper[individualDayLooper].isoWeekday() === 6 || calendarMonthHelper[individualDayLooper].isoWeekday() === 7)) {
                 opeenVolgendeNachtenShiften++;
                 continue;}
 
 
-           else if (opeenVolgendeNachtenShiften!==0 && shiftName==='') {
+           else if (opeenVolgendeNachtenShiften!==0 && (shiftName===''||!['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie))) {
                 blankoShift++;
 
                 continue;
@@ -357,4 +360,6 @@ const StandbyCorrectePlaatsingControle = ({
 
 }
 
-export {StandbyControle,Max4OperatorShifts,DagNaNacht,DubbeleOperatorShift,OperatorShiftenControle,LegeShiftenTussen3NachtenEnDagShift,TweeLegeShiftenTussen4NachtenEnDagShift,CorrectePlaatsingStandyControle,TweeBlancoShiftsNaWeekendMet3Nacht,StandbyCorrectePlaatsingControle}
+
+
+export {StandbyControle,Max4OperatorShifts,DagNaNacht,DubbeleOperatorShift,OperatorShiftenControle,LegeShiftenTussen3NachtenEnDagShift,TweeLegeShiftenTussen4NachtenEnDagShift,TweeBlancoShiftsNaWeekendMet3Nacht,StandbyCorrectePlaatsingControle}

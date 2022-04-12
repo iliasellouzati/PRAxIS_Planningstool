@@ -43,7 +43,9 @@ export default () => {
       });;
 
       //  -----------------------------------------loop2----------------------------------------------------------------------------
-      for (let index2 = 0; index2 < IDS[1].possibleWeeks.filter(x => !filterTillEmployee1.includes(x)).length; index2+=3) {
+      for (let index2 = 0; index2 < IDS[1].possibleWeeks.filter(x => !filterTillEmployee1.includes(x)).length; index2+=3
+      
+      ) {
 
         let weekId2 = IDS[1].possibleWeeks.filter(x => !filterTillEmployee1.includes(x))[index2];
         let filterTillEmployee2 = [...filterTillEmployee1, weekId2, ...incompatibelWeeks[`${weekId2}`]];
@@ -53,7 +55,7 @@ export default () => {
 
 
         // -----------------------------------------loop3----------------------------------------------------------------------------
-        for (let index3 = 0; index3 < IDS[2].possibleWeeks.filter(x => !filterTillEmployee2.includes(x)).length; index3+=2) {
+        for (let index3 = 0; index3 < IDS[2].possibleWeeks.filter(x => !filterTillEmployee2.includes(x)).length; index3+=3) {
 
           let weekId3 = IDS[2].possibleWeeks.filter(x => !filterTillEmployee2.includes(x))[index3];
 
@@ -64,7 +66,7 @@ export default () => {
 
           if (employeesSize > 3) {
             //  -----------------------------------------loop4---------------------------------------------------------------------------
-            for (let index4 = 0; index4 < IDS[3].possibleWeeks.filter(x => !filterTillEmployee3.includes(x)).length; index4++) {
+            for (let index4 = 0; index4 < IDS[3].possibleWeeks.filter(x => !filterTillEmployee3.includes(x)).length; index4+=3) {
 
               let weekId4 = IDS[3].possibleWeeks.filter(x => !filterTillEmployee3.includes(x))[index4];
               if (employeesSize > 4) {
@@ -75,7 +77,7 @@ export default () => {
                 });;
 
                 //-----------------------------------------loop5---------------------------------------------------------------------------
-                for (let index5 = 0; index5 < IDS[4].possibleWeeks.filter(x => !filterTillEmployee4.includes(x)).length; index5++) {
+                for (let index5 = 0; index5 < IDS[4].possibleWeeks.filter(x => !filterTillEmployee4.includes(x)).length; index5+=3) {
                   let weekId5 = IDS[4].possibleWeeks.filter(x => !filterTillEmployee4.includes(x))[index5];
                   if (employeesSize > 5) {
 
@@ -86,7 +88,7 @@ export default () => {
 
 
                     //-----------------------------------------loop6---------------------------------------------------------------------------
-                    for (let index6 = 0; index6 < IDS[5].possibleWeeks.filter(x => !filterTillEmployee5.includes(x)).length; index6++) {
+                    for (let index6 = 0; index6 < IDS[5].possibleWeeks.filter(x => !filterTillEmployee5.includes(x)).length; index6+=3) {
                       let weekId6 = IDS[5].possibleWeeks.filter(x => !filterTillEmployee5.includes(x))[index6];
                       if (employeesSize > 6) {
 
@@ -97,7 +99,7 @@ export default () => {
 
 
                         //-----------------------------------------loop7---------------------------------------------------------------------------
-                        for (let index7 = 0; index7 < IDS[6].possibleWeeks.filter(x => !filterTillEmployee6.includes(x)).length; index7++) {
+                        for (let index7 = 0; index7 < IDS[6].possibleWeeks.filter(x => !filterTillEmployee6.includes(x)).length; index7+=3) {
                           let weekId7 = IDS[6].possibleWeeks.filter(x => !filterTillEmployee6.includes(x))[index7];
                           if (employeesSize > 7) {
 
@@ -108,7 +110,7 @@ export default () => {
 
 
                             //-----------------------------------------loop8--------------------------------------------------------------------------
-                            for (let index8 = 0; index8 < IDS[7].possibleWeeks.filter(x => !filterTillEmployee7.includes(x)).length; index8++) {
+                            for (let index8 = 0; index8 < IDS[7].possibleWeeks.filter(x => !filterTillEmployee7.includes(x)).length; index8+=3) {
                               let weekId8 = IDS[7].possibleWeeks.filter(x => !filterTillEmployee7.includes(x))[index8];
                               if (employeesSize > 8) {
 
@@ -119,7 +121,7 @@ export default () => {
 
 
                                 //-----------------------------------------loop9--------------------------------------------------------------------------
-                                for (let index9 = 0; index9 < IDS[8].possibleWeeks.filter(x => !filterTillEmployee8.includes(x)).length; index9++) {
+                                for (let index9 = 0; index9 < IDS[8].possibleWeeks.filter(x => !filterTillEmployee8.includes(x)).length; index9+=3) {
                                   let weekId9 = IDS[8].possibleWeeks.filter(x => !filterTillEmployee8.includes(x))[index9];
                                   if (employeesSize > 9) {
 
@@ -130,7 +132,7 @@ export default () => {
 
 
                                     //-----------------------------------------loop10--------------------------------------------------------------------------
-                                    for (let index10 = 0; index10 < IDS[9].possibleWeeks.filter(x => !filterTillEmployee9.includes(x)).length; index10++) {
+                                    for (let index10 = 0; index10 < IDS[9].possibleWeeks.filter(x => !filterTillEmployee9.includes(x)).length; index10+=2) {
                                       let weekId10 = IDS[9].possibleWeeks.filter(x => !filterTillEmployee9.includes(x))[index10];
                                       if (employeesSize > 10) {
 
@@ -141,7 +143,7 @@ export default () => {
 
 
                                         //-----------------------------------------loop11--------------------------------------------------------------------------
-                                        for (let index11 = 0; index11 < IDS[10].possibleWeeks.filter(x => !filterTillEmployee10.includes(x)).length; index11++) {
+                                        for (let index11 = 0; index11 < IDS[10].possibleWeeks.filter(x => !filterTillEmployee10.includes(x)).length; index11+=2) {
                                           let weekId11 = IDS[10].possibleWeeks.filter(x => !filterTillEmployee10.includes(x))[index11];
                                           if (employeesSize > 11) {
 
@@ -152,7 +154,7 @@ export default () => {
 
 
                                             //-----------------------------------------loop12--------------------------------------------------------------------------
-                                            for (let index12 = 0; index12 < IDS[11].possibleWeeks.filter(x => !filterTillEmployee11.includes(x)).length; index12++) {
+                                            for (let index12 = 0; index12 < IDS[11].possibleWeeks.filter(x => !filterTillEmployee11.includes(x)).length; index12+=2) {
                                               let weekId12 = IDS[11].possibleWeeks.filter(x => !filterTillEmployee11.includes(x))[index12];
                                               if (employeesSize > 12) {
 
@@ -163,7 +165,7 @@ export default () => {
 
 
                                                 //-----------------------------------------loop13--------------------------------------------------------------------------
-                                                for (let index13 = 0; index13 < IDS[12].possibleWeeks.filter(x => !filterTillEmployee12.includes(x)).length; index13++) {
+                                                for (let index13 = 0; index13 < IDS[12].possibleWeeks.filter(x => !filterTillEmployee12.includes(x)).length; index13+=2) {
                                                   let weekId13 = IDS[12].possibleWeeks.filter(x => !filterTillEmployee12.includes(x))[index13];
                                                   if (employeesSize > 13) {
 
@@ -174,7 +176,7 @@ export default () => {
 
 
                                                     //-----------------------------------------loop14--------------------------------------------------------------------------
-                                                    for (let index14 = 0; index14 < IDS[13].possibleWeeks.filter(x => !filterTillEmployee13.includes(x)).length; index14++) {
+                                                    for (let index14 = 0; index14 < IDS[13].possibleWeeks.filter(x => !filterTillEmployee13.includes(x)).length; index14+=2) {
                                                       let weekId14 = IDS[13].possibleWeeks.filter(x => !filterTillEmployee13.includes(x))[index14];
                                                       if (employeesSize > 14) {
 
@@ -185,7 +187,7 @@ export default () => {
 
 
                                                         //-----------------------------------------loop15--------------------------------------------------------------------------
-                                                        for (let index15 = 0; index15 < IDS[14].possibleWeeks.filter(x => !filterTillEmployee14.includes(x)).length; index15++) {
+                                                        for (let index15 = 0; index15 < IDS[14].possibleWeeks.filter(x => !filterTillEmployee14.includes(x)).length; index15+=2) {
                                                           let weekId15 = IDS[14].possibleWeeks.filter(x => !filterTillEmployee14.includes(x))[index15];
                                                           let respons = berekenEindeLoop({
                                                             'arrayWeekIdCombo': [weekId1, weekId2, weekId3, weekId4, weekId5, weekId6, weekId7, weekId8, weekId9, weekId10, weekId11, weekId12, weekId13, weekId14, weekId15],
@@ -212,8 +214,10 @@ export default () => {
                                                           });
                                                           if (respons !== false) {
                                                             if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                                              mogelijkeCombinaties.push(respons)
-                                                            } else {
+                                                          mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                                                            } else {
                                                               let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                                               mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                                             }
@@ -246,8 +250,10 @@ export default () => {
                                                         });
                                                         if (respons !== false) {
                                                           if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                                            mogelijkeCombinaties.push(respons)
-                                                          } else {
+                                                        mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                                                          } else {
                                                             let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                                             mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                                           }
@@ -280,8 +286,10 @@ export default () => {
                                                     });
                                                     if (respons !== false) {
                                                       if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                                        mogelijkeCombinaties.push(respons)
-                                                      } else {
+                                                    mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                                                      } else {
                                                         let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                                         mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                                       }
@@ -312,8 +320,10 @@ export default () => {
                                                 });
                                                 if (respons !== false) {
                                                   if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                                    mogelijkeCombinaties.push(respons)
-                                                  } else {
+                                                mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                                                  } else {
                                                     let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                                     mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                                   }
@@ -343,8 +353,10 @@ export default () => {
                                             });
                                             if (respons !== false) {
                                               if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                                mogelijkeCombinaties.push(respons)
-                                              } else {
+                                            mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                                              } else {
                                                 let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                                 mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                               }
@@ -373,8 +385,10 @@ export default () => {
                                         });
                                         if (respons !== false) {
                                           if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                            mogelijkeCombinaties.push(respons)
-                                          } else {
+                                        mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                                          } else {
                                             let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                             mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                           }
@@ -402,8 +416,10 @@ export default () => {
                                     });
                                     if (respons !== false) {
                                       if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                        mogelijkeCombinaties.push(respons)
-                                      } else {
+                                    mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                                      } else {
                                         let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                         mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                       }
@@ -430,8 +446,10 @@ export default () => {
                                 });
                                 if (respons !== false) {
                                   if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                    mogelijkeCombinaties.push(respons)
-                                  } else {
+                                mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                                  } else {
                                     let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                     mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                   }
@@ -465,8 +483,10 @@ export default () => {
                             });
                             if (respons !== false) {
                               if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                                mogelijkeCombinaties.push(respons)
-                              } else {
+                            mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                              } else {
                                 let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                 mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                               }
@@ -498,8 +518,10 @@ export default () => {
                         });
                         if (respons !== false) {
                           if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                            mogelijkeCombinaties.push(respons)
-                          } else {
+                        mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                          } else {
                             let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                             mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                           }
@@ -527,8 +549,10 @@ export default () => {
                     });
                     if (respons !== false) {
                       if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                        mogelijkeCombinaties.push(respons)
-                      } else {
+                    mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                      } else {
                         let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                         mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                       }
@@ -554,8 +578,10 @@ export default () => {
                 });
                 if (respons !== false) {
                   if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                    mogelijkeCombinaties.push(respons)
-                  } else {
+                mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })                  } else {
                     let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                     mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                   }
@@ -580,7 +606,10 @@ export default () => {
             });
             if (respons !== false) {
               if (!mogelijkeCombinaties.some(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften)) {
-                mogelijkeCombinaties.push(respons)
+                mogelijkeCombinaties.push({
+                  'ingevuldeOperatorShiften':respons.ingevuldeOperatorShiften,
+                  'combinaties':[respons.combinaties]
+                })
               } else {
                 let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                 mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)

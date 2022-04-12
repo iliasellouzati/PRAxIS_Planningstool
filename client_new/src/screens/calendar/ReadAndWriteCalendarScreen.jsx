@@ -28,7 +28,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INI
   const [Employees, setEmployees] = useState([]);
   const [Shifttypes, setShifttypes] = useState([]);
   const [ShowFinalComment, setShowFinalComment] = useState(false);
-  const [ShowAutomatisation, setShowAutomatisation] = useState(true);
+  const [ShowAutomatisation, setShowAutomatisation] = useState(false);
 
   const saveShiftsToDb = async () => {
     let calendarForDb = mapReduxCalendarToDb(calendar);

@@ -60,7 +60,7 @@ const OverurenWeekControle = ({
             let week = [shiftNameMa, shiftNameDi, shiftNameWo, shiftNameDo, shiftNameVr, shiftNameZa];
 
             week.forEach(shiftName => {
-                if (shiftName!==false&&shiftName !== "") {
+                if (shiftName!==false&&shiftName !== ""&&!['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie)) {
                     let shift = shifttypes.find(x => x.naam === shiftName);
                     let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                         moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
@@ -111,7 +111,7 @@ const OverurenMaandControle = ({
             if (moment(calendar[employeeLooper].calendar[individualDayLooper].day, 'DD-MM-YYYY').isSame(currentMonth, 'month')) {
 
                 let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
-                if (shiftName === '' || shiftName===false) {
+                if (shiftName === '' || shiftName===false||['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie)) {
                     continue;
                 }
 
@@ -155,6 +155,9 @@ const TweeLegeShiftenTussen3NachtenEnDagShift = ({
         for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
 
             let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
+            if(shiftName===false){
+                continue;
+            }
             
             if (nightShifts.includes(shiftName) && blankoShift!==0 && opeenVolgendeNachtenShiften!==0) {
                 blankoShift=0;
@@ -165,7 +168,7 @@ const TweeLegeShiftenTussen3NachtenEnDagShift = ({
            else if (nightShifts.includes(shiftName)) {
                 opeenVolgendeNachtenShiften++;
                 continue;
-            } else if (shiftName === '' && opeenVolgendeNachtenShiften !== 0) {
+            } else if ((shiftName === ''||!['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie) )&& opeenVolgendeNachtenShiften !== 0) {
                 blankoShift++;
                 continue;
             }

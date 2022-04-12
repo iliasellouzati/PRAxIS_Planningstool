@@ -119,7 +119,9 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
 
       // eslint-disable-next-line no-fallthrough
       case "FIRST_POSSIBLE_IDS_FOUND":
-        config.incompatibelWeeks = respons[2];
+        if (config.incompatibelWeeks.length === 0) {
+          config.incompatibelWeeks = respons[2];
+        }
 
 
       // eslint-disable-next-line no-fallthrough
@@ -219,31 +221,56 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         dispatchWeek(config.selectedWeeks[0], week, weekCombo.empId);
       })
 
-      // setTimeout(function () {
-      //   config.comboWeek = [];
-      //   config.possibleWeekCombos = [];
-      //   let newPreviousWeeks = [];
+      setTimeout(function () {
+        let firstDayOfWeekToDispatch = moment(config.selectedWeeks.shift(), 'DD-MM-YYYY');
 
-      //   calendar.filter(x => config.employees.some(empl => empl.id === x.employeeId)).forEach(emplCal => {
-      //     let hulpcal = emplCal.calendar.slice((parseInt(config.WeekNumber) - 1) * 7, (parseInt(config.WeekNumber) * 7));
-      //     hulpcal = hulpcal.map(x => x.shift);
-      //     newPreviousWeeks.push({
-      //       "employeeId": emplCal.employeeId,
-      //       "week": hulpcal
-      //     })
-      //   })
+        config.missingShiftsWeek.shift();
 
-      //   config.previousWeeks = newPreviousWeeks;
+        config.possibleWeekCombos = [];
 
-      //   config.WeekNumber = `${parseInt(config.WeekNumber) + 1}`;
-      //   if (parseInt(config.WeekNumber) < config.numberOfWeeks) {
-      //     mainWorker.postMessage(["CONTINU", config]);
-      //   } else if (parseInt(config.WeekNumber) === config.numberOfWeeks) {
-      //     mainWorker.postMessage(["LAST_ONE", config]);
-      //   } else {
-      //     setShowSuccesModal([true, ["Klaar!", `maand: ${date}`, `De planningvoor de operatoren werd aangemaakt`]])
-      //   }
-      // }, 250);
+
+        config.comboWeek.forEach(weekEmpl => {
+          let weeek = config.weeklyStructures.find(x => x.id === weekEmpl.weekId);
+
+          if (weeek.maandag !== "") {
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.format('DD-MM-YYYY')}`] = weeek.maandag;
+          }
+          if (weeek.dinsdag !== "") {
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(1, 'day').format('DD-MM-YYYY')}`] = weeek.dinsdag;
+          }
+          if (weeek.woensdag !== "") {
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(2, 'day').format('DD-MM-YYYY')}`] = weeek.woensdag;
+          }
+          if (weeek.donderdag !== "") {
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(3, 'day').format('DD-MM-YYYY')}`] = weeek.donderdag;
+          }
+          if (weeek.vrijdag !== "") {
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(4, 'day').format('DD-MM-YYYY')}`] = weeek.vrijdag;
+          }
+          if (weeek.zaterdag !== "") {
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(5, 'day').format('DD-MM-YYYY')}`] = weeek.zaterdag;
+          }
+          if (weeek.zondag !== "") {
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(6, 'day').format('DD-MM-YYYY')}`] = weeek.zondag;
+          }
+
+        });
+
+
+
+
+
+        config.comboWeek = [];
+        if (config.selectedWeeks.length > 1) {
+          mainWorker.postMessage(["CONTINU", config]);
+
+        } else if (config.selectedWeeks.length === 1) {
+          mainWorker.postMessage(["LAST_ONE", config]);
+
+        } else {
+          setShowSuccesModal([true, ["Klaar!", `maand: ${date}`, `De planningvoor de operatoren werd aangemaakt`]])
+        }
+      }, 250);
 
     }
 
