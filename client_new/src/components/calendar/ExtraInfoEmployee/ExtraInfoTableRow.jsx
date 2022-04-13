@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MaandStats from './MaandStats';
 import KwartaalStats from './KwartaalStats';
 import JaarStats from './JaarStats';
@@ -6,7 +6,7 @@ import StandbyStats from './StandbyStats';
 import VerlofStats from './VerlofStats';
 import WeekendStats from './WeekendStats';
 
-const ExtraInfoTableRow = () => {
+const ExtraInfoTableRow = ({stats}) => {
 
     let ToDoArray = [
         " OPERATORUREN + COOPMAN 2U + COOPMAN DAG", "OU", //maand
@@ -41,9 +41,9 @@ const ExtraInfoTableRow = () => {
 
     return (
         <React.Fragment >
-            <div style={{ padding: "0px", height: '75px', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', textAlign: 'center' }}>
+            <div style={{ padding: "0px", height: '100px', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', textAlign: 'center' }}>
 
-                <div style={{ padding: "0px", height: "100%", width: "137px", display: 'flex', flexDirection: 'column', textAlign: 'center', font: '11px ', cursor: 'pointer' }}>
+                <div style={{ padding: "0px", height: "100%", width: "100px", display: 'flex', flexDirection: 'column', textAlign: 'center', font: '11px ', cursor: 'pointer' }}>
 
                     <div style={{ display: 'flex', flexDirection: 'row', height: '34%', justifyContent: 'space-around', textAlign: 'center' }} >
                         <div onMouseOver={Selected !== 0 ? over : ''} onMouseOut={Selected !== 0 ? out : ""} style={Selected === 0 ? { border: "1px solid black", width: "50%", height: '100%', backgroundColor: '#00FF00', fontWeight: 'Bold' } : { border: "1px solid black", width: "50%", height: '100%', backgroundColor: '#E5E4E2' }} onClick={() => setSelected(0)}>
@@ -81,7 +81,8 @@ const ExtraInfoTableRow = () => {
                 {
                   {
 
-                    0: <MaandStats/>,
+
+                    0: <MaandStats stats={stats?stats.maand:null}/>,
                     1: <KwartaalStats/> ,
                     2: <JaarStats/>,
                     3: <StandbyStats/>,

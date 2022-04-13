@@ -19,18 +19,13 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes, length }) => {
             const { data } = await axios.get(`http://localhost:3001/api/calendar/individual/${employeeId}/year/${moment(datum, "MM-YYYY").format("YYYY")}/calendarmonth/${moment(datum, "MM-YYYY").format("MM")}`);
             let history = mapShiftsFromDbToTableRowHistory(datum, data);
             setHistory(history.length > length ? history.slice(0, length) : history);
-
         } catch (e) {
             setHistory([]);
             console.log(e);
         }
-
     }
 
-
-
     useEffect(() => {
-
         getHistorie(`${month}-${year}`).then(setLoading(false));
     }, [])
 
@@ -81,11 +76,11 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes, length }) => {
 
             {!Loading && History && History.map(shiftDay =>
 
-                <td style={moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 7 ? { outline: '1px solid darkgreen', padding: "1px", width: "27px" } : { padding: "1px", width: "27px" }}>
+                <td style={moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 7 ? { outline: '1px solid darkgreen', padding: "1px", width: "auto" } : { padding: "1px", width: "auto" }}>
                     <ReadOnlyHistoryShift shift={shiftDay.shift !== "" ? shifttypes.find(x => x.naam === shiftDay.shift) : null} shiftDay={shiftDay} />
                 </td>
             )}
-            <td colSpan={2} style={{ padding: "0px", margin: '0px' ,textAlign:'center'}}>
+            <td colSpan={2} style={{ padding: "0px", margin: '0px' ,textAlign:'center',width:'auto'}}>
                 <span style={{ fontSize: '12px' }}><b>{`${moment(VisualDate, "MM-YYYY").startOf('month').startOf('isoWeek').format("DD/MM")}`}</b></span>
                 <span style={{ fontSize: '10px' }}>-</span>
                 <span style={{ fontSize: '12px' }}><b>{`${moment(VisualDate, "MM-YYYY").startOf('month').startOf('isoWeek').add(length-1, 'days').format("DD/MM")}`}</b></span>
