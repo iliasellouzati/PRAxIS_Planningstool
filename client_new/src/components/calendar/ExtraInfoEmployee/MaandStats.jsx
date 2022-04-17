@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
+import OperatorStats from './maandstats/OperatorStats';
+import Ziekte from './maandstats/Ziekte';
+import Standby from './maandstats/StandBy';
+import Verlof from './maandstats/Verlof';
 
 const MaandStats = ({ stats }) => {
   const { month, year } = useParams();
@@ -9,12 +13,10 @@ const MaandStats = ({ stats }) => {
   const [Details, setDetails] = useState('operator');
 
   let HulpVal = [['01', '02', '03'], ['04', '05', '06'], ['07', '08', '09'], ['10', '11', '12']]
-  let HulpVal2 = [['operator', 'Mario'], ['cumul', 'dag/nacht'], ['ziekte/verlof', 'stand-by']]
+  let HulpVal2 = [['operator', 'Mario'], ['ziekte', 'dag/nacht'], ['verlof', 'stand-by']]
   let HulpVal3 = ['1', '2', '3', '4', '5', '6', '7']
   const over = (e) => {
     e.target.style.backgroundColor = "#A9A9A9";
-
-
   }
   const out = (e) => {
     e.target.style.backgroundColor = "#E5E4E2";
@@ -72,46 +74,12 @@ const MaandStats = ({ stats }) => {
           <table style={{ width: '100%', height: '100%', zIndex: 0, textAlign: 'center' }} >
             {
               {
-                'operator':
-                  <React.Fragment>
-                    <thead >
-                      <tr >
-                        <th style={{ padding: "1px", width: "10%" }}>#Uren/maand</th>
-                        <th style={{ padding: "1px", width: "10%" }}>#Shiften</th>
-                        <th style={{ padding: "1px", width: "10%" }}>MA</th>
-                        <th style={{ padding: "1px", width: "10%" }}>DI</th>
-                        <th style={{ padding: "1px", width: "10%" }}>WO</th>
-                        <th style={{ padding: "1px", width: "10%" }}>DO</th>
-                        <th style={{ padding: "1px", width: "10%" }}>VR</th>
-                        <th style={{ padding: "1px", width: "10%" }}>ZA</th>
-                        <th style={{ padding: "1px", width: "10%" }}>ZO</th>
-                        <th style={{ padding: "1px", width: "10%" }}>SEE</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td style={{ padding: "1px", width: "10%" }}>{Math.round((Stats.operator.totaalUrenOpKalender + Stats.operator.nachtUrenUitVorigeMaand)*100)/100}</td>
-                        <td style={{ padding: "1px", width: "10%" }}>{Math.round(Stats.operator.totaalAantalShiften*100)/100}</td>
-                        {HulpVal3.map(day => 
-                          <td style={{ padding: "0px", width: "10%" }}>
-                            <p style={{ padding: '0px', margin: '0px' }}>{Math.round(Stats.operator[`${day}`].aantalUren *100)/100} uur</p>
-                            <p style={{ padding: '0px', margin: '0px' }}>{Stats.operator[`${day}`].aantalShifts} shiften</p>
-                            <p style={{ padding: '0px', margin: '0px' }}><b>{Math.round(Stats.operator[`${day}`].aantalUren * 10000 / (Stats.operator.totaalUrenOpKalender + Stats.operator.nachtUrenUitVorigeMaand)) / 100}</b>%</p>
-                          </td>
-                        )}
-
-                        <td style={{ padding: "1px", width: "10%" }}>x </td>
-
-
-                      </tr>
-
-                    </tbody>
-                  </React.Fragment>,
-                'Mario': <p>custom</p>,
-                'cumul': <p>Cumul</p>,
+                'operator': <OperatorStats Stats={Stats} HulpVal3={HulpVal3} />,
+                'Mario': <p>Cumul</p>, 
+                'ziekte': <Ziekte Stats={Stats} HulpVal3={HulpVal3}/> ,
                 'dag/nacht': <p>Dag en  nacht</p>,
-                'ziekte/verlof': <p>ziekte und verloff</p>,
-                'stand-by': <p>standby</p>
+                'verlof':  <Verlof  Stats={Stats} HulpVal3={HulpVal3} />,
+                'stand-by':   <Standby  Stats={Stats} HulpVal3={HulpVal3}/>
 
               }[Details]
             }

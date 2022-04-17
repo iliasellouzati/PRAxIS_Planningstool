@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import MaandStats from './MaandStats';
-import KwartaalStats from './KwartaalStats';
-import JaarStats from './JaarStats';
-import StandbyStats from './StandbyStats';
-import VerlofStats from './VerlofStats';
-import WeekendStats from './WeekendStats';
+import MarioStats from './customStats/MarioStats';
 
-const ExtraInfoTableRow = ({stats}) => {
+const ExtraInfoTableRow = ({ stats }) => {
 
     let ToDoArray = [
         " OPERATORUREN + COOPMAN 2U + COOPMAN DAG", "OU", //maand
@@ -26,8 +21,7 @@ const ExtraInfoTableRow = ({stats}) => {
         " VERLOF ANCIENITEIT/ONBETAALD VERLOF/UITZONDERINGSDAG ", " ??? " //verlof
     ]
 
-    const [Selected, setSelected] = useState(0);
-
+    const [ShowCustom, setShowCustom] = useState(false)
 
     const over = (e) => {
         e.target.style.backgroundColor = "#A9A9A9";
@@ -41,10 +35,73 @@ const ExtraInfoTableRow = ({stats}) => {
 
     return (
         <React.Fragment >
-            <div style={{ padding: "0px", height: '100px', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', textAlign: 'center' }}>
+            <div style={{ padding: "0px", height: 'auto', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
 
-                <div style={{ padding: "0px", height: "100%", width: "100px", display: 'flex', flexDirection: 'column', textAlign: 'center', font: '11px ', cursor: 'pointer' }}>
+                <div style={ShowCustom ? { padding: "0px", height: "20%", width: "20%", display: 'flex', flexDirection: 'column', textAlign: 'center', font: '11px ', cursor: 'pointer' } : { padding: "0px", height: "100%", width: "5%", display: 'flex', flexDirection: 'column', font: '11px ', cursor: 'pointer' }}>
 
+
+                    <div className="form-group" style={ShowCustom ? { height: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', textAlign: 'center', padding: '0px', margin: '0px' } : { height: '100%', display: 'flex', flexDirection: 'column',  justifyContent: 'space-between', padding: '0px', margin: '0px' }} >
+
+                        <div class="custom-control custom-checkbox" onClick={() => setShowCustom(() => false)} style={{ marginLeft:'7px' }}>
+                            <input class="custom-control-input custom-control-input-danger" type="checkbox" id="MARIO" checked={!ShowCustom} />
+                            <label for="MARIO" class="custom-control-label" >Mario</label>
+                        </div>
+
+                        <div class="custom-control custom-checkbox" onClick={() => setShowCustom(() => true)} style={{ marginLeft:'7px' }} >
+                            <input class="custom-control-input custom-control-input-danger" type="checkbox" id="CUSTOM" checked={ShowCustom} />
+                            <label for="CUSTOM" class="custom-control-label" >Custom</label>
+                        </div>
+
+                    </div>
+
+                    {ShowCustom &&
+                        <div className="row" style={{ height: '75%', padding: '0px', margin: '0px' }}>
+
+                            <div class="col-sm-4" >
+
+                                <div class="form-group">
+                                    <label style={{ margin: '2px' }}>Data</label>
+                                    <select class="form-control">
+                                        <option>option 1</option>
+                                        <option>option 2</option>
+                                        <option>option 3</option>
+                                        <option>option 4</option>
+                                        <option>option 5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+
+                                <div class="form-group">
+                                    <label style={{ margin: '2px' }}>Interval</label>
+                                    <select class="form-control" >
+                                        <option>option 1</option>
+                                        <option>option 2</option>
+                                        <option>option 3</option>
+                                        <option>option 4</option>
+                                        <option>option 5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+
+                                <div class="form-group">
+                                    <label style={{ margin: '2px' }}>Selectie</label>
+                                    <select class="form-control">
+                                        <option>option 1</option>
+                                        <option>option 2</option>
+                                        <option>option 3</option>
+                                        <option>option 4</option>
+                                        <option>option 5</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+
+                    {/* 
                     <div style={{ display: 'flex', flexDirection: 'row', height: '34%', justifyContent: 'space-around', textAlign: 'center' }} >
                         <div onMouseOver={Selected !== 0 ? over : ''} onMouseOut={Selected !== 0 ? out : ""} style={Selected === 0 ? { border: "1px solid black", width: "50%", height: '100%', backgroundColor: '#00FF00', fontWeight: 'Bold' } : { border: "1px solid black", width: "50%", height: '100%', backgroundColor: '#E5E4E2' }} onClick={() => setSelected(0)}>
                             Mnd
@@ -54,6 +111,7 @@ const ExtraInfoTableRow = ({stats}) => {
                         </div>
 
                     </div>
+
                     <div style={{ display: 'flex', flexDirection: 'row', height: '33%', justifyContent: 'space-around', textAlign: 'center' }}>
                         <div onMouseOver={Selected !== 2 ? over : ''} onMouseOut={Selected !== 2 ? out : ""} style={Selected === 2 ? { border: "1px solid black", width: "50%", height: '100%', backgroundColor: '#00FF00', fontWeight: 'Bold' } : { border: "1px solid black", width: "50%", height: '100%', backgroundColor: '#E5E4E2' }} onClick={() => setSelected(2)}>
                             Jaar
@@ -65,7 +123,6 @@ const ExtraInfoTableRow = ({stats}) => {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'row', height: '33%', justifyContent: 'space-around', textAlign: 'center' }}>
-
                         <div onMouseOver={Selected !== 4 ? over : ''} onMouseOut={Selected !== 4 ? out : ""} style={Selected === 4 ? { border: "1px solid black", width: "50%", height: '100%', backgroundColor: '#00FF00', fontWeight: 'Bold' } : { border: "1px solid black", width: "50%", height: '100%', backgroundColor: '#E5E4E2' }} onClick={() => setSelected(4)}>
                             Wknd
                         </div>
@@ -74,22 +131,24 @@ const ExtraInfoTableRow = ({stats}) => {
                         </div>
                     </div>
 
+                 {
+                        {
+
+
+                            false: <MaandStats stats={stats ? stats.maand : null} />,
+                            true: <KwartaalStats />
+
+                        }[ShowCustom]
+                    }
+
+
+                     */}
+
                 </div>
-                <div style={{ padding: "0px", height: "100%", width: "100%", border: '1px solid black' }}>
+                <div style={ShowCustom ? { padding: "0px", height: "100%", width: "80%", border: '1px solid black',textAlign:'center' } : { padding: "0px", height: "100%", width: "95%", border: '1px solid black',textAlign:'center' }}>
 
-                    
-                {
-                  {
+                    {ShowCustom ? "Custum" : <MarioStats />}
 
-
-                    0: <MaandStats stats={stats?stats.maand:null}/>,
-                    1: <KwartaalStats/> ,
-                    2: <JaarStats/>,
-                    3: <StandbyStats/>,
-                    4: <WeekendStats/>,
-                    5: <VerlofStats/>
-                  }[Selected]
-                }
 
 
                 </div>
