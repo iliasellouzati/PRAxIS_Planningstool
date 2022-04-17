@@ -285,7 +285,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, monthYear) => {
                     //NACHTSHIFT VOOR HUIDIG JAAR
                     if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(monthYear, "MM-YYYY"), 'year')) {
                         duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").add(1, "day").diff(moment(shiftDb.datum, "YYYY-MM-DD").add(1, 'day').startOf('day'))).asHours();
-             
+
                         returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").add(1,'day').format("MM-YYYY")}`].cumul.nachtUrenUitVorigeMaand = duration;
                         returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").add(1,'day').format("MM-YYYY")}`].cumul.shiftDb.push(shiftDb);
                     } else if (moment(shiftDb.datum, "YYYY-MM-DD").add(1, 'day').isSame(moment(monthYear, "MM-YYYY"), 'month')) {
@@ -321,7 +321,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, monthYear) => {
                     if (moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() >= 0) {
                         duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.startmoment ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
 
- 
+
                         returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.totaalUrenOpKalender += duration;
                         returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.shiftDb.push(shiftDb);
                         returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul[`${moment(shiftDb.datum,"YYYY-MM-DD").isoWeekday()}`].aantalUren += duration;
@@ -332,7 +332,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, monthYear) => {
                         // ALLE NACHTSHIFTEN IN ZELFDE MAAND
                         durationCurrDay = moment.duration(moment(shiftDb.datum, "YYYY-MM-DD").endOf("day").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
                         durationNextDay = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").add(1, "day").diff(moment(shiftDb.datum, "YYYY-MM-DD").add(1, 'day').startOf('day'))).asHours();
-       
+
                         returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.totaalUrenOpKalender += (durationCurrDay + durationNextDay);
                         returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.shiftDb.push(shiftDb);
                         returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul[`${moment(shiftDb.datum,"YYYY-MM-DD").isoWeekday()}`].aantalUren += durationCurrDay;
@@ -355,279 +355,57 @@ const makeIndividualMonthsObject = (monthYear) => {
 
     while (startMonth.isBefore(currMonth, 'month')) {
         returnObject[`${startMonth.format("MM-YYYY")}`] = {
-            'operator': {
-                'totaalUrenOpKalender': 0,
-                'nachtUrenUitVorigeMaand': 0,
-                'totaalAantalShiften': 0,
-                'shiftDb': [],
-                '1': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '2': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '3': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '4': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '5': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '6': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '7': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                }
-            },
-            'coopman': {
-                'totaalUren': 0,
-                'totaalAantalShiften': 0,
-                'shiftDb': [],
-                '1': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '2': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '3': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '4': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '5': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '6': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '7': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                }
-
-            },
-            'dagshift': {
-                'totaalUren': 0,
-                'totaalAantalShiften': 0,
-                'shiftDb': [],
-                '1': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '2': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '3': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '4': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '5': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '6': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '7': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                }
-            },
-            'nachtshift': {
-                'totaalUren': 0,
-                'totaalAantalShiften': 0,
-
-                'shiftDb': [],
-                '1': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '2': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '3': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '4': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '5': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '6': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '7': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                }
-            },
-            'ziekte': {
-                'totaalUren': 0,
-                'totaalAantalShiften': 0,
-                'shiftDb': [],
-                '1': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '2': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '3': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '4': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '5': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '6': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '7': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                }
-            },
-            'verlof': {
-                'totaalUren': 0,
-                'totaalAantalShiften': 0,
-                'shiftDb': [],
-                '1': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '2': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '3': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '4': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '5': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '6': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '7': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                }
-            },
-            'standby': {
-                'totaalUren': 0,
-                'totaalAantalShiften': 0,
-                'shiftDb': [],
-                '1': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '2': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '3': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '4': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '5': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '6': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '7': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                }
-            },
-            'cumul': {
-                'totaalUrenOpKalender': 0,
-                'nachtUrenUitVorigeMaand': 0,
-                'shiftDb': [],
-                '1': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '2': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '3': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '4': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '5': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '6': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                },
-                '7': {
-                    'aantalShifts': 0,
-                    'aantalUren': 0
-                }
-            }
+            'operator':     makeIndividualMonthStatsObject(),
+            'coopman':      makeIndividualMonthStatsObject(),
+            'dagshift':     makeIndividualMonthStatsObject(),
+            'nachtshift':   makeIndividualMonthStatsObject(),
+            'ziekte':       makeIndividualMonthStatsObject(),
+            'verlof':       makeIndividualMonthStatsObject(),
+            'standby':      makeIndividualMonthStatsObject(),
+            'cumul':        makeIndividualMonthStatsObject()
         };
         startMonth.add(1, 'month');
     }
 
     return returnObject;
 
+}
+
+const makeIndividualMonthStatsObject = () => {
+    return {
+        'totaalUrenOpKalender': 0,
+        'nachtUrenUitVorigeMaand': 0,
+        'totaalAantalShiften': 0,
+        'shiftDb': [],
+        '1': {
+            'aantalShifts': 0,
+            'aantalUren': 0
+        },
+        '2': {
+            'aantalShifts': 0,
+            'aantalUren': 0
+        },
+        '3': {
+            'aantalShifts': 0,
+            'aantalUren': 0
+        },
+        '4': {
+            'aantalShifts': 0,
+            'aantalUren': 0
+        },
+        '5': {
+            'aantalShifts': 0,
+            'aantalUren': 0
+        },
+        '6': {
+            'aantalShifts': 0,
+            'aantalUren': 0
+        },
+        '7': {
+            'aantalShifts': 0,
+            'aantalUren': 0
+        }
+    }
 }
 
 const makeIndividualKwartaalObject = (monthYear) => {

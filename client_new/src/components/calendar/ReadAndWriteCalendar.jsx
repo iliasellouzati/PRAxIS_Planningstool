@@ -37,6 +37,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
 
     const fetchData = async () => {
         let shifttypes = [];
+
         await axios.get('http://127.0.0.1:3001/api/employee')
             .then(response => { setEmployees(response.data); setShowExtraInforEmployees(response.data.map((x) => ({ 'id': x.id, 'show': false }))) })
             .catch(error => setHttp500([true, error]));
@@ -48,8 +49,8 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
             })
             .catch(error => setHttp500([true, error]));
 
-        await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').subtract(1,'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1,'day').format('DD-MM-YYYY')}`)
-            .then(response => setExtraHistoryCurrentYearEmployees(makeObjectForIndividualStats(response.data, shifttypes, `${month}-${year}`)))
+        await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').subtract(1,'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").endOf('year').endOf('isoWeek').format('DD-MM-YYYY')}`)
+            .then(response => setExtraHistoryCurrentYearEmployees(makeObjectForIndividualStats(response.data, shifttypes)))
             .catch(error => setHttp500([true, error]));
 
         await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${month}-${year}`, 'MM-YYYY').subtract(1, 'month').startOf('month').startOf('isoWeek').subtract(1, 'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'day').format('DD-MM-YYYY')}`)
