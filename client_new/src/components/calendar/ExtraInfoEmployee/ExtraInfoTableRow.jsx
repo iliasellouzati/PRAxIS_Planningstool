@@ -2,47 +2,46 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import MarioStats from './customStats/MarioStats';
+import OperatorDagStats from './customStats/OperatorDagStats';
 
-const ExtraInfoTableRow = ({ stats }) => {
+const ExtraInfoTableRow = ({ stats ,employeeId}) => {
 
     const { month, year } = useParams();
 
     let dataArray = ["operator", "dag operator", "nacht operator", "coopman", "praxis", "cumul", "verlof", "ziekte", "standby"];
     let intervalArray = ["maand", "kwartaal", "jaar"];
-
+    let jaarInterval = [[`${year}`, `${year}`]]
+    let kwartaalInterval = [["I", 1], ["II", 2], ["III", 3], ["IV", 4]]
+    let monthInterval = [["jan", `01-${year}`], ["febr", `02-${year}`], ["maa", `03-${year}`], ["apr", `04-${year}`], ["mei", `05-${year}`], ["jun", `06-${year}`], ["jul", `07-${year}`], ["aug", `08-${year}`], ["sep", `09-${year}`], ["okt", `10-${year}`], ["nov", `11-${year}`], ["dec", `12-${year}`]]
 
 
     const [ShowCustom, setShowCustom] = useState(false);
     const [DataType, setDataType] = useState(dataArray[0]);
     const [Interval, setInterval] = useState(intervalArray[0]);
-    const [SelectedValue, setSelectedValue] = useState(1);
-    const [PossibleValues, setPossibleValues] = useState([1]);
+    const [SelectedValue, setSelectedValue] = useState(`01-${year}`);
+    const [PossibleValues, setPossibleValues] = useState(monthInterval)
 
 
-    const over = (e) => {
-        e.target.style.backgroundColor = "#A9A9A9";
-
-
-    }
-    const out = (e) => {
-        e.target.style.backgroundColor = "#E5E4E2";
-    }
 
     useEffect(() => {
-        let currMonth = moment(`${month}-${year}`, "MM-YYYY");
-        setSelectedValue(1);
+
 
         switch (Interval) {
             case "maand":
-                setPossibleValues([...Array(currMonth.month() + 1).keys()].map(i => i + 1));
+                setPossibleValues(monthInterval);
+                setSelectedValue(monthInterval[0][1]);
                 break;
 
             case "kwartaal":
-                setPossibleValues([...Array(currMonth.quarter()).keys()].map(i => i + 1));
+                setPossibleValues(kwartaalInterval);
+                setSelectedValue(kwartaalInterval[0][1]);
+
                 break;
 
             case "jaar":
-                setPossibleValues([1]);
+                setPossibleValues(jaarInterval);
+                setSelectedValue(jaarInterval[0][1]);
+
                 break;
             default:
                 break;
@@ -50,7 +49,6 @@ const ExtraInfoTableRow = ({ stats }) => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [Interval])
-
 
 
     return (
@@ -101,7 +99,7 @@ const ExtraInfoTableRow = ({ stats }) => {
                                 <div class="form-group">
                                     <label style={{ margin: '2px' }}>Selectie</label>
                                     <select class="form-control" onChange={e => setSelectedValue(e.target.value)}>
-                                        {PossibleValues.map(selectie => <option value={selectie} key={selectie}>{selectie}</option>)}
+                                        {PossibleValues.map(monthVal => <option value={monthVal[1]} key={monthVal[1]}>{monthVal[0]}</option>)}
                                     </select>
                                 </div>
                             </div>
@@ -115,7 +113,7 @@ const ExtraInfoTableRow = ({ stats }) => {
                     {ShowCustom ?
                         {
                             "operator": `${DataType} - ${Interval} - ${SelectedValue}`,
-                            "dag operator": `${DataType} - ${Interval} - ${SelectedValue}`,
+                            "dag operator": <OperatorDagStats  employeeId ={employeeId} stats={stats} Interval={Interval} SelectedValue={SelectedValue} />,
                             "nacht operator": `${DataType} - ${Interval} - ${SelectedValue}`,
                             "coopman": `${DataType} - ${Interval} - ${SelectedValue}`,
                             "praxis": `${DataType} - ${Interval} - ${SelectedValue}`,

@@ -165,7 +165,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                     {/* TABELRIJ MET EXTRA INFO VAN WERKNEMER */}
                                     <tr className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-body" : "expandable-body d-none"}>
                                         <td colSpan={calendarMonthHelper.length + 3}>
-                                            <ExtraInfoTableRow stats={ExtraHistoryCurrentYearEmployees[`${individueleCalendar.employeeId}`]}  />
+                                            <ExtraInfoTableRow employeeId={individueleCalendar.employeeId} stats={ExtraHistoryCurrentYearEmployees[`${individueleCalendar.employeeId}`]}  />
                                         </td>
                                     </tr>
 
