@@ -11,12 +11,13 @@ import CumulStats from './customStats/CumulStats';
 import VerlofStats from './customStats/VerlofStats';
 import ZiekteStats from './customStats/ZiekteStats';
 import StandbyStats from './customStats/StandbyStats';
+import WeekendStats from './customStats/WeekendStats';
 
 const ExtraInfoTableRow = ({ stats, employeeId }) => {
 
     const { month, year } = useParams();
 
-    let dataArray = ["operator", "dag operator", "nacht operator", "coopman", "praxis", "cumul", "verlof", "ziekte", "standby"];
+    let dataArray = ["operator", "dag operator", "nacht operator", "coopman", "praxis", "cumul", "verlof", "ziekte", "standby","weekend"];
     let intervalArray = ["maand", "kwartaal", "jaar"];
     let jaarInterval = [[`${year}`, `${year}`]]
     let kwartaalInterval = [["I", 0], ["II", 1], ["III", 2], ["IV", 3]]
@@ -133,7 +134,8 @@ const ExtraInfoTableRow = ({ stats, employeeId }) => {
                                 "cumul": <CumulStats stats={stats} SelectedValue={SelectedValue} />,
                                 "verlof": <VerlofStats stats={stats} SelectedValue={SelectedValue} />,
                                 "ziekte": <ZiekteStats stats={stats} SelectedValue={SelectedValue} />,
-                                "standby": <StandbyStats stats={stats} SelectedValue={SelectedValue} />
+                                "standby": <StandbyStats stats={stats} SelectedValue={SelectedValue} />,
+                                "weekend": <WeekendStats stats={stats} SelectedValue={SelectedValue} />
                             }[DataType]
 
                             : <MarioStats />}

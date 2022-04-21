@@ -86,12 +86,12 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
         }
 
 
-        if (
-            [5, 6, 7].includes(moment(shiftDb.datum, "YYYY-MM-DD").isoWeekday()) &&
-            (
-                moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").isAfter(moment(`${shiftDb.datum}-18:00`, "YYYY-MM-DD-hh:mm")) ||
-                moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() <= 0
-            )
+        if (([6, 7].includes(moment(shiftDb.datum, "YYYY-MM-DD").isoWeekday())) ||
+            ([5].includes(moment(shiftDb.datum, "YYYY-MM-DD").isoWeekday()) &&
+                (
+                    moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").isAfter(moment(`${shiftDb.datum}-18:00`, "YYYY-MM-DD-hh:mm")) ||
+                    moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() <= 0
+                ))
         ) {
             let beginDayOfWeek = moment(shiftDb.datum, "YYYY-MM-DD").startOf('isoWeek').format("DD-MM-YYYY");
             let fridayOfWeek;
