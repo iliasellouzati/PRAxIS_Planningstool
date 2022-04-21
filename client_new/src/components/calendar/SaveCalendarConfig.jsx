@@ -52,7 +52,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
             reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek) && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
         })
 
-        let extraInRedux = reduxShifts.filter(reduxShift =>reduxShift.shift!==false&&
+        let extraInRedux = reduxShifts.filter(reduxShift => reduxShift.shift !== false &&
             !savedShifts.some(savedShift => (
                 savedShift.shift_datum === reduxShift.day &&
                 savedShift.werknemer_id === reduxShift.employeeId &&
@@ -87,7 +87,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
             reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek) && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
         })
 
-        let extraInRedux = reduxShifts.filter(reduxShift =>reduxShift.shift!==false&&
+        let extraInRedux = reduxShifts.filter(reduxShift => reduxShift.shift !== false &&
             !savedShifts.some(savedShift => (
                 savedShift.shift_datum === reduxShift.day &&
                 savedShift.werknemer_id === reduxShift.employeeId &&
@@ -127,7 +127,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
         let counter = 0;
 
         calendar.forEach(indivCal => indivCal.calendar.forEach(shiftDay => {
-            if (shiftDay.shift !== ''&&shiftDay.shift!==false && moment(shiftDay.day, "DD-MM-YYYY").isBefore(LastDayOflastMonth, 'day'))
+            if (shiftDay.shift !== '' && shiftDay.shift !== false && moment(shiftDay.day, "DD-MM-YYYY").isBefore(LastDayOflastMonth, 'day'))
                 counter++;
         }))
         setShiftsInLastMonth(counter);
@@ -180,7 +180,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
         let counter = 0;
 
         calendar.forEach(indivCal => indivCal.calendar.forEach(shiftDay => {
-            if (shiftDay.shift !== ''&&shiftDay.shift!==false && moment(shiftDay.day, "DD-MM-YYYY").isAfter(LastDayOflastMonth, 'day'))
+            if (shiftDay.shift !== '' && shiftDay.shift !== false && moment(shiftDay.day, "DD-MM-YYYY").isAfter(LastDayOflastMonth, 'day'))
                 counter++;
         }))
         setShiftsInNextMonth(counter);
@@ -208,21 +208,21 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
         console.log(`Calendar in MB: ${MBSize} MB`);
         let result = await axios.post(`http://localhost:3001/api/calendar/global/year/${year}/calendarmonth/${month}/version/${version}`, { 'calendarForDb': calendarForDb });
 
-        if (version === '1') {
-            await axios.put(`http://localhost:3001/api/statuscalendar/${year}/${month}/${version}`, {
-                'progress': 2,
-                'comment': Commentaar,
-                'affected_employees': employees.length,
-                'added_shifts': result.status,
-                'same_shifts': 0,
-                'deleted_shifts': 0,
-                'changed_shifts': 0,
-                'timestamp': moment().format("DD/MM/YYYY HH:MM")
-            }).then(() => {
-                setShowSuccesModal([true, ['Opgeslagen', `ID: ${month}-${year}_V${version}`, `Planning ${month}-${year}_V${version} met ${result} nieuwe shiften werd opgeslagen! `]]);
-                history.push(`/planningen/${year}`);
-            })
-        }
+
+        await axios.put(`http://localhost:3001/api/statuscalendar/${year}/${month}/${version}`, {
+            'progress': 2,
+            'comment': Commentaar,
+            'affected_employees': employees.length,
+            'added_shifts': result.status,
+            'same_shifts': 0,
+            'deleted_shifts': 0,
+            'changed_shifts': 0,
+            'timestamp': moment().format("DD/MM/YYYY HH:MM")
+        }).then(() => {
+            setShowSuccesModal([true, ['Opgeslagen', `ID: ${month}-${year}_V${version}`, `Planning ${month}-${year}_V${version} met ${result} nieuwe shiften werd opgeslagen! `]]);
+            history.push(`/planningen/${year}`);
+        })
+
     }
 
 
@@ -280,7 +280,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
                                                     <p style={{ margin: "0px" }}>Aangepaste shifts t.o.v. planning {`${LastMonth.month}_V${LastMonth.version}`}:<span style={{ color: 'red' }}> {DifferenceWithLastSavedCalendar}</span> </p>
                                                     {DifferenceWithLastSavedCalendar !== 0 ?
                                                         <span style={{ alignItems: 'baseline' }} > Kalender aanmaken :
-                                                            <button type="button" class="btn  btn-warning btn-xs" onClick={() => { postNewLastCalenderStatusIn() }} style={{ width: '100px', marginLeft: '10px' }}> {moment(`${month}-${year}`, "MM-YYYY").subtract(1, "month").format("MM-YYYY")}_V{LastMonth.version+1}</button>
+                                                            <button type="button" class="btn  btn-warning btn-xs" onClick={() => { postNewLastCalenderStatusIn() }} style={{ width: '100px', marginLeft: '10px' }}> {moment(`${month}-${year}`, "MM-YYYY").subtract(1, "month").format("MM-YYYY")}_V{LastMonth.version + 1}</button>
                                                         </span> :
                                                         <span style={{ alignItems: 'baseline' }} > N.V.T. </span>}
 
@@ -354,7 +354,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
             </div>
             <div className="col-2" style={{ display: "flex", justifyContent: "space-around", height: "50px" }}>
                 <button type="button" className="btn btn-warning" style={{ width: "100px" }} onClick={() => setShowFinalComment(false)} >annuleren</button>
-                <button type="button" className="btn btn-success" style={{ width: "100px" }} disabled={Disabled>=2 ? false : true} onClick={() => saveCalendarInDb()} >opslaan</button>
+                <button type="button" className="btn btn-success" style={{ width: "100px" }} disabled={Disabled >= 2 ? false : true} onClick={() => saveCalendarInDb()} >opslaan</button>
 
             </div>
         </React.Fragment>
