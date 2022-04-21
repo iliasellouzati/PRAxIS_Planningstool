@@ -34,10 +34,10 @@ const MarioStats = () => {
                     <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" UREN VOORBIJE MAAND(EN) KWARTAAL"}>UVMKW</th>
                     <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" HUIDIG KWARTAAL"}>TUKW</th>
                     <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" #AANGEVRAAGDE VRIJE FEESTDAG"}>FX</th>
-                    <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" TOTAAL DAGSHIFTEN CUMUL"}>GWDM</th>
-                    <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" TOTAAL GEWERKTE NACHT DEZE MAAND"}>TGW</th>
-                    <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" TOTAAL NACHT JAAR"}>SB</th>
-                    <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" UREN VORIGE MAAND"}>SBC</th>
+                    <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={"  GEWERKTE WEEKENDS DEZE MAAND"}>GWDM</th>
+                    <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" TOTAAL GEWERKTE WEEKENDS"}>TGW</th>
+                    <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" STANDBY MAAND"}>SB</th>
+                    <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" SB CUMUL "}>SBC</th>
                     <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" VERLOF"}>V</th>
                     <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" ONBETAALD VERLOF"}>OV</th>
                     <th style={{ padding: "1px", width: '96px', cursor: 'pointer' }} title={" ANCIENITEIT"}>A</th>

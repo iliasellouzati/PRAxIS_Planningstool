@@ -3,6 +3,14 @@ import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import MarioStats from './customStats/MarioStats';
 import OperatorDagStats from './customStats/OperatorDagStats';
+import OperatorNachtStats from './customStats/OperatorNachtStats';
+import OperatorTotaalStats from './customStats/OperatorTotaalStats';
+import CoopmanStats from './customStats/CoopmanStats';
+import PraxisStats from './customStats/PraxisStats';
+import CumulStats from './customStats/CumulStats';
+import VerlofStats from './customStats/VerlofStats';
+import ZiekteStats from './customStats/ZiekteStats';
+import StandbyStats from './customStats/StandbyStats';
 
 const ExtraInfoTableRow = ({ stats, employeeId }) => {
 
@@ -30,18 +38,18 @@ const ExtraInfoTableRow = ({ stats, employeeId }) => {
         switch (Interval) {
 
             case "maand":
-                setSelectedValue(["maand",monthInterval[0][1]]);
+                setSelectedValue(["maand", monthInterval[0][1]]);
                 setPossibleValues(monthInterval);
                 break;
 
             case "kwartaal":
-                setSelectedValue(["kwartaal",kwartaalInterval[0][1]]);
+                setSelectedValue(["kwartaal", kwartaalInterval[0][1]]);
                 setPossibleValues(kwartaalInterval);
 
                 break;
 
             case "jaar":
-                setSelectedValue(["jaar",jaarInterval[0][1]]);
+                setSelectedValue(["jaar", jaarInterval[0][1]]);
                 setPossibleValues(jaarInterval);
 
                 break;
@@ -103,7 +111,7 @@ const ExtraInfoTableRow = ({ stats, employeeId }) => {
 
                                     <div class="form-group">
                                         <label style={{ margin: '2px' }}>Selectie</label>
-                                        <select class="form-control" onChange={e => setSelectedValue([Interval,e.target.value])}>
+                                        <select class="form-control" onChange={e => setSelectedValue([Interval, e.target.value])}>
                                             {PossibleValues.map(monthVal => <option value={monthVal[1]} key={monthVal[1]}>{monthVal[0]}</option>)}
                                         </select>
                                     </div>
@@ -117,15 +125,15 @@ const ExtraInfoTableRow = ({ stats, employeeId }) => {
 
                         {ShowCustom ?
                             {
-                                "operator": `${DataType} - ${Interval} - ${SelectedValue}`,
-                                "dag operator": <OperatorDagStats employeeId={employeeId} stats={stats} Interval={Interval} SelectedValue={SelectedValue} />,
-                                "nacht operator": `${DataType} - ${Interval} - ${SelectedValue}`,
-                                "coopman": `${DataType} - ${Interval} - ${SelectedValue}`,
-                                "praxis": `${DataType} - ${Interval} - ${SelectedValue}`,
-                                "cumul": `${DataType} - ${Interval} - ${SelectedValue}`,
-                                "verlof": `${DataType} - ${Interval} - ${SelectedValue}`,
-                                "ziekte": `${DataType} - ${Interval} - ${SelectedValue}`,
-                                "standby": `${DataType} - ${Interval} - ${SelectedValue}`
+                                "operator": <OperatorTotaalStats stats={stats} SelectedValue={SelectedValue} />,
+                                "dag operator": <OperatorDagStats stats={stats} SelectedValue={SelectedValue} />,
+                                "nacht operator": <OperatorNachtStats stats={stats} SelectedValue={SelectedValue} />,
+                                "coopman": <CoopmanStats stats={stats} SelectedValue={SelectedValue} />,
+                                "praxis": <PraxisStats stats={stats} SelectedValue={SelectedValue} />,
+                                "cumul": <CumulStats stats={stats} SelectedValue={SelectedValue} />,
+                                "verlof": <VerlofStats stats={stats} SelectedValue={SelectedValue} />,
+                                "ziekte": <ZiekteStats stats={stats} SelectedValue={SelectedValue} />,
+                                "standby": <StandbyStats stats={stats} SelectedValue={SelectedValue} />
                             }[DataType]
 
                             : <MarioStats />}

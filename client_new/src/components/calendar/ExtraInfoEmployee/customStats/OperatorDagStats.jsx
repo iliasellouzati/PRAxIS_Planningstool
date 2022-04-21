@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 const OperatorDagStats = ({ SelectedValue, stats }) => {
 
-    let hulpValDays = [1, 2, 3, 4, 5, 6, 7];
     const { year } = useParams();
-    const keys = [`01-${year}`,`02-${year}`,`03-${year}`,`04-${year}`,`05-${year}`,`06-${year}`,`07-${year}`,`08-${year}`,`09-${year}`,`10-${year}`,`11-${year}`,`12-${year}`];
 
     const [ValuesToShow, setValuesToShow] = useState("");
 
     useEffect(() => {
         switch (SelectedValue[0]) {
             case "maand":
-
                 setValuesToShow([
                     Math.round((stats.maand[`${SelectedValue[1]}`].dag_operator.totaalUrenOpKalender + stats.maand[`${SelectedValue[1]}`].dag_operator.urenUitVorigeMaand) * 100) / 100,
                     Math.round(stats.maand[`${SelectedValue[1]}`].dag_operator.totaalAantalShiften * 100) / 100,
@@ -24,12 +21,8 @@ const OperatorDagStats = ({ SelectedValue, stats }) => {
                     stats.maand[`${SelectedValue[1]}`].dag_operator[`6`].aantalShifts,
                     stats.maand[`${SelectedValue[1]}`].dag_operator[`7`].aantalShifts
                 ])
-
                 break;
-
             case "kwartaal":
-
-
                 setValuesToShow([
                     Math.round((
                         stats.maand[`${('0' + (parseInt(SelectedValue[1]) * 3 + 1)).slice(-2)}-${year}`].dag_operator.totaalUrenOpKalender + stats.maand[`${('0' + (parseInt(SelectedValue[1]) * 3 + 1)).slice(-2)}-${year}`].dag_operator.urenUitVorigeMaand +
@@ -50,12 +43,8 @@ const OperatorDagStats = ({ SelectedValue, stats }) => {
                 break;
 
             case "jaar":
-
-                Object.keys(stats.maand).reduce((acc,curr)=>console.log(stats.maand[curr]),0);
-
-
                 setValuesToShow([
-                    Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += Math.round((stats.maand[currVal].dag_operator.totaalUrenOpKalender + stats.maand[currVal].dag_operator.urenUitVorigeMaand) * 100) / 100, 0),
+                    Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator +=(stats.maand[currVal].dag_operator.totaalUrenOpKalender + stats.maand[currVal].dag_operator.urenUitVorigeMaand), 0),
                     Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].dag_operator.totaalAantalShiften, 0),
                     Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].dag_operator[`1`].aantalShifts, 0),
                     Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].dag_operator[`2`].aantalShifts, 0),
@@ -69,21 +58,17 @@ const OperatorDagStats = ({ SelectedValue, stats }) => {
             default:
                 break;
         }
-
-
-        return () => {
-
-        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [SelectedValue])
 
 
     return (
         <React.Fragment>
-            <table style={{ height: '100px', alignContent: "center" }}>
+            <table style={{ height: '100px', width:'100%', alignContent: "center" }}>
                 <thead  >
                     <tr >
                         <th style={{ padding: "1px", width: "10%" }} >
-                            <div >#Uren/maand</div>
+                            <div >#Uren</div>
                         </th>
                         <th style={{ padding: "1px", width: "10%" }}>#Shiften</th>
                         <th style={{ padding: "1px", width: "10%" }}>MA</th>
@@ -100,7 +85,7 @@ const OperatorDagStats = ({ SelectedValue, stats }) => {
                 <tbody>{ValuesToShow !== "" &&
                     <tr>
                         <td style={{ padding: "1px", width: "10%" }}>
-                            <div>{ValuesToShow[0]}</div>
+                            <div>{Math.round(ValuesToShow[0]*100)/100}</div>
                         </td>
                         <td rowSpan={2} style={{ padding: "1px", width: "10%" }}>{ValuesToShow[1]}</td>
                         <td rowSpan={2} style={{ padding: "1px", width: "10%" }}>{ValuesToShow[2]}</td>
