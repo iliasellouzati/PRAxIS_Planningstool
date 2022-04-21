@@ -85,13 +85,63 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
             };
         }
 
+
+        if (
+            [5, 6, 7].includes(moment(shiftDb.datum, "YYYY-MM-DD").isoWeekday()) &&
+            (
+                moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").isAfter(moment(`${shiftDb.datum}-18:00`, "YYYY-MM-DD-hh:mm")) ||
+                moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() <= 0
+            )
+        ) {
+            let beginDayOfWeek = moment(shiftDb.datum, "YYYY-MM-DD").startOf('isoWeek').format("DD-MM-YYYY");
+            let fridayOfWeek;
+            switch (moment(shiftDb.datum, "YYYY-MM-DD").isoWeekday()) {
+                case 5:
+                    fridayOfWeek = moment(shiftDb.datum, "YYYY-MM-DD");
+                    break;
+                case 6:
+                    fridayOfWeek = moment(shiftDb.datum, "YYYY-MM-DD").subtract(1, 'day');
+                    break;
+                case 7:
+                    fridayOfWeek = moment(shiftDb.datum, "YYYY-MM-DD").subtract(2, 'day');
+                    break;
+                default:
+                    break;
+            }
+
+            let currWeekendObject = returnObject[`${shiftDb.werknemers_id}`].maand[`${fridayOfWeek.format("MM-YYYY")}`].weekends;
+
+            switch (shifttype.categorie.trim()) {
+                case 'verlof':
+                    break;
+                case 'standby':
+                    if (currWeekendObject.volledig_vrij.includes(beginDayOfWeek)) {
+                        currWeekendObject.volledig_vrij = currWeekendObject.volledig_vrij.filter(x => x !== beginDayOfWeek);
+                        currWeekendObject.gepland_met_standby.push(beginDayOfWeek);
+                    }
+                    break;
+                default:
+                    if (currWeekendObject.volledig_vrij.includes(beginDayOfWeek)) {
+                        currWeekendObject.volledig_vrij = currWeekendObject.volledig_vrij.filter(x => x !== beginDayOfWeek);
+                        currWeekendObject.gepland_met_shifts.push(beginDayOfWeek);
+                    } else if (currWeekendObject.gepland_met_standby.includes(beginDayOfWeek)) {
+                        currWeekendObject.gepland_met_standby = currWeekendObject.gepland_met_standby.filter(x => x !== beginDayOfWeek);
+                        currWeekendObject.gepland_met_shifts.push(beginDayOfWeek);
+                    }
+                    break;
+            }
+
+        }
+
+
+
+
         let duration;
         let duration24To06;
         let duration06To22;
         let duration22To24;
         let durationNextDay24To06;
         let durationNextDay06to22;
-
 
 
         switch (shifttype.categorie.trim()) {
@@ -352,7 +402,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
 
             case "coopman":
 
-                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year') ) {
+                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year')) {
                     break;
                 }
 
@@ -375,7 +425,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
 
                 } else {
                     duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment(`${shiftDb.datum}-16:00`, "YYYY-MM-DD-hh:mm"))).asHours();
-             
+
                     let praxisDeeltot16uur = moment.duration(moment(`${shiftDb.datum}-16:00`, "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
                     let coopmanDeelVanaf16uur = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment(`${shiftDb.datum}-16:00`, "YYYY-MM-DD-hh:mm"))).asHours();
 
@@ -397,7 +447,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
 
             case "praxis":
 
-                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year') ) {
+                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year')) {
                     break;
                 }
                 duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.startmoment ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
@@ -417,7 +467,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
                 break;
             case "ziekte":
 
-                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year') ) {
+                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year')) {
                     break;
                 }
 
@@ -441,7 +491,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
             case "verlof":
 
 
-                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year') ) {
+                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year')) {
                     break;
                 }
 
@@ -452,7 +502,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
                 returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].verlof[`${moment(shiftDb.datum,"YYYY-MM-DD").isoWeekday()}`].aantalShifts += 1;
                 returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].verlof.totaalAantalShiften++;
 
-                
+
 
                 returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.totaalUrenOpKalender += duration;
                 returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.shiftDb.push(shiftDb);
@@ -462,7 +512,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
                 break;
             case "standby":
 
-                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year') ) {
+                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year')) {
                     break;
                 }
 
@@ -473,7 +523,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
                 returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].standby[`${moment(shiftDb.datum,"YYYY-MM-DD").isoWeekday()}`].aantalShifts += 1;
                 returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].standby.totaalAantalShiften++;
 
-                
+
 
                 returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.totaalUrenOpKalender += duration;
                 returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.shiftDb.push(shiftDb);
@@ -488,48 +538,18 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
 
             default:
 
-                // NACHTSHIFT TUSSEN 2 MAANDEN
-                if (!moment(shiftDb.datum, "YYYY-MM-DD").add(1, 'day').isSame(moment(shiftDb.datum, "YYYY-MM-DD"), 'month') &&
-                    moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() < 0) {
-
-                    //NACHTSHIFT VOOR HUIDIG JAAR
-                    if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year')) {
-                        duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").add(1, "day").diff(moment(shiftDb.datum, "YYYY-MM-DD").add(1, 'day').startOf('day'))).asHours();
-
-
-                    } else if (moment(shiftDb.datum, "YYYY-MM-DD").add(1, 'day').isSame(moment(year, "MM-YYYY"), 'month')) {
-
-                        //NACHTSHIFT VOOR HUIDIG KALENDAR                        
-                        duration = moment.duration(moment(shiftDb.datum, "YYYY-MM-DD").endOf("day").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
-
-                    } else {
-                        //NACHTSHIFT TUSSEN 2 MAANDEN
-                        duration = moment.duration(moment(shiftDb.datum, "YYYY-MM-DD").endOf("day").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
-                        duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").add(1, "day").diff(moment(shiftDb.datum, "YYYY-MM-DD").add(1, 'day').startOf('day'))).asHours();
-
-                    }
-                    //DAGSHIFT VOOR HUIDIG JAAR
-                } else if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "MM-YYYY"), 'year')) {
+                if (moment(shiftDb.datum, "YYYY-MM-DD").isBefore(moment(year, "YYYY"), 'year')) {
                     break;
-
-                } else {
-
-                    //ALLE DAG SHIFTEN
-                    if (moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() >= 0) {
-                        duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.startmoment ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
-
-
-
-
-                    } else {
-
-                        // ALLE NACHTSHIFTEN IN ZELFDE MAAND
-                        duration = moment.duration(moment(shiftDb.datum, "YYYY-MM-DD").endOf("day").diff(moment((shiftDb.beginuur ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
-                        duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").add(1, "day").diff(moment(shiftDb.datum, "YYYY-MM-DD").add(1, 'day').startOf('day'))).asHours();
-
-                    }
                 }
 
+                duration = moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.startmoment ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() >= 0 ?
+                    moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").diff(moment((shiftDb.startmoment ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours() :
+                    moment.duration(moment((shiftDb.einduur ? `${shiftDb.datum}-${shiftDb.einduur}` : `${shiftDb.datum}-${shifttype.einduur}`), "YYYY-MM-DD-hh:mm").add(1, 'day').diff(moment((shiftDb.startmoment ? `${shiftDb.datum}-${shiftDb.beginuur}` : `${shiftDb.datum}-${shifttype.beginuur}`), "YYYY-MM-DD-hh:mm"))).asHours();
+
+                returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.totaalUrenOpKalender += duration;
+                returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.shiftDb.push(shiftDb);
+                returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul[`${moment(shiftDb.datum,"YYYY-MM-DD").isoWeekday()}`].aantalShifts += 1;
+                returnObject[`${shiftDb.werknemers_id}`].maand[`${moment(shiftDb.datum,"YYYY-MM-DD").format("MM-YYYY")}`].cumul.totaalAantalShiften++;
 
                 break;
         }
@@ -555,15 +575,34 @@ const makeIndividualMonthsObject = (year) => {
             'verlof': makeIndividualMonthStatsObject(),
             'ziekte': makeIndividualMonthStatsObject(),
             'standby': makeIndividualMonthStatsObject(),
-            'weekends': {
-                'gepland_met_shifts': [],
-                'gepland_met_standby': [],
-            }
+            'weekends': makeIndividualMonthWeekensStatsObject(startMonth.format("MM-YYYY"))
         };
         startMonth.add(1, 'month');
     }
 
     return returnObject;
+
+}
+
+const makeIndividualMonthWeekensStatsObject = (currMonth) => {
+
+    let startDay = moment(currMonth, 'MM-YYYY').startOf('month');
+    let returnArray = [];
+
+    while (startDay.isSame(moment(currMonth, "MM-YYYY"), 'month')) {
+
+        if (startDay.isoWeekday() === 5) {
+            returnArray.push(startDay.clone().startOf('isoWeek').format("DD-MM-YYYY"));
+        }
+        startDay.add(1, 'day');
+    }
+
+
+    return {
+        'volledig_vrij': returnArray,
+        'gepland_met_shifts': [],
+        'gepland_met_standby': [],
+    }
 
 }
 
@@ -597,20 +636,6 @@ const makeIndividualMonthStatsObject = () => {
     }
 }
 
-const makeIndividualKwartaalObject = (monthYear) => {
-    let returnObject = {};
-    let currMonth = moment(monthYear, "MM-YYYY");
-    let startMonth = moment(monthYear, "MM-YYYY").startOf('year');
-
-
-    while (startMonth.isBefore(currMonth, 'month')) {
-        returnObject[`${startMonth.quarter()}`] = {};
-        startMonth.add(3, 'month');
-
-    }
-
-    return returnObject;
-}
 
 
 
