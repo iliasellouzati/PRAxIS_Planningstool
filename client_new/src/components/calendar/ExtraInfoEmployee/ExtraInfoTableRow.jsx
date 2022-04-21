@@ -66,7 +66,7 @@ const ExtraInfoTableRow = ({ stats, employeeId }) => {
 
     return (
         <React.Fragment >
-            {!Loading &&
+            {!Loading &&typeof stats!== 'undefined' &&
                 <div style={{ padding: "0px", height: 'auto', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
 
                     <div style={ShowCustom ? { padding: "0px", height: "20%", width: "20%", display: 'flex', flexDirection: 'column', textAlign: 'center', font: '11px ', cursor: 'pointer' } : { padding: "0px", height: "100%", width: "5%", display: 'flex', flexDirection: 'column', font: '11px ', cursor: 'pointer' }}>
@@ -138,7 +138,7 @@ const ExtraInfoTableRow = ({ stats, employeeId }) => {
                                 "weekend": <WeekendStats stats={stats} SelectedValue={SelectedValue} />
                             }[DataType]
 
-                            : <MarioStats />}
+                            : <MarioStats stats={stats} />}
 
                     </div>
                 </div>

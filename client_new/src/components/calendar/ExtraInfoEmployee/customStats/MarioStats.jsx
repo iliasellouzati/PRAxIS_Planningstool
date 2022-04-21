@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
+const MarioStats = ({ stats }) => {
 
-const MarioStats = () => {
-    
+
+    const { month, year } = useParams();
+
+    console.log(stats);
+
     let hulpArr = [
         " OPERATORUREN + COOPMAN 2U + COOPMAN DAG", "OU", //maand
         " TOTAAL DAGSHIFTEN DEZE MAAND ", " TGDM ", //maand
@@ -19,6 +24,8 @@ const MarioStats = () => {
         " SB CUMUL ", "SBC",//jaar + sb
         " VERLOF ANCIENITEIT/ONBETAALD VERLOF/UITZONDERINGSDAG ", " ??? " //verlof
     ]
+
+
 
     return (
         <React.Fragment>
@@ -48,11 +55,18 @@ const MarioStats = () => {
             <tbody>
                 <tr>
 
-                    <td style={{ padding: "1px" }}>x</td>
-                    <td style={{ padding: "1px" }}>x</td>
-                    <td style={{ padding: "1px" }}>x</td>
-                    <td style={{ padding: "1px" }}>x</td>
-                    <td style={{ padding: "1px" }}>x</td>
+                    <td style={{ padding: "1px" }}>
+                        {
+                            Math.round((stats.maand[`${month}-${year}`].dag_operator.totaalUrenOpKalender + stats.maand[`${month}-${year}`].dag_operator.urenUitVorigeMaand +
+                                stats.maand[`${month}-${year}`].nacht_operator.totaalUrenOpKalender + stats.maand[`${month}-${year}`].nacht_operator.urenUitVorigeMaand +
+                                stats.maand[`${month}-${year}`].coopman.totaalUrenOpKalender) * 100) / 100
+
+                        }
+                    </td>
+                    <td style={{ padding: "1px" }}>{stats.maand[`${month}-${year}`].dag_operator.totaalAantalShiften}</td>
+                    <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].dag_operator.totaalAantalShiften, 0)}</td>
+                    <td style={{ padding: "1px" }}>{stats.maand[`${month}-${year}`].nacht_operator.totaalAantalShiften}</td>
+                    <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].nacht_operator.totaalAantalShiften, 0)}</td>
                     <td style={{ padding: "1px" }}>x</td>
                     <td style={{ padding: "1px" }}>x</td>
                     <td style={{ padding: "1px" }}>x</td>
@@ -71,24 +85,24 @@ const MarioStats = () => {
 
                 <tr>
 
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
-                    <td style={{ padding: "1px", color:'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
+                    <td style={{ padding: "1px", color: 'blue' }}> <i className="fas fa-thin fa-glasses"></i> </td>
 
                 </tr>
 
