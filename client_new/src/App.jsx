@@ -108,7 +108,6 @@ function App() {
       <Route path="/" component={ServerStatus} exact={true} />
 
 
-      <Footer />
     </BrowserRouter >
   );
 }

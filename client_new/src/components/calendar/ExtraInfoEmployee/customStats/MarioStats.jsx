@@ -1,9 +1,13 @@
+import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 const MarioStats = ({ stats }) => {
 
 
     const { month, year } = useParams();
+
+    const currMonth = `${month}-${year}`;
+    const lastMonth = moment(currMonth,"MM-YYYY").subtract(1,"month").format("MM-YYYY");
 
     console.log(stats);
 
@@ -25,6 +29,11 @@ const MarioStats = ({ stats }) => {
         " VERLOF ANCIENITEIT/ONBETAALD VERLOF/UITZONDERINGSDAG ", " ??? " //verlof
     ]
 
+    useEffect(() => {
+      
+   
+    }, [])
+    
 
 
     return (
@@ -57,18 +66,17 @@ const MarioStats = ({ stats }) => {
 
                     <td style={{ padding: "1px" }}>
                         {
-                            Math.round((stats.maand[`${month}-${year}`].dag_operator.totaalUrenOpKalender + stats.maand[`${month}-${year}`].dag_operator.urenUitVorigeMaand +
-                                stats.maand[`${month}-${year}`].nacht_operator.totaalUrenOpKalender + stats.maand[`${month}-${year}`].nacht_operator.urenUitVorigeMaand +
-                                stats.maand[`${month}-${year}`].coopman.totaalUrenOpKalender) * 100) / 100
-
+                            Math.round((stats.maand[currMonth].dag_operator.totaalUrenOpKalender + stats.maand[currMonth].dag_operator.urenUitVorigeMaand +
+                                stats.maand[currMonth].nacht_operator.totaalUrenOpKalender + stats.maand[currMonth].nacht_operator.urenUitVorigeMaand +
+                                stats.maand[currMonth].coopman.totaalUrenOpKalender) * 100) / 100
                         }
                     </td>
-                    <td style={{ padding: "1px" }}>{stats.maand[`${month}-${year}`].dag_operator.totaalAantalShiften}</td>
+                    <td style={{ padding: "1px" }}>{stats.maand[currMonth].dag_operator.totaalAantalShiften}</td>
                     <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].dag_operator.totaalAantalShiften, 0)}</td>
-                    <td style={{ padding: "1px" }}>{stats.maand[`${month}-${year}`].nacht_operator.totaalAantalShiften}</td>
+                    <td style={{ padding: "1px" }}>{stats.maand[currMonth].nacht_operator.totaalAantalShiften}</td>
                     <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].nacht_operator.totaalAantalShiften, 0)}</td>
-                    <td style={{ padding: "1px" }}>x</td>
-                    <td style={{ padding: "1px" }}>x</td>
+                    <td style={{ padding: "1px" }}>{stats.maand[currMonth].cumul.totaalUrenOpKalender+stats.maand[currMonth].cumul.urenUitVorigeMaand}</td>
+                    <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand), 0)}</td>
                     <td style={{ padding: "1px" }}>x</td>
                     <td style={{ padding: "1px" }}>x</td>
                     <td style={{ padding: "1px" }}>x</td>

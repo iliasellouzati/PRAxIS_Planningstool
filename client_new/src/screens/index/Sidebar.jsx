@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { SideBarLinks } from '../../helpers/sidebar_links';
+import { kleurenpallet } from './kleurenpallet';
 
 const Sidebar = () => {
 
@@ -10,15 +11,16 @@ const Sidebar = () => {
   useHistory().listen((location) => setCurrentScreen(location.pathname.split('/')[1]));
 
 
+
   return (
-    <aside className="main-sidebar sidebar-dark-primary elevation-4 " >
+    <aside className="main-sidebar sidebar-dark-primary elevation-4 " style={{ backgroundColor: kleurenpallet.sidebar_achtergrondkleur}} >
 
 
       <Link to="/" className="brand-link">
         <span className="brand-text font-weight-light">Planningstool</span>
       </Link>
 
-      <div className="sidebar ">
+      <div className="sidebar" style={{ paddingLeft: "0px", paddingRight: '0px' }}>
 
 
         <div className="user-panel mt-3 pb-3 mb-3 d-flex">
@@ -27,15 +29,21 @@ const Sidebar = () => {
             <Link to="/" className="d-block">NO USER LOGGED IN</Link>
           </div>
         </div>
-        
+
 
         <nav className="mt-2">
           <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
             {SideBarLinks.map(obj =>
-              <li className="nav-item">
+              <li className="nav-item"             
+              style={(CurrentScreen || "home") === obj.naam ?
+                {
+                  backgroundColor: kleurenpallet.sidebar_selected_achtergrondkleur, borderLeft: `2px solid ${kleurenpallet.sidebar_selected_left_border_rood}`
+                } :
+                {  }}
+              >
 
-                <Link to={obj.link} className={`nav-link ${(CurrentScreen||"home") === obj.naam ? " active " : ""}}`}>
+                <Link to={obj.link} className={`nav-link`} style={{color:kleurenpallet.sidebar_textkleur}}>
                   <i className={`nav-icon ${obj.icon}`} />
                   <p>
                     {obj.naam}
