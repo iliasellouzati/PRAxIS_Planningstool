@@ -75,6 +75,10 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
 
     let returnObject = {};
 
+    if(ShiftsFromDb===undefined||ShiftsFromDb.length ===0){
+        return {};
+    }
+
     ShiftsFromDb.forEach((shiftDb) => {
 
         let shifttype = shifttypes.find(x => x.naam === shiftDb.shifttypes_naam)

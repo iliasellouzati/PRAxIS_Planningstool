@@ -41,8 +41,8 @@ const ReadAndWriteShiftContextMenu = ({ employees, setContextMenu, content }) =>
             case '1907':
                 shift = content.shifttypes.find(x => x.naam === content.shiftDay.shift);
                 setShift(shift);
-                setBegin(content.shiftDay.startmoment|| shift.beginuur);
-                setEnd(content.shiftDay.endmoment||shift.einduur);
+                setBegin(content.shiftDay.startmoment || shift.beginuur);
+                setEnd(content.shiftDay.endmoment || shift.einduur);
                 setOperatorShift(true);
 
                 break;
@@ -90,7 +90,7 @@ const ReadAndWriteShiftContextMenu = ({ employees, setContextMenu, content }) =>
                         <input type="time" id="EIND_UREN" value={End} onChange={(e) => setEnd(e.target.value)} />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', height: '30px' }}>
-                        <label for="EIND_UREN">Totaal:</label>
+                        <label >Totaal:</label>
                         {Shift !== '' &&
                             <p>
                                 {
@@ -101,14 +101,21 @@ const ReadAndWriteShiftContextMenu = ({ employees, setContextMenu, content }) =>
                             </p>}
                     </div>
 
-                    {OperatorShift &&
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', height: '30px' }}>
-                            <label for="EIND_UREN">Auto-update standby:</label>
-                            <input type="checkbox" id="VERPLICHT" checked={AutoUpdateStandby} onClick={() => setAutoUpdateStandby(!AutoUpdateStandby)} />
-                        </div>
-                    }
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', height: '30px' }}>
+                        <label >Totaal:</label>
+                        {Shift !== '' &&
+                            <p>
+                                {
+                                Math.round(  (  moment.duration(moment(End, "hh:mm").diff(moment(Begin, "hh:mm"))).asHours() > 0 ?
+                                        moment.duration(moment(End, "hh:mm").diff(moment(Begin, "hh:mm"))).asHours() :
+                                        moment.duration(moment(End, "hh:mm").add(1, "day").diff(moment(Begin, "hh:mm"))).asHours())*100)/100
+                                }
+                            </p>}
+                    </div>
+
+
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'baseline', height: '45px' }}>
-                        <button type="button" class="btn btn-block btn-dark btn-xs" style={{ width: "90px" }}>Volledig ziek?</button>
+
                         <button type="button" class="btn btn-block btn-warning btn-xs" style={{ width: "60px" }} onClick={() => setContextMenu([false, []])} >annuleer</button>
                         <button type="button" class="btn btn-block btn-success btn-xs" style={{ width: "60px" }} onClick={() => submitHandler()}>opslaan</button>
 

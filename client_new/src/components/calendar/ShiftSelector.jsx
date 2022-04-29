@@ -26,7 +26,7 @@ const ShiftSelector = () => {
         await axios.get('http://127.0.0.1:3001/api/shifttype')
             .then(response => {
                 setShiftTypes(response.data);
-                let cats =[];
+                let cats = [];
                 response.data.forEach(shift => {
                     if (!cats.some(x => x.trim() === shift.categorie.trim())) {
                         cats.push(shift.categorie.trim());
@@ -61,7 +61,7 @@ const ShiftSelector = () => {
 
 
                             <button type="button"
-                                style={{ marginRight: "2px", fontSize:'10px' }}
+                                style={{ marginRight: "2px", fontSize: '10px' }}
                                 class="btn btn-primary btn-sm daterange"
                                 onClick={() => {
                                     let hulpArr = [...ActiveCategieres];
@@ -81,7 +81,7 @@ const ShiftSelector = () => {
                         <button
                             type="button"
                             class="btn btn-primary btn-sm daterange"
-                            style={{ fontSize:'10px', margin:"0px" }}
+                            style={{ fontSize: '10px', margin: "0px" }}
                             onClick={() => setInactive(!Inactive)}>
                             <span style={Inactive ? { fontWeight: 'bold', color: 'red' } : {}}> inactieve </span>
                         </button>
@@ -95,26 +95,56 @@ const ShiftSelector = () => {
 
                     <div class="card-footer bg-transparent" style={{ display: "none" }}>
                         <div class="row">
-                            <table style={{ backgroundColor: 'white', textAlign: "center", color: 'black' }} className="table">
+                            <div className="col-6">
+                                <table style={{ backgroundColor: 'white', textAlign: "center", color: 'black' }} className="table">
 
-                                <tbody>
-                                    {ShiftTypes.map((shift) =>
-                                    (ActiveCategieres.includes(shift.categorie.trim()) && (shift.actief || Inactive) &&
+                                    <tbody>
+                                        {ShiftTypes.map((shift) =>
+                                        (ActiveCategieres.filter((obj, index) => index % 2 === 0).includes(shift.categorie.trim()) && (shift.actief || Inactive) &&
 
 
-                                        <tr style={shift.naam === currentShift?{backgroundColor:'lightgray', border:'2px solid black'}:{}}>
-                                            <td style={{ padding: "1px" }}>{shift.naam}</td>
-                                            <td style={{width:"70px", margin:'0px', padding:'1px' }} ><ReadOnlyShift shift={shift}  shiftDay={false}/></td>
-                                            {/* <td style={{ padding: "1px" }}><div style={{ backgroundColor: shift.kleurcode, height: '30px', width: "65px", border: '1px solid black' }}></div></td> */}
-                                            <td style={{ padding: "1px" }}>
-                                                <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.naam))}><i className={shift.naam === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>
-                                            </td>
-                                        </tr>
-                                    )
-                                    )
-                                    }
-                                </tbody>
-                            </table>
+                                            <tr style={shift.naam === currentShift ? { backgroundColor: 'lightgray', outline: '2px solid black' } : {}}>
+                                                <td style={{ padding: "1px" }}>{shift.naam}</td>
+                                                <td style={{ width: "70px", margin: '0px', padding: '1px' }} ><ReadOnlyShift shift={shift} shiftDay={false} /></td>
+                                                {/* <td style={{ padding: "1px" }}><div style={{ backgroundColor: shift.kleurcode, height: '30px', width: "65px", border: '1px solid black' }}></div></td> */}
+                                                <td style={{ padding: "1px" }}>
+                                                    <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.naam))}><i className={shift.naam === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>
+                                                </td>
+                                            </tr>
+                                        )
+                                        )
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="col-6">
+                                <table style={{ backgroundColor: 'white', textAlign: "center", color: 'black' }} className="table">
+
+                                    <tbody>
+                                        {ShiftTypes.map((shift) =>
+                                        (ActiveCategieres.filter((obj, index) => index % 2 === 1).includes(shift.categorie.trim()) && (shift.actief || Inactive) &&
+
+
+                                            <tr style={shift.naam === currentShift ? { backgroundColor: 'lightgray', outline: '2px solid black' } : {}}>
+                                                <td style={{ padding: "1px" }}>{shift.naam}</td>
+                                                <td style={{ width: "70px", margin: '0px', padding: '1px' }} ><ReadOnlyShift shift={shift} shiftDay={false} /></td>
+                                                {/* <td style={{ padding: "1px" }}><div style={{ backgroundColor: shift.kleurcode, height: '30px', width: "65px", border: '1px solid black' }}></div></td> */}
+                                                <td style={{ padding: "1px" }}>
+                                                    <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.naam))}><i className={shift.naam === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>
+                                                </td>
+                                            </tr>
+                                        )
+                                        )
+                                        }
+                                    </tbody>
+                                </table>
+
+
+
+
+
+                            </div>
+
                         </div>
                     </div>
 
