@@ -210,7 +210,7 @@ const getPartialCalendarMonth_ArrayWithMoment = (dateString, begin, eind) => {
     while (startDay.isBefore(endDay, 'day')) {
         calendar.push({
             "day": startDay.format("DD-MM-YYYY"),
-            "shift": startDay.isBetween(beginContract, eindContract, "day") ? "" : false,
+            "shift": eind? (startDay.isBetween(beginContract, eindContract, "day") ? "" : false): (startDay.isAfter(beginContract,  "day")? "" : false),
             "startmoment": null,
             "endmoment": null
         });

@@ -21,7 +21,7 @@ const ReadOnlyHistoryShift = ({ shift, shiftDay }) => {
         padding: "0px",
         margin: '0px',
         textAlign: 'center',
-        height: "100%",
+        height: "27px",
         minWidth: "45px"
       };
     function over(e) {

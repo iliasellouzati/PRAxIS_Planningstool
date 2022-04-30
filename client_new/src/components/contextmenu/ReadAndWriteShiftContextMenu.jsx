@@ -106,9 +106,9 @@ const ReadAndWriteShiftContextMenu = ({ employees, setContextMenu, content }) =>
                         {Shift !== '' &&
                             <p>
                                 {
-                                Math.round(  (  moment.duration(moment(End, "hh:mm").diff(moment(Begin, "hh:mm"))).asHours() > 0 ?
+                                    Math.round((moment.duration(moment(End, "hh:mm").diff(moment(Begin, "hh:mm"))).asHours() > 0 ?
                                         moment.duration(moment(End, "hh:mm").diff(moment(Begin, "hh:mm"))).asHours() :
-                                        moment.duration(moment(End, "hh:mm").add(1, "day").diff(moment(Begin, "hh:mm"))).asHours())*100)/100
+                                        moment.duration(moment(End, "hh:mm").add(1, "day").diff(moment(Begin, "hh:mm"))).asHours()) * 100) / 100
                                 }
                             </p>}
                     </div>

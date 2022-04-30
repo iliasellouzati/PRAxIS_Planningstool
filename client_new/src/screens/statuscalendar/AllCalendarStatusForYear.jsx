@@ -172,7 +172,7 @@ const AllCalendarStatusForYear = () => {
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            {CalendarStatus.filter(x => x.month === month).map(status =>
+                                                                            {CalendarStatus.filter(x => x.month === month).sort((a,b) => a.version > b.version?1:-1).map(status =>
                                                                                 <tr>
                                                                                     <td>{status.month}</td>
                                                                                     <td>{status.version}</td>

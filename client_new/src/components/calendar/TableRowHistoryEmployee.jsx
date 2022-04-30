@@ -64,7 +64,7 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes, length }) => {
         <React.Fragment>
 
 
-            <td style={{ width: "auto", backgroundColor: "lightgray", textAlign: "center" }}>
+            <td style={{height: "27px", width: "auto", backgroundColor: "lightgray", textAlign: "center", padding:"0px" }}>
 
                 <i class="fas fa-angle-double-left fa-fw" onClick={() => handleDown1Year()}></i>
                 <i class="fas fa-arrow-left fa-fw" onClick={() => handleDown1Month()} />
@@ -76,11 +76,11 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes, length }) => {
 
             {!Loading && History && History.map(shiftDay =>
 
-                <td style={moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 7 ? { outline: '1px solid darkgreen', padding: "1px", width: "auto" } : { padding: "1px", width: "auto" }}>
+                <td style={moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 7 ? {height: "27px", outline: '1px solid darkgreen', padding: "1px", width: "auto" } : {height: "27px", padding: "1px", width: "auto" }}>
                     <ReadOnlyHistoryShift shift={shiftDay.shift !== "" ? shifttypes.find(x => x.naam === shiftDay.shift) : null} shiftDay={shiftDay} />
                 </td>
             )}
-            <td colSpan={2} style={{ padding: "0px", margin: '0px' ,textAlign:'center',width:'auto'}}>
+            <td colSpan={2} style={{ height: "27px",padding: "0px", margin: '0px' ,textAlign:'center',width:'auto'}}>
                 <span style={{ fontSize: '12px' }}><b>{`${moment(VisualDate, "MM-YYYY").startOf('month').startOf('isoWeek').format("DD/MM")}`}</b></span>
                 <span style={{ fontSize: '10px' }}>-</span>
                 <span style={{ fontSize: '12px' }}><b>{`${moment(VisualDate, "MM-YYYY").startOf('month').startOf('isoWeek').add(length-1, 'days').format("DD/MM")}`}</b></span>

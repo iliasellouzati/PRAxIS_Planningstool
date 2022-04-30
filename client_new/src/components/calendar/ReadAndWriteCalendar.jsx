@@ -49,8 +49,8 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
             })
             .catch(error => setHttp500([true, error]));
 
-        await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').subtract(1,'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").endOf('year').format('DD-MM-YYYY')}`)
-            .then(response => setExtraHistoryCurrentYearEmployees(makeObjectForIndividualStats(response.data, shifttypes,year)))
+        await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').subtract(1, 'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").endOf('year').format('DD-MM-YYYY')}`)
+            .then(response => setExtraHistoryCurrentYearEmployees(makeObjectForIndividualStats(response.data, shifttypes, year)))
             .catch(error => setHttp500([true, error]));
 
         await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${month}-${year}`, 'MM-YYYY').subtract(1, 'month').startOf('month').startOf('isoWeek').subtract(1, 'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").startOf('month').startOf('isoWeek').subtract(1, 'day').format('DD-MM-YYYY')}`)
@@ -154,20 +154,13 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                                     <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
                                                 </td>
                                         )}
-                                        <td style={{ padding: "1px", minWidth: "38px",maxWidth:'45px', textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
-                                        <td style={{ padding: "1px", minWidth: "38px", maxWidth:'45px',textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} shifttypes={ShiftTypes} /></td>
-                                    </tr>
-                                    {/* TABELRIJ MET HISTORIEKE PLANNING VAN WERKNEMER */}
-                                    <tr className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-body" : "expandable-body d-none"}>
-                                        <TableRowHistoryEmployee shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} length={calendarMonthHelper.length} />
+                                        <td style={{ padding: "1px", minWidth: "38px", maxWidth: '45px', textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
+                                        <td style={{ padding: "1px", minWidth: "38px", maxWidth: '45px', textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} shifttypes={ShiftTypes} /></td>
                                     </tr>
 
-                                    {/* TABELRIJ MET EXTRA INFO VAN WERKNEMER */}
-                                    <tr className={ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show ? "expandable-body" : "expandable-body d-none"}>
-                                        <td colSpan={calendarMonthHelper.length + 3}>
-                                            <ExtraInfoTableRow employeeId={individueleCalendar.employeeId} stats={ExtraHistoryCurrentYearEmployees[`${individueleCalendar.employeeId}`]}  />
-                                        </td>
-                                    </tr>
+                                    {ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show &&
+                                        <ExtraInfoTableRow employeeId={individueleCalendar.employeeId} shifttypes={ShiftTypes} length={calendarMonthHelper.length} stats={ExtraHistoryCurrentYearEmployees[`${individueleCalendar.employeeId}`]} />}
+
 
 
                                 </React.Fragment>

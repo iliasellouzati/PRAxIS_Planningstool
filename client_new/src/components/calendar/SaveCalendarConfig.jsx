@@ -49,7 +49,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
         let reduxShifts = [];
 
         calendar.forEach(empCal => {
-            reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek) && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
+            reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek,"day") && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
         })
 
         let extraInRedux = reduxShifts.filter(reduxShift => reduxShift.shift !== false &&
@@ -80,11 +80,11 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
         const beginDatumEersteWeek = moment(`${month}-${year}`, "MM-YYYY").endOf('month').startOf('isoWeek').subtract(1, 'day');
         const eindDatumEersteWeek = moment(`${month}-${year}`, "MM-YYYY").endOf('month').endOf('isoWeek').add(1, 'day');
 
-        const savedShifts = data.filter(x => moment(x.shift_datum, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek));
+        const savedShifts = data.filter(x => moment(x.shift_datum, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek,"day"));
         let reduxShifts = [];
 
         calendar.forEach(empCal => {
-            reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek) && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
+            reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek,"day") && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
         })
 
         let extraInRedux = reduxShifts.filter(reduxShift => reduxShift.shift !== false &&
@@ -251,6 +251,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
     return (
         <React.Fragment>
             <div className="col-3">
+
                 <div className='card'>
                     <div className="card-header" style={{ textAlign: 'center' }}>
                         {`Voor maand ${moment(`${month}-${year}`, 'MM-YYYY').subtract(1, 'month').format("MM-YYYY")}`}
@@ -296,6 +297,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
                             </React.Fragment>}
                     </div>
                 </div>
+
                 <div className='card'>
                     <div className="card-header" style={{ textAlign: 'center' }}>
                         {`Voor maand ${moment(`${month}-${year}`, 'MM-YYYY').add(1, 'month').format("MM-YYYY")}`}
@@ -320,7 +322,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
                                                     <button type="button" class="btn  btn-warning btn-xs" onClick={() => { postNewNextCalenderStatusIn() }} style={{ width: '100px', marginLeft: '10px' }}> {moment(`${month}-${year}`, "MM-YYYY").add(1, "month").format("MM-YYYY")}_V1</button>
                                                 </span> : <span style={{ alignItems: 'baseline' }} > N.V.T. </span>}
                                             </React.Fragment>
-                                            : LastMonth.progress === 2 ?
+                                            : NextMonth.progress === 2 ?
                                                 <React.Fragment>
                                                     <p style={{ margin: "0px" }}>Aangepaste shifts t.o.v. planning {`${NextMonth.month}_V${NextMonth.version}`}:<span style={{ color: 'red' }}> {DifferenceWithNextSavedCalendar}</span> </p>
                                                     {DifferenceWithNextSavedCalendar !== 0 ?
