@@ -49,7 +49,7 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
         let reduxShifts = [];
 
         calendar.forEach(empCal => {
-            reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek,"day") && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
+            reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek, "day") && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
         })
 
         let extraInRedux = reduxShifts.filter(reduxShift => reduxShift.shift !== false &&
@@ -80,11 +80,11 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
         const beginDatumEersteWeek = moment(`${month}-${year}`, "MM-YYYY").endOf('month').startOf('isoWeek').subtract(1, 'day');
         const eindDatumEersteWeek = moment(`${month}-${year}`, "MM-YYYY").endOf('month').endOf('isoWeek').add(1, 'day');
 
-        const savedShifts = data.filter(x => moment(x.shift_datum, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek,"day"));
+        const savedShifts = data.filter(x => moment(x.shift_datum, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek, "day"));
         let reduxShifts = [];
 
         calendar.forEach(empCal => {
-            reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek,"day") && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
+            reduxShifts = [...reduxShifts, ...empCal.calendar.filter(x => moment(x.day, "DD-MM-YYYY").isBetween(beginDatumEersteWeek, eindDatumEersteWeek, "day") && x.shift !== "").map(sh => ({ ...sh, 'employeeId': empCal.employeeId }))];
         })
 
         let extraInRedux = reduxShifts.filter(reduxShift => reduxShift.shift !== false &&
@@ -206,26 +206,24 @@ const SaveCalendarConfig = ({ setShowSuccesModal, employees, shifttypes, setShow
 
         console.log(`Calendar in Bytes: ${byteSize} B`);
         console.log(`Calendar in MB: ${MBSize} MB`);
-        let result = await axios.post(`http://localhost:3001/api/calendar/global/year/${year}/calendarmonth/${month}/version/${version}`, { 'calendarForDb': calendarForDb });
 
 
         await axios.put(`http://localhost:3001/api/statuscalendar/${year}/${month}/${version}`, {
             'progress': 2,
             'comment': Commentaar,
             'affected_employees': employees.length,
-            'added_shifts': result.status,
+            'added_shifts': calendarForDb.length,
             'same_shifts': 0,
             'deleted_shifts': 0,
             'changed_shifts': 0,
             'timestamp': moment().format("DD/MM/YYYY HH:MM")
-        }).then(() => {
-            setShowSuccesModal([true, ['Opgeslagen', `ID: ${month}-${year}_V${version}`, `Planning ${month}-${year}_V${version} met ${result} nieuwe shiften werd opgeslagen! `]]);
-            history.push(`/planningen/${year}`);
         })
+         axios.post(`http://localhost:3001/api/calendar/global/year/${year}/calendarmonth/${month}/version/${version}`, { 'calendarForDb': calendarForDb });
+
+        setShowSuccesModal([true, ['Opgeslagen', `ID: ${month}-${year}_V${version}`, `Planning ${month}-${year}_V${version} met ${calendarForDb.length} nieuwe shiften werd opgeslagen! `]]);
+        history.push(`/planningen/${year}`);
 
     }
-
-
 
 
 

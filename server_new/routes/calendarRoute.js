@@ -268,7 +268,7 @@ router.post("/global/year/:year/calendarmonth/:month/version/:version", async (r
     try {
 
         let result = await Calendar_DB.saveShiftsToSavedCalendar(req.body.calendarForDb);
-        res.status(200).send(result);
+        res.send(result);
         
     } catch (e) {
         console.log(e);
