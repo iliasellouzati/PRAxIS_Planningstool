@@ -68,6 +68,7 @@ const CurrentMonthHours = ({ employeeId, shifttypes, contracttypes, employees })
         return () => {
 
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [calendar])
 
     return (

@@ -29,6 +29,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
+
     try {
 
         if (isNaN(req.body.id))
@@ -62,7 +63,7 @@ router.put("/:id", async (req, res) => {
             return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.score}" failed  because score is not a number`);
 
 
-        const rowsAffected = await WeeklyStructure_DB.updateWeekStructuur(req.body.id, req.body.maandag, req.body.dinsdag, req.body.woensdag, req.body.donderdag, req.body.vrijdag, req.body.zaterdag, req.body.zondag, req.body.score);
+        const rowsAffected = await WeeklyStructure_DB.updateWeekStructuur(req.body.id, req.body.maandag, req.body.dinsdag, req.body.woensdag, req.body.donderdag, req.body.vrijdag, req.body.zaterdag, req.body.zondag, req.body.score, req.body.nacht_week, req.body.omschakeling_dag_naar_nacht, req.body.omschakeling_nacht_naar_dag);
         rowsAffected ? res.status(204).send() : res.status(404).send(`WeeklyStructure was not added`);
 
 
@@ -78,16 +79,16 @@ router.delete("/:id", async (req, res) => {
     try {
 
         if (isNaN(req.params.id))
-          return res.status(400).send(`DELETE on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not a number`);
-    
+            return res.status(400).send(`DELETE on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not a number`);
+
         const rowsAffected = await WeeklyStructure_DB.deleteWeekStructuurWithId(req.params.id);
         rowsAffected ? res.status(204).send() : res.status(404).send(`WeeklyStructure with id:${req.params.id} was not found`);
-    
-      } catch (e) {
-    
+
+    } catch (e) {
+
         res.status(500).send(`DELETE on ${hostUrl}/:id with id "${req.params.id}" failed with error "${e.message}"`);
-    
-      }
+
+    }
 
 
 });
@@ -95,9 +96,6 @@ router.delete("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
 
     try {
-
-        if (isNaN(req.body.id))
-            return res.status(400).send(`POST on ${hostUrl} with id "${req.body.id}" failed  because id is not a number`);
 
         if (typeof req.body.maandag !== 'string')
             return res.status(400).send(`POST on ${hostUrl} failed because maandag is not a string`);
@@ -123,8 +121,7 @@ router.post("/", async (req, res) => {
         if (isNaN(req.body.score))
             return res.status(400).send(`POST on ${hostUrl} with id "${req.params.score}" failed  because score is not a number`);
 
-
-        const rowsAffected = await WeeklyStructure_DB.addWeekStructuur(req.body.id, req.body.maandag, req.body.dinsdag, req.body.woensdag, req.body.donderdag, req.body.vrijdag, req.body.zaterdag, req.body.zondag, req.body.score);
+        const rowsAffected = await WeeklyStructure_DB.addWeekStructuur(req.body.maandag, req.body.dinsdag, req.body.woensdag, req.body.donderdag, req.body.vrijdag, req.body.zaterdag, req.body.zondag, req.body.score, req.body.nacht_week, req.body.omschakeling_dag_naar_nacht, req.body.omschakeling_nacht_naar_dag);
         rowsAffected ? res.status(204).send() : res.status(404).send(`WeeklyStructure was not added`);
 
 

@@ -11,7 +11,7 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
   //globar vars
   const dispatch = useDispatch();
   const currentCalendar = useSelector((state) => state.currentCalendar);
-  const { date, calendar } = currentCalendar;
+  const { date } = currentCalendar;
 
   //config
   let config = Config;
@@ -19,35 +19,25 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
 
 
   //Web Workers
-  let mainWorker = new WorkerBuilder(MainWorker);
+  let mainWorker;
   let calculationWorker1;
   let calculationWorker2;
   let calculationWorker3;
   let calculationWorker4;
 
-  mainWorker.onmessage = (message) => {
-    if (message) {
-      console.log(message);
-      incrementProgress();
-      sendReponseMainWorkerToCalculationWorkers(message.data);
-    }
-  };
-  mainWorker.onerror = (message) => {
-    console.log(message);
-  }
-
-
+  
+  
   //functions
-
-
+  
+  
   //CALC WORKERS
-
+  
   const fireUpCalculationsWorkers = () => {
     calculationWorker1 = new WorkerBuilder(CalculationWorker);
     calculationWorker2 = new WorkerBuilder(CalculationWorker);
     calculationWorker3 = new WorkerBuilder(CalculationWorker);
     calculationWorker4 = new WorkerBuilder(CalculationWorker);
-
+    
     calculationWorker1.onmessage = (message) => {
       if (message) {
         handleCalculationWorkerResponse(message.data);
@@ -79,7 +69,7 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     incrementProgress();
     let totaal = 0;
     respons?.forEach(element => {
-
+      
       if (!config.possibleWeekCombos?.some(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften)) {
         config.possibleWeekCombos.push(element);
         totaal += element.combinaties.length;
@@ -87,32 +77,44 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         let hulpIndex = config.possibleWeekCombos.findIndex(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften);
         config.possibleWeekCombos[hulpIndex].combinaties.push(...element.combinaties);
         totaal += config.possibleWeekCombos[hulpIndex].combinaties.length;
-
+        
       }
     });
-
+    
     console.log('TOTAAL AAANTAL : ' + totaal);
-
+    
     console.log(config.possibleWeekCombos)
-
+    
     config.amountOfWorkerResponses === 3 ? handleEndOfCalculationWorkers() : config.amountOfWorkerResponses++;
 
 
   }
-
+  
   //MAIN WORKERS
-
+  
   const INIT_StartUpMainWorkerForAutomatisation = (message) => {
-
+    
+    mainWorker = new WorkerBuilder(MainWorker);
+    
+    mainWorker.onmessage = (message) => {
+      if (message) {
+        console.log(message);
+        incrementProgress();
+        sendReponseMainWorkerToCalculationWorkers(message.data);
+      }
+    };
+    mainWorker.onerror = (message) => {
+      console.log(message);
+    }
     setShowProgressBar([true, [0, message.selectedWeeks.length * 5]]);
     config = message;
     mainWorker.postMessage(["INIT", message]);
   }
   const sendReponseMainWorkerToCalculationWorkers = (respons) => {
-
+    
     fireUpCalculationsWorkers();
-
-
+    
+    
     switch (respons[0]) {
       case "LAST_POSSIBLE_IDS_FOUND":
         mainWorker.terminate();

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import moment from 'moment';
 import MarioStats from './customStats/MarioStats';
 import OperatorDagStats from './customStats/OperatorDagStats';
 import OperatorNachtStats from './customStats/OperatorNachtStats';
@@ -16,7 +15,7 @@ import TableRowHistoryEmployee from '../TableRowHistoryEmployee';
 
 const ExtraInfoTableRow = ({ stats, employeeId, shifttypes, length }) => {
 
-    const { month, year } = useParams();
+    const {  year } = useParams();
 
     let dataArray = ["operator", "dag operator", "nacht operator", "coopman", "praxis", "cumul", "verlof", "ziekte", "standby", "weekend"];
     let intervalArray = ["maand", "kwartaal", "jaar"];

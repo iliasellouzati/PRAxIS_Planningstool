@@ -1,5 +1,4 @@
-import moment from 'moment';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 const MarioStats = ({ stats }) => {
 
@@ -7,27 +6,9 @@ const MarioStats = ({ stats }) => {
     const { month, year } = useParams();
 
     const currMonth = `${month}-${year}`;
-    const lastMonth = moment(currMonth,"MM-YYYY").subtract(1,"month").format("MM-YYYY");
 
     console.log(stats);
 
-    let hulpArr = [
-        " OPERATORUREN + COOPMAN 2U + COOPMAN DAG", "OU", //maand
-        " TOTAAL DAGSHIFTEN DEZE MAAND ", " TGDM ", //maand
-        " TOTAAL DAGSHIFTEN CUMUL ", " TDC ", //jaar
-        " TOTAAL GEWERKTE NACHT DEZE MAAND ", " TGNM ", //maand
-        " TOTAAL NACHT JAAR ", " TNC ",//jaar
-        " UREN VORIGE MAAND ", " UVM ", //maand
-        " TOTAAL UREN JAAR ", " TUC ", //jaar
-        " UREN VOORBIJE MAAND(EN) KWARTAAL ", " UVMKW ", //kwartaal
-        " HUIDIG KWARTAAL ", " TUKW ", //kwartaal
-        " #AANGEVRAAGDE VRIJE FEESTDAG ", " ??? ", //verlof
-        " GEWERKTE WEEKENDS DEZE MAAND ", " GWDM ",//maand +weekend
-        " TOTAAL GEWERKTE WEEKENDS ", " TGW", //jaar + weekend
-        " STANDBY MAAND ", "SB",//maand + sb
-        " SB CUMUL ", "SBC",//jaar + sb
-        " VERLOF ANCIENITEIT/ONBETAALD VERLOF/UITZONDERINGSDAG ", " ??? " //verlof
-    ]
 
     useEffect(() => {
       

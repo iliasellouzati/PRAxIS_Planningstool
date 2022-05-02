@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import Header from './screens/index/Header';
-import Footer from './screens/index/Footer';
 import Sidebar from './screens/index/Sidebar';
 import ServerStatus from './screens/index/ServerStatus';
 
@@ -44,6 +43,7 @@ function App() {
     "setShowProgressBar": setShowProgressBar,
     "incrementProgress": incrementProgress
   })
+  
   useEffect(() => {
     setShowSuccesModal([false, []]);
     setShowDangerModal([false, []]);
