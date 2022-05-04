@@ -10,7 +10,7 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
     const dispatch = useDispatch();
 
     const currentCalendar = useSelector((state) => state.currentCalendar);
-    const { currentShift,calendar } = currentCalendar;
+    const { currentShift, calendar } = currentCalendar;
 
     const [Shift, setShift] = useState("");
 
@@ -33,17 +33,17 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
             textAlign: 'center',
             verticalAlign: 'middle',
             height: "27px",
-            minWidth: "42px",
-            fontSize: Shift.standaardtekst !== "uur" ? "10px" : "",
+            cursor:'pointer',
             outline: Shift.border ? "1px solid black" : ""
+            
         }
         :
         {
             padding: "0px",
             margin: '0px',
             textAlign: 'center',
-            height: "100%",
-            minWidth: "45px"
+            cursor:'pointer',
+            height: "100%"
         };
 
     function over(e) {
@@ -56,11 +56,11 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
         if (shiftDay.shift === "") {
             e.target.style.outline = "";
         }
-        
+
     }
 
-    function roundToTwo(num) {    
-        return +(Math.round(num + "e+2")  + "e-2");
+    function roundToTwo(num) {
+        return +(Math.round(num + "e+2") + "e-2");
     }
 
 
@@ -78,20 +78,21 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
 
 
 
-        let text = shift.standaardtekst === "uur" ? roundToTwo( 
-            moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() > 0 ?
-                moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() :
-                moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").add(1, "day").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours()
+        let text = shift.standaardtekst === "uur" ? roundToTwo(
+            moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}` : `${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}` : `${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() > 0 ?
+                moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}` : `${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}` : `${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() :
+                moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}` : `${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").add(1, "day").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}` : `${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours()
         ) :
             shift.standaardtekst === "min" ?
-                (moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("hh:mm") > 0 ?
-                    moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("h:mm") :
-                    moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}`:`${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").add(1, "day").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}`:`${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("h:mm")
+                (moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}` : `${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}` : `${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("hh:mm") > 0 ?
+                    moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}` : `${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}` : `${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("h:mm") :
+                    moment.utc(moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}` : `${shiftDay.day}-${shiftDay.einduur}`), "DD-MM-YYYY-hh:mm").add(1, "day").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}` : `${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asMilliseconds()).format("h:mm")
                 )
                 :
                 shift.standaardtekst;
 
-        setShiftText(text);
+
+        setShiftText(text.toString());
     }
 
 
@@ -107,15 +108,15 @@ const ReadAndWriteShift = ({ setContextMenu, shiftDay, shifttypes, employeeId })
 
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [shiftDay,calendar])
+    }, [shiftDay, calendar])
 
     return (
         <div style={cssStyling} onMouseOver={over} onMouseOut={out} onContextMenu={contextMenu} onClick={(e) => handleClick(e)}>
 
-            {!Shift ? "" : ShiftText}
+            {!Shift ?<span style={{color:"white", fontSize:"0px"}}>- </span> : ShiftText}
 
-            <span style={{ fontSize: '0px' }}>a</span>
-        </div>
+        
+        </div >
     )
 }
 

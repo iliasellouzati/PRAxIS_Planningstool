@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
 const MarioStats = ({ stats }) => {
 
 
@@ -7,14 +8,18 @@ const MarioStats = ({ stats }) => {
 
     const currMonth = `${month}-${year}`;
 
+    const currMonthMoment = moment(currMonth, "MM-YYYY");
+
+    const currKwartaal = currMonthMoment.quarter();
+
     console.log(stats);
 
 
     useEffect(() => {
-      
-   
+        console.log(currKwartaal)
+
     }, [])
-    
+
 
 
     return (
@@ -56,11 +61,11 @@ const MarioStats = ({ stats }) => {
                     <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].dag_operator.totaalAantalShiften, 0)}</td>
                     <td style={{ padding: "1px" }}>{stats.maand[currMonth].nacht_operator.totaalAantalShiften}</td>
                     <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += stats.maand[currVal].nacht_operator.totaalAantalShiften, 0)}</td>
-                    <td style={{ padding: "1px" }}>{stats.maand[currMonth].cumul.totaalUrenOpKalender+stats.maand[currMonth].cumul.urenUitVorigeMaand}</td>
-                    <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand), 0)}</td>
-                    <td style={{ padding: "1px" }}>x</td>
-                    <td style={{ padding: "1px" }}>x</td>
-                    <td style={{ padding: "1px" }}>x</td>
+                    <td style={{ padding: "1px" }}>{Math.round((stats.maand[currMonth].cumul.totaalUrenOpKalender + stats.maand[currMonth].cumul.urenUitVorigeMaand) * 100) / 100}</td>
+                    <td style={{ padding: "1px" }}>{Math.round((Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand), 0)) * 100) / 100}</td>
+                    <td style={{ padding: "1px" }}>{Math.round((Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (moment(currVal, "MM-YYYY").isSame(currMonthMoment, 'quarter') && moment(currVal, "MM-YYYY").isBefore(currMonthMoment, 'month') ? (stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand) : 0), 0)) * 100) / 100}</td>
+                    <td style={{ padding: "1px" }}>{Math.round((Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (moment(currVal, "MM-YYYY").isSame(currMonthMoment, 'quarter') ? (stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand) : 0), 0)) * 100) / 100}</td>
+                    <td style={{ padding: "1px" }}>{Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].verlof.shiftDb.filter(x => x.shifttypes_naam.includes('feestdag')).length), 0)}</td>
                     <td style={{ padding: "1px" }}>x</td>
                     <td style={{ padding: "1px" }}>x</td>
                     <td style={{ padding: "1px" }}>x</td>

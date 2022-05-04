@@ -33,7 +33,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
     const [ContractTypes, setContractTypes] = useState([]);
 
     const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
-    const cssWidthDay = (90 / (calendarMonthHelper.length)) + "%";
+    const cssWidthDay = (92 / (calendarMonthHelper.length+2)) + "%";
 
     const fetchData = async () => {
         let shifttypes = [];
@@ -79,12 +79,12 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
             {Loading ? <LoadingSpinner /> : Http500[0] ? <Http4XXAnd5XXError error={Http500[1]} setHttp4XXAnd5XX={setHttp500} /> : (
                 <React.Fragment>
                     {ContextMenu[0] && <ReadAndWriteShiftContextMenu employees={Employees} setContextMenu={setContextMenu} content={ContextMenu[1]} />}
-                    <table className="table table-bordered table-hover ">
+                    <table className="table table-bordered table-hover " style={{width:"100%"}}>
 
                         {/* BOVENSTE INFORMATIEVE TABELRIJ MET DAGEN */}
                         <thead style={{ textAlign: 'center' }}>
                             <tr >
-                                <th rowSpan="2" style={{ padding: "1px", width: "10%" }}>Werknemers</th>
+                                <th rowSpan="2" style={{ padding: "0px", width: "8%" }}>Werknemers</th>
                                 {calendarMonthHelper.map((element, index) =>
                                     <th key={index} style={HighlightDay[0] && HighlightDay[1].isSame(element, 'day') ? { outline: "2px solid red", padding: "1px", width: { cssWidthDay } } : (element.isoWeekday() === 6 || element.isoWeekday() === 7) ? { outline: '1px solid darkgreen', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
                                 )}
@@ -122,7 +122,7 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                             {calendar.map(individueleCalendar =>
                                 <React.Fragment>
                                     <tr>
-                                        <td style={{ padding: "1px", width: '10%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                        <td style={{ padding: "0px", width: '8%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                                             onClick={() => {
                                                 let index = ShowExtraInforEmployees.findIndex(x => x.id === individueleCalendar.employeeId);
                                                 let object = [...ShowExtraInforEmployees];
@@ -148,14 +148,14 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                                                 ||
                                                                 (HighlightCustom[0] && HighlightCustom[1].employeeId === individueleCalendar.employeeId && HighlightCustom[1].start.clone().subtract(1, 'day').isBefore(moment(shiftDay.day, 'DD-MM-YYYY'), 'day') && HighlightCustom[1].end.clone().add(1, 'day').isAfter(moment(shiftDay.day, 'DD-MM-YYYY'), 'day'))
                                                             )
-                                                            ? { outline: "2px solid red", padding: "0px", margin: "0px" }
-                                                            : (moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 7) ? { outline: '1px solid darkgreen', padding: "0px", margin: "0px" } :
-                                                                { padding: "0px", margin: "0px" }}>
+                                                            ? {width:cssWidthDay, outline: "2px solid red", padding: "0px", margin: "0px" }
+                                                            : (moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 7) ? {width:cssWidthDay, outline: '1px solid darkgreen', padding: "0px", margin: "0px" } :
+                                                                {width:cssWidthDay, padding: "0px", margin: "0px" }}>
                                                     <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
                                                 </td>
                                         )}
-                                        <td style={{ padding: "1px", minWidth: "38px", maxWidth: '45px', textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
-                                        <td style={{ padding: "1px", minWidth: "38px", maxWidth: '45px', textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} shifttypes={ShiftTypes} /></td>
+                                        <td style={{ padding: "1px", width:cssWidthDay , textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
+                                        <td style={{ padding: "1px",  width:cssWidthDay, textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} shifttypes={ShiftTypes} /></td>
                                     </tr>
 
                                     {ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show &&
