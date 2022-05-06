@@ -24,7 +24,7 @@ const CurrentMonthHours = ({ employeeId, shifttypes, contracttypes, employees })
                 return;
             }
 
-            let shift = shifttypes.find(x => x.naam === shiftDay.shift)
+            let shift = shifttypes.find(x => x.id === shiftDay.shift)
 
             if (moment(shiftDay.day, 'DD-MM-YYYY').isBefore(moment(`${month}-${year}`, "MM-YYYY"), "month")) {
                 total += moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}` : `${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}` : `${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() >= 0 ?

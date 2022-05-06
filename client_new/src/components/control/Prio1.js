@@ -19,7 +19,7 @@ const StandbyControle = ({
         for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
 
             let shift = calendar[employeeLooper].calendar[individualDayLooper].shift;
-            if (shift !== false && shift !== "" && shifttypes.find(s => s.naam === shift)?.categorie.trim() === "standby") {
+            if (shift !== false && shift !== "" && shifttypes.find(s => s.id === shift)?.categorie.trim() === "standby") {
                 hulpArrMetDeDagen.pop();
                 break;
             }
@@ -177,7 +177,7 @@ const LegeShiftenTussen3NachtenEnDagShift = ({
             } else if (nightShifts.includes(shiftName)) {
                 opeenVolgendeNachtenShiften++;
                 continue;
-            } else if ((shiftName === '' || ['verlof', 'standby'].includes(shifttypes.find(x => x.naam === shiftName).categorie.trim())) && opeenVolgendeNachtenShiften !== 0) {
+            } else if ((shiftName === '' || ['verlof', 'standby'].includes(shifttypes.find(x => x.id === shiftName).categorie.trim())) && opeenVolgendeNachtenShiften !== 0) {
                 blankoShift++;
                 continue;
             }
@@ -225,7 +225,7 @@ const TweeLegeShiftenTussen4NachtenEnDagShift = ({
             } else if (nightShifts.includes(shiftName)) {
                 opeenVolgendeNachtenShiften++;
                 continue;
-            } else if ((shiftName === '' || ['verlof', 'standby'].includes(shifttypes.find(x => x.naam === shiftName).categorie.trim())) && opeenVolgendeNachtenShiften !== 0) {
+            } else if ((shiftName === '' || ['verlof', 'standby'].includes(shifttypes.find(x => x.id === shiftName).categorie.trim())) && opeenVolgendeNachtenShiften !== 0) {
                 blankoShift++;
                 continue;
             }
@@ -264,7 +264,7 @@ const TweeBlancoShiftsNaWeekendMet3Nacht = ({
             if (nightShifts.includes(shiftName) && blankoShift === 0 && (calendarMonthHelper[individualDayLooper].isoWeekday() === 5 || calendarMonthHelper[individualDayLooper].isoWeekday() === 6 || calendarMonthHelper[individualDayLooper].isoWeekday() === 7)) {
                 opeenVolgendeNachtenShiften++;
                 continue;
-            } else if (opeenVolgendeNachtenShiften !== 0 && (shiftName === '' || ['verlof', 'standby'].includes(shifttypes.find(x => x.naam === shiftName).categorie.trim()))) {
+            } else if (opeenVolgendeNachtenShiften !== 0 && (shiftName === '' || ['verlof', 'standby'].includes(shifttypes.find(x => x.id === shiftName).categorie.trim()))) {
                 blankoShift++;
 
                 continue;
@@ -302,7 +302,7 @@ const StandbyCorrectePlaatsingControle = ({
 
             let shift = calendar[employeeLooper].calendar[individualDayLooper].shift
 
-            if (shifttypes.find(x => x.naam === shift)?.categorie.trim() === "standby") {
+            if (shifttypes.find(x => x.id === shift)?.categorie.trim() === "standby") {
 
                 switch (shift) {
                     case 'standby 24h':

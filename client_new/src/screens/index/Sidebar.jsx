@@ -13,20 +13,20 @@ const Sidebar = () => {
 
 
   return (
-    <aside className="main-sidebar sidebar-dark-primary elevation-4 " style={{ backgroundColor: kleurenpallet.sidebar_achtergrondkleur}} >
-
+    <aside className="main-sidebar sidebar-dark-primary elevation-4 " style={{ backgroundColor: kleurenpallet.sidebar_achtergrondkleur }} >
 
       <Link to="/" className="brand-link">
-        <span className="brand-text font-weight-light">Planningstool</span>
+        <img src="/dist/img/ICOON.ico" alt="PRAxIS_Logo" class="brand-image img-circle elevation-3" style={{opacity: ".8"}}/>
+          <span class="brand-text font-weight-light">Planning</span>
       </Link>
+ 
 
       <div className="sidebar" style={{ paddingLeft: "0px", paddingRight: '0px' }}>
-
 
         <div className="user-panel mt-3 pb-3 mb-3 d-flex">
 
           <div className="info">
-            <Link to="/" className="d-block">NO USER LOGGED IN</Link>
+            <Link to="/" className="d-block">Mario Schroyen</Link>
           </div>
         </div>
 
@@ -35,15 +35,15 @@ const Sidebar = () => {
           <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
             {SideBarLinks.map(obj =>
-              <li className="nav-item"             
-              style={(CurrentScreen || "home") === obj.naam ?
-                {
-                  backgroundColor: kleurenpallet.sidebar_selected_achtergrondkleur, borderLeft: `2px solid ${kleurenpallet.sidebar_selected_left_border_rood}`
-                } :
-                {  }}
+              <li className="nav-item"
+                style={(CurrentScreen || "home") === obj.naam ?
+                  {
+                    backgroundColor: kleurenpallet.sidebar_selected_achtergrondkleur, borderLeft: `2px solid ${kleurenpallet.sidebar_selected_left_border_rood}`
+                  } :
+                  {}}
               >
 
-                <Link to={obj.link} className={`nav-link`} style={{color:kleurenpallet.sidebar_textkleur}}>
+                <Link to={obj.link} className={`nav-link`} style={{ color: kleurenpallet.sidebar_textkleur }}>
                   <i className={`nav-icon ${obj.icon}`} />
                   <p>
                     {obj.naam}

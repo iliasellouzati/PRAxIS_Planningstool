@@ -155,7 +155,7 @@ const ExtraInfoTableRow = ({ stats, employeeId, shifttypes, length }) => {
                                             "weekend": <WeekendStats stats={stats} SelectedValue={SelectedValue} />
                                         }[DataType]
 
-                                        : <MarioStats stats={stats} />}
+                                        : <MarioStats stats={stats} shifttypes={shifttypes} />}
 
                                 </div>
                             </div>

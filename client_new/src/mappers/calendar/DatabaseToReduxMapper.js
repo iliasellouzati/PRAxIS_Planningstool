@@ -24,7 +24,7 @@ const mapShiftsFromDbToCalendar = (dateString, calendarFromDb, Employees) => {
             let shift = calendarFromDb === "" ? null : calendarFromDb.find(x => moment(x.datum, "YYYY-MM-DD").isSame(moment(returnCalendar[index1].calendar[index2].day, "DD-MM-YYYY"), 'day') && x.werknemers_id === returnCalendar[index1].employeeId);
 
             if (shift) {
-                returnCalendar[index1].calendar[index2].shift = shift.shifttypes_naam;
+                returnCalendar[index1].calendar[index2].shift = shift.shifttype_id;
                 returnCalendar[index1].calendar[index2].startmoment = shift.beginuur;
                 returnCalendar[index1].calendar[index2].endmoment = shift.einduur;
 
@@ -42,7 +42,7 @@ const mapShiftsFromDbToTableRowHistory = (dateString, calendarFromDb) => {
     for (let index = 0; index < returnCalendar.length; index++) {
         let shift = calendarFromDb === "" ? null : calendarFromDb.find(x => moment(x.datum, "YYYY-MM-DD").isSame(moment(returnCalendar[index].day, "DD-MM-YYYY"), 'day'));
         if (shift) {
-            returnCalendar[index].shift = shift.shifttypes_naam;
+            returnCalendar[index].shift = shift.shifttype_id;
             returnCalendar[index].startmoment = shift.beginuur;
             returnCalendar[index].endmoment = shift.einduur;
         }
@@ -71,7 +71,7 @@ const mapShiftsFromDbToAutomatisation = (dateString, calendarFromDb, Employees) 
                 x.werknemers_id === returnCalendar[index1].employeeId)
 
             if (shift) {
-                returnCalendar[index1].week[index2].shift = shift.shifttypes_naam;
+                returnCalendar[index1].week[index2].shift = shift.shifttype_;
             }
         }
     }
@@ -150,7 +150,7 @@ const mapShiftsFromDbToTotalHours = (dataString, calendarFromDb, shifttypes) => 
     calendarFromDb.forEach(shiftDay => {
 
         let shift_datum = moment(shiftDay.datum, "YYYY-MM-DD");
-        let shift = shifttypes.find(x => x.naam === shiftDay.shifttypes_naam);
+        let shift = shifttypes.find(x => x.id === shiftDay.shifttype_id);
         let duration;
         if (shift_datum.isBefore(currentMonth, 'month')) {
 

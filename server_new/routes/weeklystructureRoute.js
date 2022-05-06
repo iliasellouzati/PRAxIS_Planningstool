@@ -32,35 +32,33 @@ router.put("/:id", async (req, res) => {
 
     try {
 
-        if (isNaN(req.body.id))
-            return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.id}" failed  because id is not a number`);
 
         if (parseInt(req.params.id) !== parseInt(req.body.id))
             return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.id}" failed with because id is not equal to employee Id:${req.body.id}`);
 
-        if (typeof req.body.maandag !== 'string')
-            return res.status(400).send(`PUT on ${hostUrl}/:id failed because maandag is not a string`);
+        // if (typeof req.body.maandag !== 'number')
+        //     return res.status(400).send(`PUT on ${hostUrl}/:id failed because maandag is not a string`);
 
-        if (typeof req.body.dinsdag !== 'string')
-            return res.status(400).send(`PUT on ${hostUrl}/:id failed because dinsdag is not a string`);
+        // if (typeof req.body.dinsdag !== 'string')
+        //     return res.status(400).send(`PUT on ${hostUrl}/:id failed because dinsdag is not a string`);
 
-        if (typeof req.body.woensdag !== 'string')
-            return res.status(400).send(`PUT on ${hostUrl}/:id failed because woensdag is not a string`);
+        // if (typeof req.body.woensdag !== 'string')
+        //     return res.status(400).send(`PUT on ${hostUrl}/:id failed because woensdag is not a string`);
 
-        if (typeof req.body.donderdag !== 'string')
-            return res.status(400).send(`PUT on ${hostUrl}/:id failed because donderdag is not a string`);
+        // if (typeof req.body.donderdag !== 'string')
+        //     return res.status(400).send(`PUT on ${hostUrl}/:id failed because donderdag is not a string`);
 
-        if (typeof req.body.vrijdag !== 'string')
-            return res.status(400).send(`PUT on ${hostUrl}/:id failed because vrijdag is not a string`);
+        // if (typeof req.body.vrijdag !== 'string')
+        //     return res.status(400).send(`PUT on ${hostUrl}/:id failed because vrijdag is not a string`);
 
-        if (typeof req.body.zaterdag !== 'string')
-            return res.status(400).send(`PUT on ${hostUrl}/:id failed because zaterdag is not a string`);
+        // if (typeof req.body.zaterdag !== 'string')
+        //     return res.status(400).send(`PUT on ${hostUrl}/:id failed because zaterdag is not a string`);
 
-        if (typeof req.body.zondag !== 'string')
-            return res.status(400).send(`PUT on ${hostUrl}/:id failed because zondag is not a string`);
+        // if (typeof req.body.zondag !== 'string')
+        //     return res.status(400).send(`PUT on ${hostUrl}/:id failed because zondag is not a string`);
 
-        if (isNaN(req.body.score))
-            return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.score}" failed  because score is not a number`);
+        // if (isNaN(req.body.score))
+        //     return res.status(400).send(`PUT on ${hostUrl}/:id with id "${req.params.score}" failed  because score is not a number`);
 
 
         const rowsAffected = await WeeklyStructure_DB.updateWeekStructuur(req.body.id, req.body.maandag, req.body.dinsdag, req.body.woensdag, req.body.donderdag, req.body.vrijdag, req.body.zaterdag, req.body.zondag, req.body.score, req.body.nacht_week, req.body.omschakeling_dag_naar_nacht, req.body.omschakeling_nacht_naar_dag);
@@ -97,26 +95,26 @@ router.post("/", async (req, res) => {
 
     try {
 
-        if (typeof req.body.maandag !== 'string')
-            return res.status(400).send(`POST on ${hostUrl} failed because maandag is not a string`);
+        // if (typeof req.body.maandag !== 'string')
+        //     return res.status(400).send(`POST on ${hostUrl} failed because maandag is not a string`);
 
-        if (typeof req.body.dinsdag !== 'string')
-            return res.status(400).send(`POST on ${hostUrl} failed because dinsdag is not a string`);
+        // if (typeof req.body.dinsdag !== 'string')
+        //     return res.status(400).send(`POST on ${hostUrl} failed because dinsdag is not a string`);
 
-        if (typeof req.body.woensdag !== 'string')
-            return res.status(400).send(`POST on ${hostUrl} failed because woensdag is not a string`);
+        // if (typeof req.body.woensdag !== 'string')
+        //     return res.status(400).send(`POST on ${hostUrl} failed because woensdag is not a string`);
 
-        if (typeof req.body.donderdag !== 'string')
-            return res.status(400).send(`POST on ${hostUrl} failed because donderdag is not a string`);
+        // if (typeof req.body.donderdag !== 'string')
+        //     return res.status(400).send(`POST on ${hostUrl} failed because donderdag is not a string`);
 
-        if (typeof req.body.vrijdag !== 'string')
-            return res.status(400).send(`POST on ${hostUrl} failed because vrijdag is not a string`);
+        // if (typeof req.body.vrijdag !== 'string')
+        //     return res.status(400).send(`POST on ${hostUrl} failed because vrijdag is not a string`);
 
-        if (typeof req.body.zaterdag !== 'string')
-            return res.status(400).send(`POST on ${hostUrl} failed because zaterdag is not a string`);
+        // if (typeof req.body.zaterdag !== 'string')
+        //     return res.status(400).send(`POST on ${hostUrl} failed because zaterdag is not a string`);
 
-        if (typeof req.body.zondag !== 'string')
-            return res.status(400).send(`POST on ${hostUrl} failed because zondag is not a string`);
+        // if (typeof req.body.zondag !== 'string')
+        //     return res.status(400).send(`POST on ${hostUrl} failed because zondag is not a string`);
 
         if (isNaN(req.body.score))
             return res.status(400).send(`POST on ${hostUrl} with id "${req.params.score}" failed  because score is not a number`);

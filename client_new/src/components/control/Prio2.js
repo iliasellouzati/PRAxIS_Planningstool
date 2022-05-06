@@ -23,7 +23,7 @@ const CoopmanShiftControle = ({
         for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
 
             let shift = calendar[employeeLooper].calendar[individualDayLooper].shift;
-            if (shift!==false&&shift !== "" && shifttypes.find(s => s.naam === shift)?.categorie.trim() === "coopman") {
+            if (shift!==false&&shift !== "" && shifttypes.find(s => s.id === shift)?.categorie.trim() === "coopman") {
                 hulpArrMetDeDagen.pop();
                 break;
             }
@@ -60,8 +60,8 @@ const OverurenWeekControle = ({
             let week = [shiftNameMa, shiftNameDi, shiftNameWo, shiftNameDo, shiftNameVr, shiftNameZa];
 
             week.forEach(shiftName => {
-                if (shiftName!==false&&shiftName !== ""&&!['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie.trim())) {
-                    let shift = shifttypes.find(x => x.naam === shiftName);
+                if (shiftName!==false&&shiftName !== ""&&!['verlof','standby'].includes(shifttypes.find(x=>x.id===shiftName).categorie.trim())) {
+                    let shift = shifttypes.find(x => x.id === shiftName);
                     let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                         moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
                         moment.duration(moment(shift.einduur, "hh:mm").add(1, "day").diff(moment(shift.beginuur, "hh:mm"))).asHours();
@@ -69,8 +69,8 @@ const OverurenWeekControle = ({
                 }
             })
 
-            if (shiftNameZo!==false&&shiftNameZo !== ""&&!['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftNameZo).categorie.trim())) {
-                let shift = shifttypes.find(x => x.naam === shiftNameZo);
+            if (shiftNameZo!==false&&shiftNameZo !== ""&&!['verlof','standby'].includes(shifttypes.find(x=>x.id===shiftNameZo).categorie.trim())) {
+                let shift = shifttypes.find(x => x.id === shiftNameZo);
                 let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                     moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
                     moment.duration(moment("24:00", "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours();
@@ -111,11 +111,11 @@ const OverurenMaandControle = ({
             if (moment(calendar[employeeLooper].calendar[individualDayLooper].day, 'DD-MM-YYYY').isSame(currentMonth, 'month')) {
 
                 let shiftName = calendar[employeeLooper].calendar[individualDayLooper].shift;
-                if (shiftName === '' || shiftName===false||['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie.trim())) {
+                if (shiftName === '' || shiftName===false||['verlof','standby'].includes(shifttypes.find(x=>x.id===shiftName).categorie.trim())) {
                     continue;
                 }
 
-                let shift = shifttypes.find(x => x.naam === shiftName);
+                let shift = shifttypes.find(x => x.id === shiftName);
                 let duration = moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() >= 0 ?
                     moment.duration(moment(shift.einduur, "hh:mm").diff(moment(shift.beginuur, "hh:mm"))).asHours() :
                     moment.duration(moment(shift.einduur, "hh:mm").add(1, "day").diff(moment(shift.beginuur, "hh:mm"))).asHours();
@@ -168,7 +168,7 @@ const TweeLegeShiftenTussen3NachtenEnDagShift = ({
            else if (nightShifts.includes(shiftName)) {
                 opeenVolgendeNachtenShiften++;
                 continue;
-            } else if ((shiftName === ''||['verlof','standby'].includes(shifttypes.find(x=>x.naam===shiftName).categorie.trim()) )&& opeenVolgendeNachtenShiften !== 0) {
+            } else if ((shiftName === ''||['verlof','standby'].includes(shifttypes.find(x=>x.id===shiftName).categorie.trim()) )&& opeenVolgendeNachtenShiften !== 0) {
                 blankoShift++;
                 continue;
             }
@@ -217,7 +217,7 @@ const DrieLegeShiftenTussen4NachtenEnDagShift = ({
            else if (nightShifts.includes(shiftName)) {
                 opeenVolgendeNachtenShiften++;
                 continue;
-            } else if ((shiftName === '' || ['verlof', 'standby'].includes(shifttypes.find(x => x.naam === shiftName).categorie.trim())) && opeenVolgendeNachtenShiften !== 0) {
+            } else if ((shiftName === '' || ['verlof', 'standby'].includes(shifttypes.find(x => x.id === shiftName).categorie.trim())) && opeenVolgendeNachtenShiften !== 0) {
                 blankoShift++;
                 continue;
             }

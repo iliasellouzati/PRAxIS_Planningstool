@@ -23,7 +23,7 @@ const LastMonthHours = ({ employeeId, extrahistory, employees, shifttypes, contr
         return;
       }
 
-      let shift = shifttypes.find(x => x.naam === shiftDay.shift)
+      let shift = shifttypes.find(x => x.id === shiftDay.shift)
 
       if (moment(shiftDay.day, 'DD-MM-YYYY').isBefore(lastDayOfPrevMonth)) {
         total += moment.duration(moment((shiftDay.endmoment ? `${shiftDay.day}-${shiftDay.endmoment}` : `${shiftDay.day}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.startmoment ? `${shiftDay.day}-${shiftDay.startmoment}` : `${shiftDay.day}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() >= 0 ?

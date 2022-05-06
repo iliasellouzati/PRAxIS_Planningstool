@@ -69,7 +69,7 @@ async function addWeekStructuur(ma, di, woe, don, vrij, za, zo, score,nacht_week
     }
 };
 
-async function updateWeekStructuur(id, ma, di, woe, don, vrij, za, zo, score) {
+async function updateWeekStructuur(id, ma, di, woe, don, vrij, za, zo, score,nacht_week,omschakeling_dag_naar_nacht,omschakeling_nacht_naar_dag) {
     try {
 
         let pool = await sql.connect(config);

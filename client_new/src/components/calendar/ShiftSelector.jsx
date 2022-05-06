@@ -108,12 +108,10 @@ const ShiftSelector = () => {
                                                 <td style={{ width: "70px", margin: '0px', padding: '1px' }} ><ReadOnlyShift shift={shift} shiftDay={false} /></td>
                                                 {/* <td style={{ padding: "1px" }}><div style={{ backgroundColor: shift.kleurcode, height: '30px', width: "65px", border: '1px solid black' }}></div></td> */}
                                                 <td style={{ padding: "1px" }}>
-                                                    <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.naam))}><i className={shift.naam === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>
+                                                    <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.id))}><i className={shift.id === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>
                                                 </td>
                                             </tr>
-                                        )
-                                        )
-                                        }
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -130,12 +128,10 @@ const ShiftSelector = () => {
                                                 <td style={{ width: "70px", margin: '0px', padding: '1px' }} ><ReadOnlyShift shift={shift} shiftDay={false} /></td>
                                                 {/* <td style={{ padding: "1px" }}><div style={{ backgroundColor: shift.kleurcode, height: '30px', width: "65px", border: '1px solid black' }}></div></td> */}
                                                 <td style={{ padding: "1px" }}>
-                                                    <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.naam))}><i className={shift.naam === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>
+                                                    <button onClick={() => shift.naam === currentShift ? "" : dispatch(changeCalenderShiftType(shift.id))}><i className={shift.id === currentShift ? "fas fa-check-circle" : "far fa-check-circle"}></i></button>
                                                 </td>
                                             </tr>
-                                        )
-                                        )
-                                        }
+                                        ))}
                                     </tbody>
                                 </table>
 

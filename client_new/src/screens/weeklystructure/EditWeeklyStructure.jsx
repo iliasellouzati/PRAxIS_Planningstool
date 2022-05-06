@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
@@ -21,7 +22,7 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
 
   const [ShiftTypes, setShiftTypes] = useState([])
 
-  const [Id, setId] = useState("");
+  const [Id, setId] = useState('N.V.T.');
   const [Maandag, setMaandag] = useState("");
   const [Dinsdag, setDinsdag] = useState("");
   const [Woensdag, setWoensdag] = useState("");
@@ -29,11 +30,14 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
   const [Vrijdag, setVrijdag] = useState("");
   const [Zaterdag, setZaterdag] = useState("");
   const [Zondag, setZondag] = useState("");
-  const [Score, setScore] = useState(0);
+  const [Score, setScore] = useState(9);
+  const [Omschakeling_nacht_naar_dag, setOmschakeling_nacht_naar_dag] = useState(false);
+  const [Omschakeling_dag_naar_nacht, setOmschakeling_dag_naar_nacht] = useState(false);
+  const [Nacht_week, setNacht_week] = useState(false);
+  
 
-  let verplichteShiften = ["0618", "0719", "1806", "1907"];
-  let hulpValAllShifts = id;
 
+  let verplichteShiften = [1, 3, 5, 7];
 
   const [AllShifts, setAllShifts] = useState(false);
 
@@ -46,7 +50,7 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
     id !== 'new' ?
 
       await axios.put('http://127.0.0.1:3001/api/weeklystructure/' + id, {
-        "id": Id,
+        'id':Id,
         "maandag": Maandag,
         "dinsdag": Dinsdag,
         "woensdag": Woensdag,
@@ -54,7 +58,10 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
         "vrijdag": Vrijdag,
         "zaterdag": Zaterdag,
         "zondag": Zondag,
-        "score": Score
+        "score": Score,
+        "nacht_week": Nacht_week,
+        "omschakeling_dag_naar_nacht": Omschakeling_dag_naar_nacht,
+        "omschakeling_nacht_naar_dag": Omschakeling_nacht_naar_dag
       }).then(() => {
         setShowSuccesModal([true, ["Toegevoegd!", `ID:${Id}`, `Weekstructuur ${Id} werd toegevoegd!`]])
         setFinished(true);
@@ -65,7 +72,6 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
 
         verplichteShiften.forEach(async (dag) => {
           await axios.post('http://127.0.0.1:3001/api/weeklystructure', {
-            "id": hulpValAllShifts++,
             "maandag": Maandag !== "" ? dag : "",
             "dinsdag": Dinsdag !== "" ? dag : "",
             "woensdag": Woensdag !== "" ? dag : "",
@@ -73,7 +79,10 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
             "vrijdag": Vrijdag !== "" ? dag : "",
             "zaterdag": Zaterdag !== "" ? dag : "",
             "zondag": Zondag !== "" ? dag : "",
-            "score": Score
+            "score": Score,
+            "nacht_week":[5,7].includes(dag) ? true:false,
+            "omschakeling_dag_naar_nacht": Omschakeling_dag_naar_nacht,
+            "omschakeling_nacht_naar_dag": Omschakeling_nacht_naar_dag
           }).then(() => {
             setShowSuccesModal([true, ["Toegevoegd!", `ID:${Id - 3}-${Id}`, `Weekstructuren ${Id - 3} tot ${Id} werden toegevoegd!`]])
             setFinished(true);
@@ -85,7 +94,6 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
         :
 
         await axios.post('http://127.0.0.1:3001/api/weeklystructure', {
-          "id": Id,
           "maandag": Maandag,
           "dinsdag": Dinsdag,
           "woensdag": Woensdag,
@@ -93,7 +101,10 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
           "vrijdag": Vrijdag,
           "zaterdag": Zaterdag,
           "zondag": Zondag,
-          "score": Score
+          "score": Score,
+          "nacht_week": Nacht_week,
+          "omschakeling_dag_naar_nacht": Omschakeling_dag_naar_nacht,
+          "omschakeling_nacht_naar_dag": Omschakeling_nacht_naar_dag
         }).then(() => {
           setShowSuccesModal([true, ["Toegevoegd!", `ID:${Id}`, `Weekstructuur ${Id} werd toegevoegd!`]])
           setFinished(true);
@@ -124,6 +135,9 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
         setZaterdag(response.data[0].zaterdag);
         setZondag(response.data[0].zondag);
         setScore(response.data[0].score);
+        setNacht_week(response.data[0].nacht_week);
+        setOmschakeling_dag_naar_nacht(response.data[0].omschakeling_dag_naar_nacht);
+        setOmschakeling_nacht_naar_dag(response.data[0].omschakeling_nacht_naar_dag);
         setLoading(prev => prev + 1);
       })
       .catch(error => {
@@ -174,7 +188,7 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
                     {/* ID */}
                     <div className="form-group">
                       <label htmlFor="ID">ID</label>
-                      <input type="number" class="form-control" id="ID" onChange={(e) => setId(e.target.value)} value={Id} />
+                      <p class="form-control" id="ID" >{Id} </p>
                     </div>
 
 
@@ -191,12 +205,12 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
                     <div className='row' >
                       <div style={{ display: "inline-block", textAlign: "center" }}>
                         <b>Geselecteerde shift:</b>
-                        <p>{SelectedShift === "" ? "Geen" : AllShifts ? "4X" : SelectedShift}</p>
+                        <p>{SelectedShift === "" ? "Geen" : AllShifts ? "4X" : ShiftTypes.find(x => x.id === SelectedShift).naam}</p>
                       </div>
                       {!AllShifts &&
                         verplichteShiften.map(dag =>
                           <div onClick={() => setSelectedShift(dag)} style={{ display: "inline-block", padding: "10px", margin: "10px", border: "1px dashed black" }}>
-                            <ReadOnlyShift shift={ShiftTypes.find(x => x.naam === dag)} shiftDay={false} />
+                            <ReadOnlyShift shift={ShiftTypes.find(x => x.id === dag)} shiftDay={false} />
                           </div>
                         )
                       }
@@ -217,37 +231,37 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
 
                       <div onClick={() => SelectedShift === "" ? setMaandag("") : AllShifts ? setMaandag("4X") : setMaandag(SelectedShift)} style={{ display: "inline-block", textAlign: "center", width: '14.28%', border: "1px solid black", height: "100px" }}>
                         <p>Maandag</p>
-                        {Maandag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Maandag}
+                        {Maandag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Maandag === "4X" ? "4X" : <ReadOnlyShift shift={ShiftTypes.find(x => x.id == Maandag)} shiftDay={false} />}
                       </div>
 
                       <div onClick={() => SelectedShift === "" ? setDinsdag("") : AllShifts ? setDinsdag("4X") : setDinsdag(SelectedShift)} style={{ display: "inline-block", textAlign: "center", width: '14.28%', border: "1px solid black", height: "100px" }}>
                         <p>Dinsdag</p>
-                        {Dinsdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Dinsdag}
+                        {Dinsdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Dinsdag  === "4X" ? "4X" : <ReadOnlyShift shift={ShiftTypes.find(x => x.id == Dinsdag)} shiftDay={false} />}
 
                       </div>
                       <div onClick={() => SelectedShift === "" ? setWoensdag("") : AllShifts ? setWoensdag("4X") : setWoensdag(SelectedShift)} style={{ display: "inline-block", textAlign: "center", width: '14.28%', border: "1px solid black", height: "100px" }}>
                         <p>Woensdag</p>
-                        {Woensdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Woensdag}
+                        {Woensdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Woensdag  === "4X" ? "4X" : <ReadOnlyShift shift={ShiftTypes.find(x => x.id == Woensdag)} shiftDay={false} />}
 
                       </div>
                       <div onClick={() => SelectedShift === "" ? setDonderdag("") : AllShifts ? setDonderdag("4X") : setDonderdag(SelectedShift)} style={{ display: "inline-block", textAlign: "center", width: '14.28%', border: "1px solid black", height: "100px" }}>
                         <p>Donderdag</p>
-                        {Donderdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Donderdag}
+                        {Donderdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Donderdag  === "4X" ? "4X" : <ReadOnlyShift shift={ShiftTypes.find(x => x.id ==Donderdag)} shiftDay={false} />}
 
                       </div>
                       <div onClick={() => SelectedShift === "" ? setVrijdag("") : AllShifts ? setVrijdag("4X") : setVrijdag(SelectedShift)} style={{ display: "inline-block", textAlign: "center", width: '14.28%', border: "1px solid black", height: "100px" }}>
                         <p>Vrijdag</p>
-                        {Vrijdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Vrijdag}
+                        {Vrijdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Vrijdag  === "4X" ? "4X" : <ReadOnlyShift shift={ShiftTypes.find(x => x.id == Vrijdag)} shiftDay={false} />}
 
                       </div>
                       <div onClick={() => SelectedShift === "" ? setZaterdag("") : AllShifts ? setZaterdag("4X") : setZaterdag(SelectedShift)} style={{ display: "inline-block", textAlign: "center", width: '14.28%', border: "1px solid black", height: "100px" }}>
                         <p>Zaterdag</p>
-                        {Zaterdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Zaterdag}
+                        {Zaterdag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Zaterdag  === "4X" ? "4X" : <ReadOnlyShift shift={ShiftTypes.find(x => x.id == Zaterdag)} shiftDay={false} />}
 
                       </div>
                       <div onClick={() => SelectedShift === "" ? setZondag("") : AllShifts ? setZondag("4X") : setZondag(SelectedShift)} style={{ display: "inline-block", textAlign: "center", width: '14.28%', border: "1px solid black", height: "100px" }}>
                         <p>Zondag</p>
-                        {Zondag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Zondag}
+                        {Zondag === "" ? <i style={{ color: 'red' }} class="fas fa-times" /> : Zondag  === "4X" ? "4X" : <ReadOnlyShift shift={ShiftTypes.find(x => x.id == Zondag)} shiftDay={false} />}
 
                       </div>
                     </div>
@@ -256,6 +270,28 @@ const EditWeeklyStructure = ({ setShowSuccesModal, setShowDangerModal }) => {
                       <label class="htmlForm-check-label" for="SCORE">Score op 10 ( 0 : mogelijk maar te vermijden - 10 : ideaal ) </label>
                       <input type="number" min={0} max={10} class="form-control" id="SCORE" value={Score} onChange={(e) => setScore(e.target.value)} />
                     </div>
+
+                    <div className="form-group" >
+                      <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="Nachtweek" checked={Nacht_week} onClick={() => setNacht_week(!Nacht_week)} />
+                        <label for="Nachtweek" class="custom-control-label" >Nachtweek </label>
+                      </div>
+                    </div>
+
+                    <div className="form-group" >
+                      <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="Omschakeling_dag_naar_nacht" checked={Omschakeling_dag_naar_nacht} onClick={() => setOmschakeling_dag_naar_nacht(!Omschakeling_dag_naar_nacht)} />
+                        <label for="Omschakeling_dag_naar_nacht" class="custom-control-label" >Omschakeling dag naar nacht </label>
+                      </div>
+                    </div>
+
+                    <div className="form-group" >
+                      <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="Omschakeling_nacht_naar_dag" checked={Omschakeling_nacht_naar_dag} onClick={() => setOmschakeling_nacht_naar_dag(!Omschakeling_nacht_naar_dag)} />
+                        <label for="Omschakeling_nacht_naar_dag" class="custom-control-label" >Omschakeling nacht naar dag </label>
+                      </div>
+                    </div>
+
 
                   </div>
 

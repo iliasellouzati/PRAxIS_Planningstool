@@ -77,7 +77,7 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes, length }) => {
             {!Loading && History && History.map(shiftDay =>
 
                 <td style={moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD-MM-YYYY").isoWeekday() === 7 ? {height: "27px", outline: '1px solid darkgreen', padding: "1px", width: "auto" } : {height: "27px", padding: "1px", width: "auto" }}>
-                    <ReadOnlyHistoryShift shift={shiftDay.shift !== "" ? shifttypes.find(x => x.naam === shiftDay.shift) : null} shiftDay={shiftDay} />
+                    <ReadOnlyHistoryShift shift={shiftDay.shift !== "" ? shifttypes.find(x => x.id === shiftDay.shift) : null} shiftDay={shiftDay} />
                 </td>
             )}
             <td colSpan={2} style={{ height: "27px",padding: "0px", margin: '0px' ,textAlign:'center',width:'auto'}}>
@@ -86,6 +86,8 @@ const TableRowHistoryEmployee = ({ employeeId, shifttypes, length }) => {
                 <span style={{ fontSize: '12px' }}><b>{`${moment(VisualDate, "MM-YYYY").startOf('month').startOf('isoWeek').add(length-1, 'days').format("DD/MM")}`}</b></span>
 
             </td>
+
+            
         </React.Fragment>
     )
 }

@@ -5,7 +5,7 @@ const makeObjectForAutomatisation = (ShiftsFromDb, shifttypes, monthYear) => {
     let returnObject = {};
 
     ShiftsFromDb.forEach((shift) => {
-        let shiftObj = shifttypes.find(x => x.naam === shift.shifttypes_naam)
+        let shiftObj = shifttypes.find(x => x.id === shift.shifttype_id)
 
         if (typeof returnObject[`${shift.werknemers_id}`] === 'undefined') {
             returnObject[`${shift.werknemers_id}`] = {
@@ -17,11 +17,11 @@ const makeObjectForAutomatisation = (ShiftsFromDb, shifttypes, monthYear) => {
         if (typeof returnObject[`${shift.werknemers_id}`]['order_by_cat'][`${shiftObj.categorie.trim()}`][`${shiftObj.naam}`] === 'undefined') {
             returnObject[`${shift.werknemers_id}`][`order_by_cat`][`${shiftObj.categorie.trim()}`][`totaal`]++;
             returnObject[`${shift.werknemers_id}`][`order_by_cat`][`${shiftObj.categorie.trim()}`][`${shiftObj.naam}`] = 1;
-            returnObject[`${shift.werknemers_id}`][`history`][`${moment(shift.datum,"YYYY-MM-DD").format("DD-MM-YYYY")}`] = shift.shifttypes_naam;
+            returnObject[`${shift.werknemers_id}`][`history`][`${moment(shift.datum,"YYYY-MM-DD").format("DD-MM-YYYY")}`] = shift.shifttype_id;
         } else {
             returnObject[`${shift.werknemers_id}`][`order_by_cat`][`${shiftObj.categorie.trim()}`][`totaal`]++;
             returnObject[`${shift.werknemers_id}`][`order_by_cat`][`${shiftObj.categorie.trim()}`][`${shiftObj.naam}`]++;
-            returnObject[`${shift.werknemers_id}`][`history`][`${moment(shift.datum,"YYYY-MM-DD").format("DD-MM-YYYY")}`] = shift.shifttypes_naam;
+            returnObject[`${shift.werknemers_id}`][`history`][`${moment(shift.datum,"YYYY-MM-DD").format("DD-MM-YYYY")}`] = shift.shifttype_id;
         }
     })
 
@@ -81,7 +81,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
 
     ShiftsFromDb.forEach((shiftDb) => {
 
-        let shifttype = shifttypes.find(x => x.naam === shiftDb.shifttypes_naam)
+        let shifttype = shifttypes.find(x => x.id === shiftDb.shifttype_id)
 
         if (typeof returnObject[`${shiftDb.werknemers_id}`] === 'undefined') {
             returnObject[`${shiftDb.werknemers_id}`] = {
@@ -134,7 +134,7 @@ const makeObjectForIndividualStats = (ShiftsFromDb, shifttypes, year) => {
                         currWeekendObject.gepland_met_shifts.push(beginDayOfWeek);
                     }
                     break;
-            }
+            } 
 
         }
 
