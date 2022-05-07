@@ -11,8 +11,8 @@ export default () => {
 
         switch (message.data[0]) {
             case "INIT":
-                response = checkPossibleWeeklyStructures(message.data[1]);
                 incompatibelWeeks = calcIncompatibelWeeks(message.data[1]);
+                response = checkPossibleWeeklyStructures(message.data[1]);
                 postMessage(["FIRST_POSSIBLE_IDS_FOUND", response, incompatibelWeeks]);
                 break;
 
@@ -36,7 +36,41 @@ export default () => {
         }
 
     }
+    const calcIncompatibelWeeks = ({
+        weeklyStructures
+    }) => {
 
+        let returnObj = {};
+
+        for (let index = 0; index < weeklyStructures.length; index++) {
+
+            let week = weeklyStructures[index];
+            let incompatibelWeeks = [];
+
+            weeklyStructures.filter(x => x.id !== week.id).forEach((incompWeek) => {
+
+                if (
+                    (week.maandag !== '' && week.maandag === incompWeek.maandag) ||
+                    (week.dinsdag !== '' && week.dinsdag === incompWeek.dinsdag) ||
+                    (week.woensdag !== '' && week.woensdag === incompWeek.woensdag) ||
+                    (week.donderdag !== '' && week.donderdag === incompWeek.donderdag) ||
+                    (week.vrijdag !== '' && week.vrijdag === incompWeek.vrijdag) ||
+                    (week.zaterdag !== '' && week.zaterdag === incompWeek.zaterdag) ||
+                    (week.zondag !== '' && week.zondag === incompWeek.zondag)
+                ) {
+                    incompatibelWeeks.push(incompWeek.id);
+                }
+            })
+
+            returnObj[`${week.id}`] = incompatibelWeeks;
+
+        }
+        return returnObj;
+
+
+
+
+    }
 
 
     const checkPossibleWeeklyStructures = ({
@@ -47,7 +81,8 @@ export default () => {
         history,
         missingShiftsWeek,
         selectedWeeks,
-        contractTypes
+        contractTypes,
+        stats
     }) => {
 
         let possibleWeeklyStructures = [];
@@ -61,7 +96,8 @@ export default () => {
                 missingShiftsWeek[0],
                 selectedWeeks[0],
                 employeesDB,
-                contractTypes
+                contractTypes,
+                stats[`${employeesSelectedIDs[index]}`]
             );
 
             possibleWeeklyStructures.push({
@@ -72,14 +108,14 @@ export default () => {
 
         return possibleWeeklyStructures;
     }
-    const checkPossibleWeeklyStructuresIndividualy = (weeklyStructures, employee, logaritme, history, missingShiftsWeek, selectedWeeks, employeesDB, contractTypes) => {
+    const checkPossibleWeeklyStructuresIndividualy = (weeklyStructures, employee, logaritme, history, missingShiftsWeek, selectedWeeks, employeesDB, contractTypes, stats) => {
 
         let employeeObj = employeesDB.find(x => x.id === employee);
         let contracttypeObj = contractTypes.find(x => x.id === employeeObj.contracttype_id);
 
-        const dayShifts = ["0618", "0719"];
-        const nightShifts = ["1806", "1907"];
-        const operatorShifts = ["0618", "0719", "1806", "1907"]
+        const dayShifts = [1, 3];
+        const nightShifts = [5, 7];
+        const operatorShifts = [1, 3, 5, 7]
 
         let numberOfWeeksToCheck = parseInt(logaritme.data.maxWeeks) + 1;
 
@@ -93,6 +129,46 @@ export default () => {
 
         let possible_IDs = [];
         let filter = [];
+
+
+        let aantal = calculeerAantalInTePlannenShiftsVoorWeek(stats, selectedWeeks, contracttypeObj);
+
+
+        let minShifts = Math.floor(aantal / 12);
+        let maxShifts = Math.ceil(aantal / 12);
+
+        for (let index = 0; index < weeklyStructures.length; index++) {
+            let week = weeklyStructures[index];
+            let aantal = 0;
+
+
+            if (week.maandag !== "") {
+                aantal++;
+            }
+            if (week.dinsdag !== "") {
+                aantal++;
+            }
+            if (week.woensdag !== "") {
+                aantal++;
+            }
+            if (week.donderdag !== "") {
+                aantal++;
+            }
+            if (week.vrijdag !== "") {
+                aantal++;
+            }
+            if (week.zaterdag !== "") {
+                aantal++;
+            }
+            if (week.zondag !== "") {
+                aantal++;
+            }
+
+
+            if (aantal < minShifts || maxShifts < aantal) {
+                filter.push(week.id);
+            }
+        }
 
 
         if (contracttypeObj.id === 1) {
@@ -156,21 +232,17 @@ export default () => {
                 for (let index = 0; index < weeklyStructures.length; index++) {
 
                     let week = weeklyStructures[index];
-                    if (verplichtDAG && !controleGeenNachten(week)) {
+                    if (verplichtDAG && (week.nacht_week || week.omschakeling_dag_naar_nacht)) {
                         filter.push(week.id);
                         continue;
                     }
-                    if (verplichtNACHT && !controleGeenDagen(week)) {
+                    if (verplichtNACHT && (!week.nacht_week || week.omschakeling_nacht_naar_dag)) {
                         filter.push(week.id);
                         continue;
                     }
                 }
             }
         }
-
-
-
-
 
         for (let index = 0; index < weeklyStructures.length; index++) {
 
@@ -180,7 +252,7 @@ export default () => {
                 continue;
             }
 
-            if (!contracttypeObj.nachtshiften_toegelaten && !controleGeenNachten(week)) {
+            if (!contracttypeObj.nachtshiften_toegelaten && (week.nacht_week || week.omschakeling_nacht_naar_dag || week.omschakeling_dag_naar_nacht)) {
                 filter.push(week.id);
                 continue;
             }
@@ -222,7 +294,7 @@ export default () => {
                 continue;
             }
 
-            
+
             if (!filter.some(x => x === week.id)) {
                 possible_IDs.push(week.id)
 
@@ -276,25 +348,25 @@ export default () => {
     }
     const controleOperatorShiftReedsGepland = (week, missingShiftsWeek) => {
 
-        if (week.maandag !== "" && !missingShiftsWeek[0].includes(week.maandag)) {
+        if (week.maandag !== "" && !missingShiftsWeek[0].includes(parseInt(week.maandag))) {
             return false;
         }
-        if (week.dinsdag !== "" && !missingShiftsWeek[1].includes(week.dinsdag)) {
+        if (week.dinsdag !== "" && !missingShiftsWeek[1].includes(parseInt(week.dinsdag))) {
             return false;
         }
-        if (week.woensdag !== "" && !missingShiftsWeek[2].includes(week.woensdag)) {
+        if (week.woensdag !== "" && !missingShiftsWeek[2].includes(parseInt(week.woensdag))) {
             return false;
         }
-        if (week.donderdag !== "" && !missingShiftsWeek[3].includes(week.donderdag)) {
+        if (week.donderdag !== "" && !missingShiftsWeek[3].includes(parseInt(week.donderdag))) {
             return false;
         }
-        if (week.vrijdag !== "" && !missingShiftsWeek[4].includes(week.vrijdag)) {
+        if (week.vrijdag !== "" && !missingShiftsWeek[4].includes(parseInt(week.vrijdag))) {
             return false;
         }
-        if (week.zaterdag !== "" && !missingShiftsWeek[5].includes(week.zaterdag)) {
+        if (week.zaterdag !== "" && !missingShiftsWeek[5].includes(parseInt(week.zaterdag))) {
             return false;
         }
-        if (week.zondag !== "" && !missingShiftsWeek[6].includes(week.zondag)) {
+        if (week.zondag !== "" && !missingShiftsWeek[6].includes(parseInt(week.zondag))) {
             return false;
         }
 
@@ -302,7 +374,7 @@ export default () => {
 
     }
     const controleGeenNachten = (week) => {
-        const nightShifts = ["1806", "1907"];
+        const nightShifts = [5, 7];
 
         if (
             nightShifts.includes(week.maandag) ||
@@ -320,7 +392,7 @@ export default () => {
 
     }
     const controleGeenDagen = (week) => {
-        const dayShifts = ["0618", "0719"];
+        const dayShifts = [1, 3];
 
         if (
             dayShifts.includes(week.maandag) ||
@@ -338,7 +410,7 @@ export default () => {
 
     }
     const controleGeenWeekend = (week) => {
-        const nightShifts = ["1806", "1907"];
+        const nightShifts = [5, 7];
 
         if (
 
@@ -390,41 +462,7 @@ export default () => {
         return `${('0' + day).slice(-2)}-${('0' + (month+1)).slice(-2)}-${year}`
 
     }
-    const calcIncompatibelWeeks = ({
-        weeklyStructures
-    }) => {
 
-        let returnObj = {};
-
-        for (let index = 0; index < weeklyStructures.length; index++) {
-
-            let week = weeklyStructures[index];
-            let incompatibelWeeks = [];
-
-            weeklyStructures.filter(x => x.id !== week.id).forEach((incompWeek) => {
-
-                if (
-                    (week.maandag !== '' && week.maandag === incompWeek.maandag) ||
-                    (week.dinsdag !== '' && week.dinsdag === incompWeek.dinsdag) ||
-                    (week.woensdag !== '' && week.woensdag === incompWeek.woensdag) ||
-                    (week.donderdag !== '' && week.donderdag === incompWeek.donderdag) ||
-                    (week.vrijdag !== '' && week.vrijdag === incompWeek.vrijdag) ||
-                    (week.zaterdag !== '' && week.zaterdag === incompWeek.zaterdag) ||
-                    (week.zondag !== '' && week.zondag === incompWeek.zondag)
-                ) {
-                    incompatibelWeeks.push(incompWeek.id);
-                }
-            })
-
-            returnObj[`${week.id}`] = incompatibelWeeks;
-
-        }
-        return returnObj;
-
-
-
-
-    }
 
     const OverurenWeekControle = (week, history) => {
 
@@ -461,11 +499,11 @@ export default () => {
 
         for (let individualDayLooper = hulpHistory.length - 10; individualDayLooper < hulpHistory.length; individualDayLooper++) {
 
-            if (["1806", "1907"].includes(hulpHistory[individualDayLooper]) && blankoShift !== 0 && opeenVolgendeNachtenShiften !== 0) {
+            if ([5, 7].includes(hulpHistory[individualDayLooper]) && blankoShift !== 0 && opeenVolgendeNachtenShiften !== 0) {
                 blankoShift = 0;
                 opeenVolgendeNachtenShiften = 1;
                 continue;
-            } else if (["1806", "1907"].includes(hulpHistory[individualDayLooper])) {
+            } else if ([5, 7].includes(hulpHistory[individualDayLooper])) {
                 opeenVolgendeNachtenShiften++;
                 continue;
             } else if (hulpHistory[individualDayLooper] === '' && opeenVolgendeNachtenShiften !== 0) {
@@ -509,11 +547,11 @@ export default () => {
 
         for (let individualDayLooper = hulpHistory.length - 11; individualDayLooper < hulpHistory.length; individualDayLooper++) {
 
-            if (["1806", "1907"].includes(hulpHistory[individualDayLooper]) && blankoShift !== 0 && opeenVolgendeNachtenShiften !== 0) {
+            if ([5, 7].includes(hulpHistory[individualDayLooper]) && blankoShift !== 0 && opeenVolgendeNachtenShiften !== 0) {
                 blankoShift = 0;
                 opeenVolgendeNachtenShiften = 1;
                 continue;
-            } else if (["1806", "1907"].includes(hulpHistory[individualDayLooper])) {
+            } else if ([5, 7].includes(hulpHistory[individualDayLooper])) {
                 opeenVolgendeNachtenShiften++;
                 continue;
             } else if (hulpHistory[individualDayLooper] === '' && opeenVolgendeNachtenShiften !== 0) {
@@ -557,7 +595,7 @@ export default () => {
         for (let individualDayLooper = hulpHistory.length - 11; individualDayLooper < hulpHistory.length; individualDayLooper++) {
 
 
-            if (["0618", "0719", "1806", "1907"].some(x => x === hulpHistory[individualDayLooper])) {
+            if ([1, 3, 5, 7].some(x => x === hulpHistory[individualDayLooper])) {
                 shiftCounter++;
             } else {
                 shiftCounter = 0;
@@ -602,7 +640,7 @@ export default () => {
 
             let shift = hulpHistory[individualDayLooper]
             let passedShift = hulpHistory[individualDayLooper - 1]
-            if (["1806", "1907"].some(x => x === passedShift) && ["0618", "0719"].some(x => x === shift)) {
+            if ([5, 7].some(x => x === passedShift) && [1, 3].some(x => x === shift)) {
                 return false;
             }
         }
@@ -612,7 +650,7 @@ export default () => {
 
     const TweeBlancoShiftsNaWeekendMet3Nacht = (week, history) => {
 
-        if (["1806", "1907"].includes(history[history.length - 8]) && ["1806", "1907"].includes(history[history.length - 9]) && ["1806", "1907"].includes(history[history.length - 10])) {
+        if ([5, 7].includes(history[history.length - 8]) && [5, 7].includes(history[history.length - 9]) && [5, 7].includes(history[history.length - 10])) {
 
             if (week.maandag !== "" || week.dinsdag !== "") {
                 return false;
@@ -624,4 +662,80 @@ export default () => {
     }
 
 
+    const calculeerAantalInTePlannenShiftsVoorWeek = (stats, missingShiftsWeek, contracttypeObj) => {
+
+        let aantalInKwartaal;
+        let vereistKwartaal = 13 * contracttypeObj.wekelijkse_contract_uren;
+        let aantalResterendeDagenInKwartaal;
+
+        let OldDay = missingShiftsWeek.substring(0, 2);
+        let OldMonth = missingShiftsWeek.substring(3, 5);
+        let OldYear = missingShiftsWeek.substring(6, 10);
+        let date1 = new Date(OldYear, parseInt(OldMonth) - 1, OldDay);
+
+        let diffTime;
+        let date2;
+
+
+
+        switch (missingShiftsWeek.substring(3, 5)) {
+            case "01":
+            case "02":
+            case "03":
+                aantalInKwartaal = stats.maand[`01-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`01-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand +
+                    stats.maand[`02-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`02-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand +
+                    stats.maand[`03-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`03-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand;
+
+
+                date2 = new Date(OldYear, 2, 31);
+                diffTime = Math.abs(date2 - date1);
+                aantalResterendeDagenInKwartaal = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                break;
+            case "04":
+            case "05":
+            case "06":
+                aantalInKwartaal = stats.maand[`04-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`04-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand +
+                    stats.maand[`05-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`05-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand +
+                    stats.maand[`06-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`06-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand;
+
+                date2 = new Date(OldYear, 5, 30);
+                diffTime = Math.abs(date2 - date1);
+                aantalResterendeDagenInKwartaal = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                break;
+            case "07":
+            case "08":
+            case "09":
+                aantalInKwartaal = stats.maand[`07-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`07-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand +
+                    stats.maand[`08-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`08-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand +
+                    stats.maand[`09-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`09-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand;
+
+
+                date2 = new Date(OldYear, 8, 31);
+                diffTime = Math.abs(date2 - date1);
+                aantalResterendeDagenInKwartaal = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                break;
+
+            case "10":
+            case "11":
+            case "12":
+                aantalInKwartaal = stats.maand[`10-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`10-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand +
+                    stats.maand[`11-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`11-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand +
+                    stats.maand[`12-${missingShiftsWeek.substring(6,10)}`].cumul.totaalUrenOpKalender + stats.maand[`12-${missingShiftsWeek.substring(6,10)}`].cumul.urenUitVorigeMaand;
+
+
+
+                date2 = new Date(OldYear, 11, 31);
+                diffTime = Math.abs(date2 - date1);
+                aantalResterendeDagenInKwartaal = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                break;
+
+            default:
+                break;
+        }
+
+        return (7 * ((vereistKwartaal - aantalInKwartaal) / aantalResterendeDagenInKwartaal))
+
+    }
 };

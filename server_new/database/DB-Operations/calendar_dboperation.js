@@ -10,7 +10,7 @@ function createUDT_shift(shifts) {
 
     const UDT = new sql.Table();
     UDT.columns.add('datum', sql.Date);
-    UDT.columns.add('shifttypes_naam', sql.VarChar(100));
+    UDT.columns.add('shifttype_id', sql.Int);
     UDT.columns.add('werknemers_id', sql.Int);
     UDT.columns.add('beginuur', sql.NVarChar(5));
     UDT.columns.add('einduur', sql.NVarChar(5));
@@ -18,7 +18,7 @@ function createUDT_shift(shifts) {
     shifts.forEach(shift => {
         UDT.rows.add(
             new Date(moment(shift.datum, "DD-MM-YYYY").format("YYYY-MM-DD").toString()),
-            shift.shifttypes_naam,
+            shift.shifttype_id,
             shift.werknemers_id,
             shift.beginuur,
             shift.einduur
@@ -36,7 +36,7 @@ function createUDT_saved_calendar(shifts) {
     UDT.columns.add('werknemer_voornaam', sql.NVarChar(100));
     UDT.columns.add('werknemer_familienaam', sql.NVarChar(100));
     UDT.columns.add('shift_datum', sql.NVarChar(10));
-    UDT.columns.add('shift_shifttypes_naam', sql.VarChar(100));
+    UDT.columns.add('shift_shifttype_id', sql.VarChar(100));
     UDT.columns.add('shift_beginuur', sql.NVarChar(5));
     UDT.columns.add('shift_einduur', sql.NVarChar(5));
     UDT.columns.add('shifttypes_beginuur', sql.VarChar(25));
@@ -58,7 +58,7 @@ function createUDT_saved_calendar(shifts) {
             shift.werknemer_voornaam,
             shift.werknemer_familienaam,
             shift.shift_datum,
-            shift.shift_shifttypes_naam,
+            shift.shift_shifttype_id,
             shift.shift_beginuur,
             shift.shift_einduur,
             shift.shifttypes_beginuur,

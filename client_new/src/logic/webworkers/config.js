@@ -14,7 +14,8 @@ let config = {
     "filters": [],
     "separateEmployees": [],
     "contractTypes":[],
-    "incompatibelWeeks": []
+    "incompatibelWeeks": [],
+    "stats":[]
 }
 
 export default config;

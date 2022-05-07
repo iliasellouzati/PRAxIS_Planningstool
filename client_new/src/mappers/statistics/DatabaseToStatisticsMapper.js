@@ -606,7 +606,7 @@ const makeIndividualMonthWeekensStatsObject = (currMonth) => {
     return {
         'volledig_vrij': returnArray,
         'gepland_met_shifts': [],
-        'gepland_met_standby': [],
+        'gepland_met_standby': []
     }
 
 }

@@ -15,7 +15,7 @@ const Step2 = ({ setStep, SelectedWeeks, setSelectedWeeks, setMissingShifts, Mis
 
     const checkOntbrekendeShiften = () => {
 
-        let verplichteShiften = ['0618', '0719', '1806', '1907']
+        let verplichteShiften = [1,3,5,7]
         let hulpCalenderMetOntbrekendeShiften = [];
 
         for (let index = 0; index < hulpKal.length; index += 7) {

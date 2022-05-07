@@ -25,19 +25,19 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
   let calculationWorker3;
   let calculationWorker4;
 
-  
-  
+
+
   //functions
-  
-  
+
+
   //CALC WORKERS
-  
+
   const fireUpCalculationsWorkers = () => {
     calculationWorker1 = new WorkerBuilder(CalculationWorker);
     calculationWorker2 = new WorkerBuilder(CalculationWorker);
     calculationWorker3 = new WorkerBuilder(CalculationWorker);
     calculationWorker4 = new WorkerBuilder(CalculationWorker);
-    
+
     calculationWorker1.onmessage = (message) => {
       if (message) {
         handleCalculationWorkerResponse(message.data);
@@ -69,7 +69,7 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     incrementProgress();
     let totaal = 0;
     respons?.forEach(element => {
-      
+
       if (!config.possibleWeekCombos?.some(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften)) {
         config.possibleWeekCombos.push(element);
         totaal += element.combinaties.length;
@@ -77,25 +77,25 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         let hulpIndex = config.possibleWeekCombos.findIndex(x => x.ingevuldeOperatorShiften === element.ingevuldeOperatorShiften);
         config.possibleWeekCombos[hulpIndex].combinaties.push(...element.combinaties);
         totaal += config.possibleWeekCombos[hulpIndex].combinaties.length;
-        
+
       }
     });
-    
+
     console.log('TOTAAL AAANTAL : ' + totaal);
-    
+
     console.log(config.possibleWeekCombos)
-    
+
     config.amountOfWorkerResponses === 3 ? handleEndOfCalculationWorkers() : config.amountOfWorkerResponses++;
 
 
   }
-  
+
   //MAIN WORKERS
-  
+
   const INIT_StartUpMainWorkerForAutomatisation = (message) => {
-    
+
     mainWorker = new WorkerBuilder(MainWorker);
-    
+
     mainWorker.onmessage = (message) => {
       if (message) {
         console.log(message);
@@ -111,10 +111,10 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     mainWorker.postMessage(["INIT", message]);
   }
   const sendReponseMainWorkerToCalculationWorkers = (respons) => {
-    
+
     fireUpCalculationsWorkers();
-    
-    
+
+
     switch (respons[0]) {
       case "LAST_POSSIBLE_IDS_FOUND":
         mainWorker.terminate();
@@ -289,39 +289,39 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     week.maandag !== '' && dispatch(addShift({
       'id': employeeId,
       'day': datum,
-      'shift': week.maandag, 'startmoment': null, 'endmoment': null
+      'shift': parseInt(week.maandag), 'startmoment': null, 'endmoment': null
     }));
     week.dinsdag !== '' && dispatch(addShift({
       'id': employeeId,
       'day': moment(datum, "DD-MM-YYYY").add(1, 'day').format("DD-MM-YYYY"),
-      'shift': week.dinsdag, 'startmoment': null, 'endmoment': null
+      'shift': parseInt(week.dinsdag), 'startmoment': null, 'endmoment': null
     }));
     week.woensdag !== '' && dispatch(addShift({
       'id': employeeId,
       'day': moment(datum, "DD-MM-YYYY").add(2, 'day').format("DD-MM-YYYY"),
-      'shift': week.woensdag, 'startmoment': null, 'endmoment': null
+      'shift': parseInt(week.woensdag) , 'startmoment': null, 'endmoment': null
     }));
     week.donderdag !== '' && dispatch(addShift({
       'id': employeeId,
       'day': moment(datum, "DD-MM-YYYY").add(3, 'day').format("DD-MM-YYYY"),
-      'shift': week.donderdag, 'startmoment': null, 'endmoment': null
+      'shift': parseInt(week.donderdag), 'startmoment': null, 'endmoment': null
     }));
     week.vrijdag !== '' && dispatch(addShift({
       'id': employeeId,
       'day': moment(datum, "DD-MM-YYYY").add(4, 'day').format("DD-MM-YYYY"),
-      'shift': week.vrijdag, 'startmoment': null, 'endmoment': null
+      'shift': parseInt(week.vrijdag), 'startmoment': null, 'endmoment': null
     }));
 
     week.zaterdag !== '' && dispatch(addShift({
       'id': employeeId,
       'day': moment(datum, "DD-MM-YYYY").add(5, 'day').format("DD-MM-YYYY"),
-      'shift': week.zaterdag, 'startmoment': null, 'endmoment': null
+      'shift': parseInt(week.zaterdag), 'startmoment': null, 'endmoment': null
     }));
 
     week.zondag !== '' && dispatch(addShift({
       'id': employeeId,
       'day': moment(datum, "DD-MM-YYYY").add(6, 'day').format("DD-MM-YYYY"),
-      'shift': week.zondag, 'startmoment': null, 'endmoment': null
+      'shift': parseInt(week.zondag), 'startmoment': null, 'endmoment': null
     }));
 
   }

@@ -11,7 +11,7 @@ import Step5 from './Step5';
 import configInterface from '../../../logic/webworkers/config';
 import Step6 from './Step6';
 import moment from 'moment';
-import { makeObjectForAutomatisation } from '../../../mappers/statistics/DatabaseToStatisticsMapper';
+import { makeObjectForAutomatisation, makeObjectForIndividualStats } from '../../../mappers/statistics/DatabaseToStatisticsMapper';
 
 const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutomatisation }) => {
   let { year, month } = useParams();
@@ -32,6 +32,7 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
   const [WeeklyStructures, setWeeklyStructures] = useState([]);
   const [Shifttypes, setShifttypes] = useState([]);
   const [History, setHistory] = useState({});
+  const [ExtraHistoryCurrentYearEmployees, setExtraHistoryCurrentYearEmployees] = useState([])
 
   const [Logaritme, setLogaritme] = useState({
     "name": "WEEKS_BETWEEN_DAY_AND_NIGHT",
@@ -71,6 +72,7 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
     config.selectedWeeks = SelectedWeeks;
     config.filters = SelectedFilters;
     config.separateEmployees = SeparateEmployees;
+    config.stats = ExtraHistoryCurrentYearEmployees;
 
     setConfig(config);
 
@@ -82,6 +84,7 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
   const fetchData = async () => {
     let contracts;
     let shifttypes;
+
 
     await axios.get(`http://127.0.0.1:3001/api/employee/calendaremployees/${year}/${month}`).then(response => {
       contracts = response.data.filter(x => ["YES", "PARTIAL"].includes(x.full_month_contract));
@@ -109,6 +112,9 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
         setShifttypes(response.data);
         shifttypes = response.data;
       })
+
+    await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').subtract(1, 'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").endOf('year').format('DD-MM-YYYY')}`)
+      .then(response => setExtraHistoryCurrentYearEmployees(makeObjectForIndividualStats(response.data, shifttypes, year)))
 
     const { data } = await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").endOf('month').endOf('isoWeek').format('DD-MM-YYYY')}`);
 

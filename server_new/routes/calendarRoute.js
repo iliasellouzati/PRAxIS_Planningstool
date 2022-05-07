@@ -204,19 +204,19 @@ router.post("/global/year/:year/calendarmonth/:month", async (req, res) => {
             if (!result) {
                 newShifts.push({
                     'datum': shiftDay.day,
-                    'shifttypes_naam': shiftDay.shift,
+                    'shifttype_id': shiftDay.shift,
                     'werknemers_id': shiftDay.employeeId,
                     'beginuur': shiftDay.startmoment,
                     'einduur': shiftDay.endmoment
                 });
             } else if (
-                result.shifttypes_naam == shiftDay.shift &&
+                result.shifttype_id == shiftDay.shift &&
                 result.beginuur == shiftDay.startmoment &&
                 result.einduur == shiftDay.endmoment
             ) {
                 sameShifts.push({
                     'datum': shiftDay.day,
-                    'shifttypes_naam': shiftDay.shift,
+                    'shifttype_id': shiftDay.shift,
                     'werknemers_id': shiftDay.employeeId,
                     'beginuur': shiftDay.startmoment,
                     'einduur': shiftDay.endmoment
@@ -224,7 +224,7 @@ router.post("/global/year/:year/calendarmonth/:month", async (req, res) => {
             } else {
                 updatedShifts.push({
                     'datum': shiftDay.day,
-                    'shifttypes_naam': shiftDay.shift,
+                    'shifttype_id': shiftDay.shift,
                     'werknemers_id': shiftDay.employeeId,
                     'beginuur': shiftDay.startmoment,
                     'einduur': shiftDay.endmoment

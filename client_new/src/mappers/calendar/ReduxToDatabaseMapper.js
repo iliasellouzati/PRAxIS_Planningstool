@@ -23,12 +23,13 @@ const mapReduxCalendarToSavedCalendarInDb = ({
     employees,
     shifttypes
 }) => {
+    
     let shiftsToStore = [];
 
     calendar.forEach(individualCalendar =>
         individualCalendar.calendar.forEach(shiftDay => {
             if (shiftDay.shift !== ''&& shiftDay.shift!== false) {
-                let shift = shifttypes.find(x => x.naam === shiftDay.shift);
+                let shift = shifttypes.find(x => x.id === shiftDay.shift);
                 let employee = employees.find(x => x.id === individualCalendar.employeeId);
                 shiftsToStore.push({
                     "calendar_versie": versie,
@@ -36,7 +37,7 @@ const mapReduxCalendarToSavedCalendarInDb = ({
                     "werknemer_voornaam": employee.voornaam,
                     "werknemer_familienaam": employee.familienaam,
                     "shift_datum": shiftDay.day,
-                    "shift_shifttypes_naam": shift.naam,
+                    "shift_shifttype_id": shift.id,
                     "shift_beginuur": shiftDay.startmoment ? shiftDay.startmoment : null,
                     "shift_einduur": shiftDay.endmoment ? shiftDay.endmoment : null,
                     "shifttypes_beginuur": shift.beginuur,

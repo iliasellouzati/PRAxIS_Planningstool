@@ -40,8 +40,7 @@ export default () => {
       filterTillEmployee1.push(weekId1);
       filterTillEmployee1 = [...new Set(filterTillEmployee1)].sort(function (a, b) {
         return a - b;
-      });;
-
+      });
       //  -----------------------------------------loop2----------------------------------------------------------------------------
       for (let index2 = 0; index2 < IDS[1].possibleWeeks.filter(x => !filterTillEmployee1.includes(x)).length; index2+=3
       
@@ -77,7 +76,7 @@ export default () => {
                 });;
 
                 //-----------------------------------------loop5---------------------------------------------------------------------------
-                for (let index5 = 0; index5 < IDS[4].possibleWeeks.filter(x => !filterTillEmployee4.includes(x)).length; index5+=3) {
+                for (let index5 = 0; index5 < IDS[4].possibleWeeks.filter(x => !filterTillEmployee4.includes(x)).length; index5+=5) {
                   let weekId5 = IDS[4].possibleWeeks.filter(x => !filterTillEmployee4.includes(x))[index5];
                   if (employeesSize > 5) {
 
@@ -88,7 +87,7 @@ export default () => {
 
 
                     //-----------------------------------------loop6---------------------------------------------------------------------------
-                    for (let index6 = 0; index6 < IDS[5].possibleWeeks.filter(x => !filterTillEmployee5.includes(x)).length; index6+=3) {
+                    for (let index6 = 0; index6 < IDS[5].possibleWeeks.filter(x => !filterTillEmployee5.includes(x)).length; index6+=5) {
                       let weekId6 = IDS[5].possibleWeeks.filter(x => !filterTillEmployee5.includes(x))[index6];
                       if (employeesSize > 6) {
 
@@ -99,7 +98,7 @@ export default () => {
 
 
                         //-----------------------------------------loop7---------------------------------------------------------------------------
-                        for (let index7 = 0; index7 < IDS[6].possibleWeeks.filter(x => !filterTillEmployee6.includes(x)).length; index7+=3) {
+                        for (let index7 = 0; index7 < IDS[6].possibleWeeks.filter(x => !filterTillEmployee6.includes(x)).length; index7+=5) {
                           let weekId7 = IDS[6].possibleWeeks.filter(x => !filterTillEmployee6.includes(x))[index7];
                           if (employeesSize > 7) {
 
@@ -110,7 +109,7 @@ export default () => {
 
 
                             //-----------------------------------------loop8--------------------------------------------------------------------------
-                            for (let index8 = 0; index8 < IDS[7].possibleWeeks.filter(x => !filterTillEmployee7.includes(x)).length; index8+=3) {
+                            for (let index8 = 0; index8 < IDS[7].possibleWeeks.filter(x => !filterTillEmployee7.includes(x)).length; index8+=5) {
                               let weekId8 = IDS[7].possibleWeeks.filter(x => !filterTillEmployee7.includes(x))[index8];
                               if (employeesSize > 8) {
 
@@ -121,7 +120,7 @@ export default () => {
 
 
                                 //-----------------------------------------loop9--------------------------------------------------------------------------
-                                for (let index9 = 0; index9 < IDS[8].possibleWeeks.filter(x => !filterTillEmployee8.includes(x)).length; index9+=3) {
+                                for (let index9 = 0; index9 < IDS[8].possibleWeeks.filter(x => !filterTillEmployee8.includes(x)).length; index9+=5) {
                                   let weekId9 = IDS[8].possibleWeeks.filter(x => !filterTillEmployee8.includes(x))[index9];
                                   if (employeesSize > 9) {
 
@@ -423,6 +422,14 @@ export default () => {
                                         let hulpIndex = mogelijkeCombinaties.findIndex(x => x.ingevuldeOperatorShiften === respons.ingevuldeOperatorShiften);
                                         mogelijkeCombinaties[hulpIndex].combinaties.push(respons.combinaties)
                                       }
+
+                                      // console.log(`INDEX: ${index1} - ${index2} - ${index3} - ${index4} - ${index5} - ${index6} - ${index7} - ${index8} - ${index9}`);
+                                      index4 = 1000;
+                                      index6 = 1000;
+                                      index7 = 1000;
+                                      index8 = 1000;
+                                      index5 = 1000;
+                                      index9 = 1000;
                                     }
                                   }
                                   //end loop9
@@ -710,11 +717,11 @@ export default () => {
 
     if (filters.some(x => x === "NACHT_WEEKEND_GEVULD") && (
 
-        missingShifts[0].some(x => x === '1806' || x === '1907') ||
-        missingShifts[1].some(x => x === '1806' || x === '1907') ||
-        missingShifts[2].some(x => x === '1806' || x === '1907') ||
-        missingShifts[3].some(x => x === '1806' || x === '1907') ||
-        missingShifts[4].some(x => x === '1806' || x === '1907') ||
+        missingShifts[0].some(x => x == 5 || x == 7) ||
+        missingShifts[1].some(x => x == 5 || x == 7) ||
+        missingShifts[2].some(x => x == 5 || x == 7) ||
+        missingShifts[3].some(x => x == 5 || x == 7) ||
+        missingShifts[4].some(x => x == 5 || x == 7) ||
         missingShifts[5].length !== 0 ||
         missingShifts[6].length !== 0
       )) {
