@@ -37,8 +37,8 @@ const Automatisation = ({ setShowAutomatisation, INIT_StartUpMainWorkerForAutoma
   const [Logaritme, setLogaritme] = useState({
     "name": "WEEKS_BETWEEN_DAY_AND_NIGHT",
     "data": {
-      'minWeeks': 1,
-      'maxWeeks': 5
+      'minWeeks': 3,
+      'maxWeeks': 6
     }
   });
   const [Config, setConfig] = useState([]);

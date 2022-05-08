@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
 
@@ -87,6 +88,11 @@ export default () => {
 
         let possibleWeeklyStructures = [];
 
+        let debugTextHeader = `WEEK : ${selectedWeeks[0]} `
+
+        console.log('%c' + debugTextHeader, 'background: yellow; font-size:32px; font-weight:bold; border:3px green solid; color: #df0024;');
+
+
         for (let index = 0; index < employeesSelectedIDs.length; index++) {
             let hulpList = checkPossibleWeeklyStructuresIndividualy(
                 weeklyStructures,
@@ -100,6 +106,32 @@ export default () => {
                 stats[`${employeesSelectedIDs[index]}`]
             );
 
+            let debuggedList = hulpList[1];
+            hulpList = hulpList[0];
+
+            let debugValuePassedWeeks = {
+                "dag": hulpList.filter(x => !weeklyStructures.find(y => y.id === x).nacht_week && !weeklyStructures.find(y => y.id === x).omschakeling_dag_naar_nacht && !weeklyStructures.find(y => y.id === x).omschakeling_nacht_naar_dag)
+                    .map(week => [`ID: ${weeklyStructures.find(y => y.id === week).id} - MA : ${weeklyStructures.find(y => y.id === week).maandag} - DI : ${weeklyStructures.find(y => y.id === week).dinsdag} - WO : ${weeklyStructures.find(y => y.id === week).woensdag} - DO : ${weeklyStructures.find(y => y.id === week).donderdag} - VR : ${weeklyStructures.find(y => y.id === week).vrijdag} - ZA : ${weeklyStructures.find(y => y.id === week).zaterdag} - ZO : ${weeklyStructures.find(y => y.id === week).zondag} `]),
+                "nacht": hulpList.filter(x => weeklyStructures.find(y => y.id === x).nacht_week)
+                    .map(week => [`ID: ${weeklyStructures.find(y => y.id === week).id} - MA : ${weeklyStructures.find(y => y.id === week).maandag} - DI : ${weeklyStructures.find(y => y.id === week).dinsdag} - WO : ${weeklyStructures.find(y => y.id === week).woensdag} - DO : ${weeklyStructures.find(y => y.id === week).donderdag} - VR : ${weeklyStructures.find(y => y.id === week).vrijdag} - ZA : ${weeklyStructures.find(y => y.id === week).zaterdag} - ZO : ${weeklyStructures.find(y => y.id === week).zondag} `]),
+                'omschakeling_dag_naar_nacht': hulpList.filter(x => weeklyStructures.find(y => y.id === x).omschakeling_dag_naar_nacht)
+                    .map(week => [`ID: ${weeklyStructures.find(y => y.id === week).id} - MA : ${weeklyStructures.find(y => y.id === week).maandag} - DI : ${weeklyStructures.find(y => y.id === week).dinsdag} - WO : ${weeklyStructures.find(y => y.id === week).woensdag} - DO : ${weeklyStructures.find(y => y.id === week).donderdag} - VR : ${weeklyStructures.find(y => y.id === week).vrijdag} - ZA : ${weeklyStructures.find(y => y.id === week).zaterdag} - ZO : ${weeklyStructures.find(y => y.id === week).zondag} `]),
+                'omschakeling_nacht_naar_dag': hulpList.filter(x => weeklyStructures.find(y => y.id === x).omschakeling_nacht_naar_dag)
+                    .map(week => [`ID: ${weeklyStructures.find(y => y.id === week).id} - MA : ${weeklyStructures.find(y => y.id === week).maandag} - DI : ${weeklyStructures.find(y => y.id === week).dinsdag} - WO : ${weeklyStructures.find(y => y.id === week).woensdag} - DO : ${weeklyStructures.find(y => y.id === week).donderdag} - VR : ${weeklyStructures.find(y => y.id === week).vrijdag} - ZA : ${weeklyStructures.find(y => y.id === week).zaterdag} - ZO : ${weeklyStructures.find(y => y.id === week).zondag} `])
+            };
+            let debugValueFailedWeeks = {
+                "dag": weeklyStructures.map(week => week.id).filter(z => !hulpList.includes(z)).filter(x => !weeklyStructures.find(y => y.id === x).nacht_week && !weeklyStructures.find(y => y.id === x).omschakeling_dag_naar_nacht && !weeklyStructures.find(y => y.id === x).omschakeling_nacht_naar_dag)
+                    .map(week => [`ID: ${weeklyStructures.find(y => y.id === week).id} - MA : ${weeklyStructures.find(y => y.id === week).maandag} - DI : ${weeklyStructures.find(y => y.id === week).dinsdag} - WO : ${weeklyStructures.find(y => y.id === week).woensdag} - DO : ${weeklyStructures.find(y => y.id === week).donderdag} - VR : ${weeklyStructures.find(y => y.id === week).vrijdag} - ZA : ${weeklyStructures.find(y => y.id === week).zaterdag} - ZO : ${weeklyStructures.find(y => y.id === week).zondag} - ERROR: ${debuggedList[`${week}`]} `]),
+                "nacht": weeklyStructures.map(week => week.id).filter(z => !hulpList.includes(z)).filter(x => weeklyStructures.find(y => y.id === x).nacht_week)
+                    .map(week => [`ID: ${weeklyStructures.find(y => y.id === week).id} - MA : ${weeklyStructures.find(y => y.id === week).maandag} - DI : ${weeklyStructures.find(y => y.id === week).dinsdag} - WO : ${weeklyStructures.find(y => y.id === week).woensdag} - DO : ${weeklyStructures.find(y => y.id === week).donderdag} - VR : ${weeklyStructures.find(y => y.id === week).vrijdag} - ZA : ${weeklyStructures.find(y => y.id === week).zaterdag} - ZO : ${weeklyStructures.find(y => y.id === week).zondag} - ERROR: ${debuggedList[`${week}`]}`]),
+                'omschakeling_dag_naar_nacht': weeklyStructures.map(week => week.id).filter(z => !hulpList.includes(z)).filter(x => weeklyStructures.find(y => y.id === x).omschakeling_dag_naar_nacht)
+                    .map(week => [`ID: ${weeklyStructures.find(y => y.id === week).id} - MA : ${weeklyStructures.find(y => y.id === week).maandag} - DI : ${weeklyStructures.find(y => y.id === week).dinsdag} - WO : ${weeklyStructures.find(y => y.id === week).woensdag} - DO : ${weeklyStructures.find(y => y.id === week).donderdag} - VR : ${weeklyStructures.find(y => y.id === week).vrijdag} - ZA : ${weeklyStructures.find(y => y.id === week).zaterdag} - ZO : ${weeklyStructures.find(y => y.id === week).zondag} - ERROR: ${debuggedList[`${week}`]}`]),
+                'omschakeling_nacht_naar_dag': weeklyStructures.map(week => week.id).filter(z => !hulpList.includes(z)).filter(x => weeklyStructures.find(y => y.id === x).omschakeling_nacht_naar_dag)
+                    .map(week => [`ID: ${weeklyStructures.find(y => y.id === week).id} - MA : ${weeklyStructures.find(y => y.id === week).maandag} - DI : ${weeklyStructures.find(y => y.id === week).dinsdag} - WO : ${weeklyStructures.find(y => y.id === week).woensdag} - DO : ${weeklyStructures.find(y => y.id === week).donderdag} - VR : ${weeklyStructures.find(y => y.id === week).vrijdag} - ZA : ${weeklyStructures.find(y => y.id === week).zaterdag} - ZO : ${weeklyStructures.find(y => y.id === week).zondag} - ERROR: ${debuggedList[`${week}`]}`])
+            }
+            console.log(debugValuePassedWeeks);
+            console.log(debugValueFailedWeeks);
+
             possibleWeeklyStructures.push({
                 "employeeId": employeesSelectedIDs[index],
                 "possibleWeeks": hulpList
@@ -112,12 +144,14 @@ export default () => {
 
         let employeeObj = employeesDB.find(x => x.id === employee);
         let contracttypeObj = contractTypes.find(x => x.id === employeeObj.contracttype_id);
+        let filter = [];
+        let dubugFilter = {};
 
         const dayShifts = [1, 3];
         const nightShifts = [5, 7];
         const operatorShifts = [1, 3, 5, 7]
 
-        let numberOfWeeksToCheck = parseInt(logaritme.data.maxWeeks) + 1;
+        let numberOfWeeksToCheck = parseInt(logaritme.data.maxWeeks) >= 4 ? parseInt(logaritme.data.maxWeeks) + 1 : 5;
 
         let startData = get1WeekLaterFromString(selectedWeeks);
         let historyIndividualEmployee = [];
@@ -128,14 +162,29 @@ export default () => {
         }
 
         let possible_IDs = [];
-        let filter = [];
 
 
-        let aantal = calculeerAantalInTePlannenShiftsVoorWeek(stats, selectedWeeks, contracttypeObj);
+
+        let aantal = calculeerAantalInTePlannenUurVoorWeek(stats, selectedWeeks, contracttypeObj);
+
+        let minShifts;
+        let maxShifts;
+        let debug = (aantal / 12) % 1;
+
+        if (((aantal / 12) % 1) > 0.65) {
+            minShifts = Math.floor(aantal / 12);
+            maxShifts = Math.ceil(aantal / 12) + 1;
+        } else if (((aantal / 12) % 1) < 0.35) {
+            minShifts = Math.floor(aantal / 12) - 1;
+            maxShifts = Math.ceil(aantal / 12);
+        } else {
+            minShifts = Math.floor(aantal / 12);
+            maxShifts = Math.ceil(aantal / 12);
+        }
 
 
-        let minShifts = Math.floor(aantal / 12);
-        let maxShifts = Math.ceil(aantal / 12);
+
+
 
         for (let index = 0; index < weeklyStructures.length; index++) {
             let week = weeklyStructures[index];
@@ -167,19 +216,21 @@ export default () => {
 
             if (aantal < minShifts || maxShifts < aantal) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "aantal shifts buiten tolerantie";
             }
         }
 
+        let verplichtDAG = false;
+        let verplichtNACHT = false;
+
+        let momenteelInDagStructuur = true;
+
+        let counter = 0;
+        let eersteShiftGevonden = false;
 
         if (contracttypeObj.id === 1) {
 
-            let eersteShiftGevonden = false;
 
-            let momenteelInDagStructuur = true;
-
-            let counter = 0;
-            let verplichtDAG = false;
-            let verplichtNACHT = false;
 
             for (let index = historyIndividualEmployee.length - 1; index => 0; index--) {
 
@@ -227,22 +278,73 @@ export default () => {
 
             }
 
-            if (verplichtDAG || verplichtNACHT) {
 
+            for (let index = 0; index < weeklyStructures.length; index++) {
+
+                let week = weeklyStructures[index];
+
+                if (filter.some(x => x === week.id)) {
+                    continue;
+                }
+                if (verplichtDAG && (week.nacht_week || week.omschakeling_dag_naar_nacht)) {
+                    filter.push(week.id);
+                    dubugFilter[`${week.id}`] = "Verplicht dagweek";
+                    continue;
+                }
+                if (verplichtDAG && momenteelInDagStructuur && week.omschakeling_nacht_naar_dag) {
+                    filter.push(week.id);
+                    dubugFilter[`${week.id}`] = "Al reeds in dagstructuur en Verplicht dagweek";
+                    continue;
+                }
+                if (verplichtNACHT && (!week.nacht_week || week.omschakeling_nacht_naar_dag)) {
+                    filter.push(week.id);
+                    dubugFilter[`${week.id}`] = "Verplicht nachtweek";
+                    continue;
+                }
+                if (verplichtNACHT && !momenteelInDagStructuur && week.omschakeling_dag_naar_nacht) {
+                    filter.push(week.id);
+                    dubugFilter[`${week.id}`] = "Al reeds in nachtstructuur en Verplicht nachtweek";
+                    continue;
+                }
+
+                if ((!verplichtNACHT && !verplichtDAG) && momenteelInDagStructuur && week.omschakeling_nacht_naar_dag) {
+                    filter.push(week.id);
+                    dubugFilter[`${week.id}`] = "resulteert is DAG->NACHT->DAG";
+                    continue;
+                }
+
+                if ((!verplichtNACHT && !verplichtDAG) && !momenteelInDagStructuur && week.omschakeling_dag_naar_nacht) {
+                    filter.push(week.id);
+                    dubugFilter[`${week.id}`] = "resulteert is NACHT->DAG->NACHT";
+                    continue;
+                }
+            }
+
+            if (!WeekendToegelatenMetShifts(historyIndividualEmployee)) {
                 for (let index = 0; index < weeklyStructures.length; index++) {
 
                     let week = weeklyStructures[index];
-                    if (verplichtDAG && (week.nacht_week || week.omschakeling_dag_naar_nacht)) {
-                        filter.push(week.id);
+                    if (filter.some(x => x === week.id)) {
                         continue;
                     }
-                    if (verplichtNACHT && (!week.nacht_week || week.omschakeling_nacht_naar_dag)) {
+                    if (!controleGeenWeekend(week)) {
                         filter.push(week.id);
-                        continue;
+                        dubugFilter[`${week.id}`] = "2 WEEKENDS MET SHIFT GEVOLG DOOR VRIJE WEEKEND";
                     }
+
                 }
             }
+
         }
+
+
+        let debugText2 = ` employee ${employeeObj.voornaam} (${employeeObj.id}) `
+        let debugText = ` MIN ${minShifts} and AVERAGE ${ Math.round(aantal*100 / 12)/100} and MAX ${maxShifts} SHIFTS and VERPLICHTDAG: ${verplichtDAG} and VERPLICHTNACHT: ${verplichtNACHT} and COUNTER: ${counter} and momenteelInDagStructuur :${momenteelInDagStructuur}`;
+        console.log('%c' + debugText2, 'background: #00FF00;font-weight:bold; color: #df0024; border:2px blue solid');
+        console.log('%c' + debugText, 'background: #D3D3D3;font-weight:bold; color: #df0024;');
+
+
+
 
         for (let index = 0; index < weeklyStructures.length; index++) {
 
@@ -254,43 +356,56 @@ export default () => {
 
             if (!contracttypeObj.nachtshiften_toegelaten && (week.nacht_week || week.omschakeling_nacht_naar_dag || week.omschakeling_dag_naar_nacht)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Nachten niet toegelaten volgens contract";
                 continue;
             }
             if (contracttypeObj.id !== 1 && !controleGeenWeekend(week)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Weekend niet toegelaten volgens contract";
                 continue;
             }
             if (!controleTweeShiftenOpEenDag(week, historyIndividualEmployee)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Week bevat shiften op reeds gevulde dagen";
                 continue;
             }
             if (!controleOperatorShiftReedsGepland(week, missingShiftsWeek)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Week bevat operatorshiften die al reeds op planning staan";
                 continue;
             }
 
             if (!DagNaNacht(week, historyIndividualEmployee)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Week resulteert in DAG NA NACHT";
                 continue;
             }
             if (!OverurenWeekControle(week, historyIndividualEmployee)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Week resulteert in overuren situatie";
+
                 continue;
             }
             if (!TweeLegeShiftenTussen3NachtenEnDagShift(week, historyIndividualEmployee)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Week resulteert in minder dan 2 lege shiften tussen 3nacht en dag";
                 continue;
             }
             if (!DrieLegeShiftenTussen4NachtenEnDagShift(week, historyIndividualEmployee)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Week resulteert in minder dan 3 lege shiften tussen 4nacht en dag";
+
                 continue;
             }
             if (!Max4OperatorShifts(week, historyIndividualEmployee)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Week resulteert in meer dan 4 operatorshiften";
+
                 continue;
             }
             if (!TweeBlancoShiftsNaWeekendMet3Nacht(week, historyIndividualEmployee)) {
                 filter.push(week.id);
+                dubugFilter[`${week.id}`] = "Week resulteert in geen 2 blacko na weekend met 3 nacht";
                 continue;
             }
 
@@ -306,7 +421,7 @@ export default () => {
             return a - b;
         })
 
-        return possible_IDs;
+        return [possible_IDs, dubugFilter];
 
 
 
@@ -373,6 +488,8 @@ export default () => {
         return true;
 
     }
+
+
     const controleGeenNachten = (week) => {
         const nightShifts = [5, 7];
 
@@ -474,25 +591,25 @@ export default () => {
         let hulpHistory = [...history];
 
         if (week.maandag !== "") {
-            hulpHistory[history.length - 7] = week.maandag;
+            hulpHistory[history.length - 7] = parseInt(week.maandag);
         }
         if (week.dinsdag !== "") {
-            hulpHistory[history.length - 6] = week.dinsdag;
+            hulpHistory[history.length - 6] = parseInt(week.dinsdag);
         }
         if (week.woensdag !== "") {
-            hulpHistory[history.length - 5] = week.woensdag;
+            hulpHistory[history.length - 5] = parseInt(week.woensdag);
         }
         if (week.donderdag !== "") {
-            hulpHistory[history.length - 4] = week.donderdag;
+            hulpHistory[history.length - 4] = parseInt(week.donderdag);
         }
         if (week.vrijdag !== "") {
-            hulpHistory[history.length - 3] = week.vrijdag;
+            hulpHistory[history.length - 3] = parseInt(week.vrijdag);
         }
         if (week.zaterdag !== "") {
-            hulpHistory[history.length - 2] = week.zaterdag;
+            hulpHistory[history.length - 2] = parseInt(week.zaterda);
         }
         if (week.zondag !== "") {
-            hulpHistory[history.length - 1] = week.zondag;
+            hulpHistory[history.length - 1] = parseInt(week.zondag);
         }
         let opeenVolgendeNachtenShiften = 0;
         let blankoShift = 0;
@@ -521,26 +638,27 @@ export default () => {
     const DrieLegeShiftenTussen4NachtenEnDagShift = (week, history) => {
         let hulpHistory = [...history];
 
+
         if (week.maandag !== "") {
-            hulpHistory[history.length - 7] = week.maandag;
+            hulpHistory[history.length - 7] = parseInt(week.maandag);
         }
         if (week.dinsdag !== "") {
-            hulpHistory[history.length - 6] = week.dinsdag;
+            hulpHistory[history.length - 6] = parseInt(week.dinsdag);
         }
         if (week.woensdag !== "") {
-            hulpHistory[history.length - 5] = week.woensdag;
+            hulpHistory[history.length - 5] = parseInt(week.woensdag);
         }
         if (week.donderdag !== "") {
-            hulpHistory[history.length - 4] = week.donderdag;
+            hulpHistory[history.length - 4] = parseInt(week.donderdag);
         }
         if (week.vrijdag !== "") {
-            hulpHistory[history.length - 3] = week.vrijdag;
+            hulpHistory[history.length - 3] = parseInt(week.vrijdag);
         }
         if (week.zaterdag !== "") {
-            hulpHistory[history.length - 2] = week.zaterdag;
+            hulpHistory[history.length - 2] = parseInt(week.zaterda);
         }
         if (week.zondag !== "") {
-            hulpHistory[history.length - 1] = week.zondag;
+            hulpHistory[history.length - 1] = parseInt(week.zondag);
         }
         let opeenVolgendeNachtenShiften = 0;
         let blankoShift = 0;
@@ -570,26 +688,27 @@ export default () => {
 
         let hulpHistory = [...history];
 
+
         if (week.maandag !== "") {
-            hulpHistory[history.length - 7] = week.maandag;
+            hulpHistory[history.length - 7] = parseInt(week.maandag);
         }
         if (week.dinsdag !== "") {
-            hulpHistory[history.length - 6] = week.dinsdag;
+            hulpHistory[history.length - 6] = parseInt(week.dinsdag);
         }
         if (week.woensdag !== "") {
-            hulpHistory[history.length - 5] = week.woensdag;
+            hulpHistory[history.length - 5] = parseInt(week.woensdag);
         }
         if (week.donderdag !== "") {
-            hulpHistory[history.length - 4] = week.donderdag;
+            hulpHistory[history.length - 4] = parseInt(week.donderdag);
         }
         if (week.vrijdag !== "") {
-            hulpHistory[history.length - 3] = week.vrijdag;
+            hulpHistory[history.length - 3] = parseInt(week.vrijdag);
         }
         if (week.zaterdag !== "") {
-            hulpHistory[history.length - 2] = week.zaterdag;
+            hulpHistory[history.length - 2] = parseInt(week.zaterda);
         }
         if (week.zondag !== "") {
-            hulpHistory[history.length - 1] = week.zondag;
+            hulpHistory[history.length - 1] = parseInt(week.zondag);
         }
         let shiftCounter = 0;
         for (let individualDayLooper = hulpHistory.length - 11; individualDayLooper < hulpHistory.length; individualDayLooper++) {
@@ -613,26 +732,27 @@ export default () => {
 
         let hulpHistory = [...history];
 
+
         if (week.maandag !== "") {
-            hulpHistory[history.length - 7] = week.maandag;
+            hulpHistory[history.length - 7] = parseInt(week.maandag);
         }
         if (week.dinsdag !== "") {
-            hulpHistory[history.length - 6] = week.dinsdag;
+            hulpHistory[history.length - 6] = parseInt(week.dinsdag);
         }
         if (week.woensdag !== "") {
-            hulpHistory[history.length - 5] = week.woensdag;
+            hulpHistory[history.length - 5] = parseInt(week.woensdag);
         }
         if (week.donderdag !== "") {
-            hulpHistory[history.length - 4] = week.donderdag;
+            hulpHistory[history.length - 4] = parseInt(week.donderdag);
         }
         if (week.vrijdag !== "") {
-            hulpHistory[history.length - 3] = week.vrijdag;
+            hulpHistory[history.length - 3] = parseInt(week.vrijdag);
         }
         if (week.zaterdag !== "") {
-            hulpHistory[history.length - 2] = week.zaterdag;
+            hulpHistory[history.length - 2] = parseInt(week.zaterda);
         }
         if (week.zondag !== "") {
-            hulpHistory[history.length - 1] = week.zondag;
+            hulpHistory[history.length - 1] = parseInt(week.zondag);
         }
 
         for (let individualDayLooper = hulpHistory.length - 7; individualDayLooper < hulpHistory.length; individualDayLooper++) {
@@ -661,8 +781,30 @@ export default () => {
         return true;
     }
 
+    const WeekendToegelatenMetShifts = (history) => {
 
-    const calculeerAantalInTePlannenShiftsVoorWeek = (stats, missingShiftsWeek, contracttypeObj) => {
+        let voorbijeWeekMetShifts = false;
+
+        let tweeWekenGeledenMetShifts = false;
+
+        if ([1, 3, 7, 5].some(x=>x==history[history.length - 8]) || [1, 3, 7, 5].some(x=>x==history[history.length - 9]) || [7, 5].some(x=>x==history[history.length - 10])) {
+            voorbijeWeekMetShifts = true;
+        }
+
+        if ([1, 3, 7, 5].some(x=>x==history[history.length - 15]) || [1, 3, 7, 5].some(x=>x==history[history.length - 16]) || [7, 5].some(x=>x==history[history.length - 17])) {
+            tweeWekenGeledenMetShifts = true;
+        }
+        if (voorbijeWeekMetShifts && tweeWekenGeledenMetShifts) {
+            return false;
+
+        } else {
+            return true;
+        }
+
+    }
+
+
+    const calculeerAantalInTePlannenUurVoorWeek = (stats, missingShiftsWeek, contracttypeObj) => {
 
         let aantalInKwartaal;
         let vereistKwartaal = 13 * contracttypeObj.wekelijkse_contract_uren;

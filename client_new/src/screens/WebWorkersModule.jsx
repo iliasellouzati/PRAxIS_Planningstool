@@ -214,9 +214,27 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     } else {
 
       config.amountOfWorkerResponses = 0;
-      let randomIndex = Math.floor(Math.random() * config.possibleWeekCombos.length);
-      let randomWeekComboIndex = Math.floor(Math.random() * config.possibleWeekCombos[randomIndex].combinaties.length);
-      config.comboWeek = config.possibleWeekCombos[randomIndex].combinaties[randomWeekComboIndex];
+      let bestWeekToDispatch;
+      let currHighestScore = 0;
+
+      for (let index1 = 0; index1 < config.possibleWeekCombos.length; index1++) {
+        for (let index2 = 0; index2 < config.possibleWeekCombos[index1].combinaties.length; index2++) {
+          let currWeek = config.possibleWeekCombos[index1].combinaties[index2];
+          let currScore = 0;
+          for (let index3 = 0; index3 < currWeek.length; index3++) {
+            currScore += config.weeklyStructures.find(x => x.id === currWeek[index3].weekId).score;
+          }
+
+          currScore = currScore / currWeek.length;
+
+          if (currScore > currHighestScore) {
+            currHighestScore = currScore;
+            bestWeekToDispatch = currWeek;
+          }
+        }
+      }
+
+      config.comboWeek = bestWeekToDispatch;
       console.log(config);
       config.comboWeek.forEach(weekCombo => {
         let week = config.weeklyStructures.find(x => x.id === weekCombo.weekId);
@@ -235,25 +253,25 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
           let weeek = config.weeklyStructures.find(x => x.id === weekEmpl.weekId);
 
           if (weeek.maandag !== "") {
-            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.format('DD-MM-YYYY')}`] = weeek.maandag;
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.format('DD-MM-YYYY')}`] = parseInt(weeek.maandag);
           }
           if (weeek.dinsdag !== "") {
-            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(1, 'day').format('DD-MM-YYYY')}`] = weeek.dinsdag;
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(1, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.dinsdag);
           }
           if (weeek.woensdag !== "") {
-            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(2, 'day').format('DD-MM-YYYY')}`] = weeek.woensdag;
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(2, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.woensdag);
           }
           if (weeek.donderdag !== "") {
-            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(3, 'day').format('DD-MM-YYYY')}`] = weeek.donderdag;
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(3, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.donderdag);
           }
           if (weeek.vrijdag !== "") {
-            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(4, 'day').format('DD-MM-YYYY')}`] = weeek.vrijdag;
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(4, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.vrijdag);
           }
           if (weeek.zaterdag !== "") {
-            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(5, 'day').format('DD-MM-YYYY')}`] = weeek.zaterdag;
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(5, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.zaterdag);
           }
           if (weeek.zondag !== "") {
-            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(6, 'day').format('DD-MM-YYYY')}`] = weeek.zondag;
+            config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(6, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.zondag);
           }
 
         });
@@ -275,16 +293,12 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
       }, 250);
 
     }
-
-
-
   }
 
 
 
   const dispatchWeek = (datum, week, employeeId) => {
-    console.log(`Werknemer : ${employeeId}`);
-    console.log(week);
+   
 
     week.maandag !== '' && dispatch(addShift({
       'id': employeeId,
@@ -299,7 +313,7 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
     week.woensdag !== '' && dispatch(addShift({
       'id': employeeId,
       'day': moment(datum, "DD-MM-YYYY").add(2, 'day').format("DD-MM-YYYY"),
-      'shift': parseInt(week.woensdag) , 'startmoment': null, 'endmoment': null
+      'shift': parseInt(week.woensdag), 'startmoment': null, 'endmoment': null
     }));
     week.donderdag !== '' && dispatch(addShift({
       'id': employeeId,

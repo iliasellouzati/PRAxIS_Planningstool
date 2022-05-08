@@ -657,43 +657,43 @@ export default () => {
       if (week.maandag !== '') {
         totaalShiften++;
         if (filters.some(x => x === "NACHT_WEEKEND_GEVULD")) {
-          missingShifts[0] = missingShifts[0].filter(x => x !== week.maandag);
+          missingShifts[0] = missingShifts[0].filter(x => x !== parseInt(week.maandag));
         }
       }
       if (week.dinsdag !== '') {
         totaalShiften++;
         if (filters.some(x => x === "NACHT_WEEKEND_GEVULD")) {
-          missingShifts[1] = missingShifts[1].filter(x => x !== week.dinsdag);
+          missingShifts[1] = missingShifts[1].filter(x => x !== parseInt(week.dinsdag));
         }
       }
       if (week.woensdag !== '') {
         totaalShiften++;
         if (filters.some(x => x === "NACHT_WEEKEND_GEVULD")) {
-          missingShifts[2] = missingShifts[2].filter(x => x !== week.woensdag);
+          missingShifts[2] = missingShifts[2].filter(x => x !== parseInt(week.woensdag));
         }
       }
       if (week.donderdag !== '') {
         totaalShiften++;
         if (filters.some(x => x === "NACHT_WEEKEND_GEVULD")) {
-          missingShifts[3] = missingShifts[3].filter(x => x !== week.donderdag);
+          missingShifts[3] = missingShifts[3].filter(x => x !== parseInt(week.donderdag));
         }
       }
       if (week.vrijdag !== '') {
         totaalShiften++;
         if (filters.some(x => x === "NACHT_WEEKEND_GEVULD")) {
-          missingShifts[4] = missingShifts[4].filter(x => x !== week.vrijdag);
+          missingShifts[4] = missingShifts[4].filter(x => x !== parseInt(week.vrijdag));
         }
       }
       if (week.zaterdag !== '') {
         totaalShiften++;
         if (filters.some(x => x === "NACHT_WEEKEND_GEVULD")) {
-          missingShifts[5] = missingShifts[5].filter(x => x !== week.zaterdag);
+          missingShifts[5] = missingShifts[5].filter(x => x !==parseInt( week.zaterdag));
         }
       }
       if (week.zondag !== '') {
         totaalShiften++;
         if (filters.some(x => x === "NACHT_WEEKEND_GEVULD")) {
-          missingShifts[6] = missingShifts[6].filter(x => x !== week.zondag);
+          missingShifts[6] = missingShifts[6].filter(x => x !== parseInt(week.zondag));
         }
       }
 
