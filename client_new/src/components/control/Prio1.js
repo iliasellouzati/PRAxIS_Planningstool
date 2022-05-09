@@ -2,7 +2,7 @@ import moment from 'moment';
 
 const dayShifts = ["0618", "0719"];
 const nightShifts = ["1806", "1907"];
-const operatorShifts = ["0618", "0719", "1806", "1907"];
+const operatorShifts = [1,3,5,7];
 
 const StandbyControle = ({
     calendar,
@@ -130,10 +130,10 @@ const OperatorShiftenControle = ({
     for (let individualDayLooper = 0; individualDayLooper < calendarMonthHelper.length; individualDayLooper++) {
 
         let checker = {
-            '0618': 0,
-            '0719': 0,
-            '1806': 0,
-            '1907': 0
+            "1": 0,
+            "3": 0,
+            "5": 0,
+            "7": 0
         }
 
         for (let employeeLooper = 0; employeeLooper < calendar.length; employeeLooper++) {
@@ -143,7 +143,7 @@ const OperatorShiftenControle = ({
                 checker[`${shift}`]++;
             }
         }
-        if (checker['0618'] === 0 || checker['0719'] === 0 || checker['1806'] === 0 || checker['1907'] === 0) {
+        if (checker['1'] === 0 || checker['3'] === 0 || checker['5'] === 0 || checker['7'] === 0) {
             hulpArrMetDeDagen.push(calendarMonthHelper[individualDayLooper].format('DD-MM-YYYY'));
         }
     }

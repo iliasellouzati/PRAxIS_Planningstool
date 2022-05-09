@@ -252,28 +252,41 @@ const WebWorkersModule = ({ setShowSuccesModal, setShowDangerModal, setShowProgr
         config.comboWeek.forEach(weekEmpl => {
           let weeek = config.weeklyStructures.find(x => x.id === weekEmpl.weekId);
 
+          let aantalShifts= 0;
+
           if (weeek.maandag !== "") {
             config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.format('DD-MM-YYYY')}`] = parseInt(weeek.maandag);
+            aantalShifts++;
           }
           if (weeek.dinsdag !== "") {
             config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(1, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.dinsdag);
+            aantalShifts++;
           }
           if (weeek.woensdag !== "") {
             config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(2, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.woensdag);
+            aantalShifts++;
           }
           if (weeek.donderdag !== "") {
             config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(3, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.donderdag);
+            aantalShifts++;
           }
           if (weeek.vrijdag !== "") {
             config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(4, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.vrijdag);
+            aantalShifts++;
           }
           if (weeek.zaterdag !== "") {
             config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(5, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.zaterdag);
+            aantalShifts++;
           }
           if (weeek.zondag !== "") {
             config.history[`${weekEmpl.empId}`].history[`${firstDayOfWeekToDispatch.clone().add(6, 'day').format('DD-MM-YYYY')}`] = parseInt(weeek.zondag);
+            aantalShifts++;
           }
-
+         if(typeof config.tolerantie[`${weekEmpl.empId}`] ==='undefined' ){
+          config.tolerantie[`${weekEmpl.empId}`]=(aantalShifts*12)
+         } else{
+          config.tolerantie[`${weekEmpl.empId}`]+=(aantalShifts*12)
+         }
         });
 
 
