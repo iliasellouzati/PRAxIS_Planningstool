@@ -21,6 +21,7 @@ async function getAllContractsForEmployee(employeeId) {
     }
 }
 
+
 async function updateIndividualContractForEmployee(id, begin, end) {
     try {
 

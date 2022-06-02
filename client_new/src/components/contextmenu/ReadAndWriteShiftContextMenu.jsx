@@ -47,7 +47,7 @@ const ReadAndWriteShiftContextMenu = ({ employees, setContextMenu, content }) =>
 
                 break;
             default:
-                shift = content.shifttypes.find(x => x.naam === content.shiftDay.shift);
+                shift = content.shifttypes.find(x => x.id === content.shiftDay.shift);
                 setShift(shift);
                 setBegin(shift.beginuur);
                 setEnd(shift.einduur);

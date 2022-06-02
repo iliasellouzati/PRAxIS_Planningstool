@@ -13,6 +13,7 @@ import { mapReduxCalendarToDb } from '../../mappers/calendar/ReduxToDatabaseMapp
 import moment from 'moment';
 import SaveCalendarConfig from '../../components/calendar/SaveCalendarConfig';
 import Automatisation from '../../components/calendar/automatisation/Automatisation';
+import ExportExcell from '../../components/calendar/exportExcell/ExportExcell';
 
 const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INIT_StartUpMainWorkerForAutomatisation }) => {
 
@@ -29,6 +30,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INI
   const [Shifttypes, setShifttypes] = useState([]);
   const [ShowFinalComment, setShowFinalComment] = useState(false);
   const [ShowAutomatisation, setShowAutomatisation] = useState(false);
+  const [ShowExportExcell, setShowExportExcell] = useState(false);
 
   const saveShiftsToDb = async () => {
     let calendarForDb = mapReduxCalendarToDb(calendar);
@@ -91,7 +93,8 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INI
 
                     :ShowAutomatisation?
                     <Automatisation INIT_StartUpMainWorkerForAutomatisation={INIT_StartUpMainWorkerForAutomatisation} setShowAutomatisation={setShowAutomatisation}/>
-                    :
+                    : ShowExportExcell?
+                    <ExportExcell setShowExportExcell={setShowExportExcell} Shifttypes={Shifttypes} Employees={Employees}/>:
                     
                     <React.Fragment>
                       <div className="col-4">
@@ -138,7 +141,7 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INI
                             </button>
                             <ul className="dropdown-menu">
                               <li className='dropdown-item' onClick={()=>{setShowAutomatisation(true);}}>Automatiseer</li>
-                              <li className='dropdown-item'>Toon XXX</li>
+                              <li className='dropdown-item' onClick={()=>{setShowExportExcell(true);}}>exporteer excell</li>
                               <li className='dropdown-item'>...</li>
 
                             </ul>

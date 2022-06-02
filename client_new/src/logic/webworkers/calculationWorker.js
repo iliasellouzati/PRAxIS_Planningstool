@@ -424,12 +424,7 @@ export default () => {
                                       }
 
                                       // console.log(`INDEX: ${index1} - ${index2} - ${index3} - ${index4} - ${index5} - ${index6} - ${index7} - ${index8} - ${index9}`);
-                                      // index4 = 1000;
-                                      // index6 = 1000;
-                                      // index7 = 1000;
-                                      // index8 = 1000;
-                                      // index5 = 1000;
-                                      // index9 = 1000;
+
                                     }
                                   }
                                   //end loop9
