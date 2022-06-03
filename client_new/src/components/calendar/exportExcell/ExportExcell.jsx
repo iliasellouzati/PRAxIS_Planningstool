@@ -32,9 +32,6 @@ const ExportExcell = ({ setShowExportExcell, Shifttypes, Employees }) => {
 
 
       XLSX.utils.book_append_sheet(WorkBook, makeMonthWorkSheet(`${index}-${year}`, YearlyStats, calendar, Shifttypes,Employees), `${moment(index, "MM").format('MMMM')}`);
-      // XLSX.utils.book_append_sheet(WorkBook, makeMonthWorkSheet(`${index}-${year}`, YearlyStats,null), `${moment(index, "MM").format('MMMM')}`);
-
-
     }
 
     XLSX.writeFile(WorkBook, `PLANNING_${year}_EXPORTED_${moment().format('DD_MM_YYYY_HH_mm')}.xlsx`);

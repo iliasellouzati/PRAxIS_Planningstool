@@ -10,6 +10,7 @@ import contracttypeRoute from './routes/contracttypeRoute.js';
 import weeklystructureRoute from './routes/weeklystructureRoute.js';
 import calendarRoute from './routes/calendarRoute.js';
 import statusCalendarRoute from './routes/statusCalendarRoute.js';
+import holidayRoute from './routes/holidayRoute.js';
 
 
 
@@ -34,14 +35,13 @@ app.use('/api/contracttype', contracttypeRoute);
 app.use('/api/employee', employeeRoute);
 app.use('/api/shifttype', shifttypeRoute);
 app.use('/api/statuscalendar',statusCalendarRoute);
+app.use('/api/holiday',holidayRoute);
 
 
 app.get('/', (req, res) => {
 
     res.send('Server is ready');
 });
-
-
 
 app.listen(3001, () => {
     console.log('server is started at http://localhost:3001');
