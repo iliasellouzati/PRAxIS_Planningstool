@@ -72,10 +72,8 @@ const translateOriginToLocationText = (rowNumber, colomnNumber) => {
     const hulpArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
     if (colomnNumber <= 25) {
-        console.log(`${hulpArr[colomnNumber]}${rowNumber + 1}`);
         return `${hulpArr[colomnNumber]}${rowNumber + 1}`
     } else {
-        console.log(`${hulpArr[Math.floor(colomnNumber / 26) - 1]}${hulpArr[colomnNumber % 26]}${rowNumber + 1}`);
         return `${hulpArr[Math.floor(colomnNumber / 26) - 1]}${hulpArr[colomnNumber % 26]}${rowNumber + 1}`
     }
 
@@ -86,15 +84,15 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
 
     const currMonthMoment = moment(currMonth, "MM-YYYY");
 
+    // #region 1 UREN DEZE MAAND  
 
-    //UREN DEZE MAAND  
     let STAT1_totaalUrenOpKalender = Math.round(stats.maand[currMonth].cumul.totaalUrenOpKalender * 100) / 100;
     let STAT1_urenUitVorigeMaand = Math.round(stats.maand[currMonth].cumul.urenUitVorigeMaand * 100) / 100;
 
     let STAT1 = [{
 
-        v: (STAT1_totaalUrenOpKalender + STAT1_urenUitVorigeMaand) | 'error',
-        t: "s",
+        v: STAT1_totaalUrenOpKalender + STAT1_urenUitVorigeMaand,
+        t: "n",
         s: {
             alignment: {
                 horizontal: "center",
@@ -120,8 +118,11 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
         a: "PRAxIS_Planningstool", t: `VM: ${STAT1_urenUitVorigeMaand}\nHM: ${STAT1_totaalUrenOpKalender}\nTOTAAL: ${STAT1_totaalUrenOpKalender + STAT1_urenUitVorigeMaand} `
     });
 
+    // #endregion
 
-    //TOTAAL OPERATORUREN
+
+    // #region 2 TOTAAL OPERATOR UREN
+
     let STAT2_dag_operator_urenUitVorigeMaand = Math.round(stats.maand[currMonth].dag_operator.urenUitVorigeMaand * 100) / 100;
     let STAT2_dag_operator_totaalUrenOpKalender = Math.round(stats.maand[currMonth].dag_operator.totaalUrenOpKalender * 100) / 100;
     let STAT2_nacht_operator_urenUitVorigeMaand = Math.round(stats.maand[currMonth].nacht_operator.urenUitVorigeMaand * 100) / 100;
@@ -132,7 +133,7 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
 
     let STAT2 = [{
 
-        v: (STAT2_Totaal) | 'error',
+        v: STAT2_Totaal | 'error',
         t: "s",
         s: {
             alignment: {
@@ -156,11 +157,12 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
     ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 1)))}`].c = [];
     ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 1)))}`].c.hidden = true;
     ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 1)))}`].c.push({
-        a: "PRAxIS_Planningstool", t: `Dag VM: ${STAT2_dag_operator_urenUitVorigeMaand}\nNACHT VM: ${STAT2_nacht_operator_urenUitVorigeMaand}\nDag HM: ${STAT2_dag_operator_totaalUrenOpKalender}\nNACHT HM: ${STAT2_nacht_operator_totaalUrenOpKalender}\nTOTAAL: ${STAT2_Totaal} `
+        a: "PRAxIS_Planningstool", t: `VM: ${STAT2_dag_operator_urenUitVorigeMaand + STAT2_nacht_operator_urenUitVorigeMaand}\nHM: ${STAT2_dag_operator_totaalUrenOpKalender + STAT2_nacht_operator_totaalUrenOpKalender}\nCOOPMAN: ${STAT2_coopman_totaalUrenOpKalender}\nTOTAAL: ${STAT2_Totaal} `
     });
 
+    // #endregion
 
-    //TOTAAL DAGEN DEZE MAAND
+    // #region 3 TOTAAL DAGEN DEZE MAAND
 
     let STAT3_Totaal = stats.maand[currMonth].cumul.totaalAantalShiften - stats.maand[currMonth].standby.totaalAantalShiften;
 
@@ -171,10 +173,10 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
         if (STAT3_LOOPER_Shift.categorie === 'standby') {
             continue;
         }
-        if (STAT3_Object[`${stats.maand[currMonth].cumul.shiftDb[STAT3_LOOPER].shifttypes_naam}`] === undefined) {
-            STAT3_Object[`${stats.maand[currMonth].cumul.shiftDb[STAT3_LOOPER].shifttypes_naam}`] = 1;
+        if (STAT3_Object[`${STAT3_LOOPER_Shift.categorie}`] === undefined) {
+            STAT3_Object[`${STAT3_LOOPER_Shift.categorie}`] = 1;
         } else {
-            STAT3_Object[`${stats.maand[currMonth].cumul.shiftDb[STAT3_LOOPER].shifttypes_naam}`]++;
+            STAT3_Object[`${STAT3_LOOPER_Shift.categorie}`]++;
         }
     }
 
@@ -182,7 +184,6 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
 
     Object.keys(STAT3_Object).forEach(key => { STAT3_TEXT = STAT3_TEXT.concat(`${key}: ${STAT3_Object[`${key}`]}\n`); });
 
-    Object.keys(STAT3_Object).forEach(key => console.log(`${key}: ${STAT3_Object[`${key}`]}\n`));
 
     let STAT3 = [{
 
@@ -210,15 +211,131 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
     ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 2)))}`].c = [];
     ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 2)))}`].c.hidden = true;
     ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 2)))}`].c.push({
-        a: "PRAxIS_Planningstool", t: `Totaal: ${STAT3_Totaal}\n${STAT3_TEXT} `
+        a: "PRAxIS_Planningstool", t: `TOTAAL: ${STAT3_Totaal}\n${STAT3_TEXT} `
+    });
+
+    // #endregion
+
+    // #region 4 TOTAAL DAGEN CUMUL
+    let STAT4_TEXT = "";
+    let hulpVal_Counter = 0;
+
+    let STAT4_Total = Object.keys(stats.maand).reduce((accumulator, currVal) => {
+        let hulpVal_ShiftDB = stats.maand[currVal].cumul.shiftDb.filter(cumulShift => shiftTypes.find(ST => ST.id === cumulShift.shifttype_id).categorie !== 'standby');
+        STAT4_TEXT = STAT4_TEXT.concat(`${currVal.substring(0, 2)}:${hulpVal_ShiftDB.length}${((++hulpVal_Counter) % 3) === 0 ? '\n' : ' - '}`);
+        return accumulator += hulpVal_ShiftDB.length;
+    }, 0);
+
+    let STAT4 = [{
+
+        v: (STAT4_Total) | 'error',
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "ffffff" }
+            }
+        }
+    }];
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT4], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 3) } });
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 3)))}`].c = [];
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 3)))}`].c.hidden = true;
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 3)))}`].c.push({
+        a: "PRAxIS_Planningstool", t: `TOTAAL: ${STAT4_Total}\n${STAT4_TEXT} `
+    });
+
+
+    // #endregion
+
+    // #region 5 UREN VORIGE MAAND
+
+    let lastMonth = moment(currMonth, 'MM-YYYY').subtract(1, 'month').isSame(moment(currMonth, 'MM-YYYY'), 'year') ? moment(currMonth, 'MM-YYYY').subtract(1, 'month').format('MM-YYYY') : false;
+
+    let STAT5_Totaal = lastMonth === false ? 'To-Do' : Math.round((stats.maand[lastMonth].cumul.totaalUrenOpKalender + stats.maand[lastMonth].cumul.urenUitVorigeMaand) * 100) / 100;
+
+
+
+    let STAT5 = [{
+
+        v: STAT5_Totaal,
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "ededed" }
+            }
+        }
+    }];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT5], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 4) } });
+
+
+
+    // #endregion
+
+    // #region 6 TOTAAL UREN CUMUL
+
+
+    let STAT6_TEXT = {};
+
+    let STAT6_Total = Object.keys(stats.maand).reduce((accumulator, currVal,index) => {
+        let totalThisMonth = Math.round((stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand + Number.EPSILON) * 100) / 100;
+        if(STAT6_TEXT[`${Math.floor(index/3)+1}`]===undefined){
+            STAT6_TEXT[`${Math.floor(index/3)+1}`]=totalThisMonth;
+        }else{
+            STAT6_TEXT[`${Math.floor(index/3)+1}`]+=totalThisMonth;
+        }
+        return accumulator += totalThisMonth;
+    }, 0);
+
+    let STAT6 = [{
+
+        v: Math.round(STAT6_Total * 100) / 100,
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "ffffff" }
+            }
+        }
+    }];
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT6], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 5) } });
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 5)))}`].c = [];
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 5)))}`].c.hidden = true;
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 5)))}`].c.push({
+        a: "PRAxIS_Planningstool", t: `TOTAAL: ${STAT6_Total}\nI : ${STAT6_TEXT['1']}\nII :${STAT6_TEXT['2']}\nIII :${STAT6_TEXT['3']}\nIV :${STAT6_TEXT['4']} `
     });
 
 
 
-
-
-
-
+    // #endregion
 
 
 
@@ -663,6 +780,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ffffff" }
                 }
             }
         },
@@ -679,6 +799,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ededed" }
                 }
             }
         },
@@ -695,6 +818,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ffffff" }
                 }
             }
         },
@@ -711,6 +837,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ededed" }
                 }
             }
         },
@@ -727,6 +856,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ffffff" }
                 }
             }
         },
@@ -743,6 +875,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ededed" }
                 }
             }
         },
@@ -759,6 +894,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ffffff" }
                 }
             }
         },
@@ -775,6 +913,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ededed" }
                 }
             }
         },
@@ -791,6 +932,9 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center",
                     vertical: 'center',
                     wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ffffff" }
                 }
             }
         },
@@ -943,14 +1087,8 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                 }
             }
         }
-
-
-
-
-
-
-
-    ]], { origin: { r: 1, c: (3 + hulpVal_Days_Of_month.length) } });
+    ]
+    ], { origin: { r: 1, c: (3 + hulpVal_Days_Of_month.length) } });
 
     //MAANDNAAM MET RODE ACHTERKANT + STATS AFKORTINGEN
     XLSX.utils.sheet_add_aoa(ws, [[
@@ -975,316 +1113,969 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
     ]], { origin: "C3" });
 
     //STATS AFKORTINGEN NAAST HEADER
-    XLSX.utils.sheet_add_aoa(ws, [[
+    XLSX.utils.sheet_add_aoa(ws, [
+        [
 
-        {
-            v: `UDM`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "ededed" }
-                }
-            }
-        },
-        {
-            v: `OU`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `TDDM`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `TDC`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `UVM`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `TUC`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `UVMkw`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `TuKw`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `GWDM`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `TGW`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                }
-            }
-        },
-        {
-            v: `SB`,
-            t: "s",
-            s: {
-
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                font: {
-                    bold: true,
-
-                    color: {
-                        rgb: "ffffff"
+            {
+                v: `UDM`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
                     }
-                },
-                fill: {
-                    fgColor: { rgb: "001a52" }
                 }
-            }
-        },
-        {
-            v: `SBC`,
-            t: "s",
-            s: {
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                font: {
-                    bold: true,
-
-                    color: {
-                        rgb: "ffffff"
+            },
+            {
+                v: `OU`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
                     }
-                },
-                fill: {
-                    fgColor: { rgb: "001a52" }
+                }
+            },
+            {
+                v: `TDDM`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: `TDC`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: `UVM`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: `TUC`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: `UVMkw`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: `TuKw`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: `GWDM`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: `TGW`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: `SB`,
+                t: "s",
+                s: {
+
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    font: {
+                        bold: true,
+
+                        color: {
+                            rgb: "ffffff"
+                        }
+                    },
+                    fill: {
+                        fgColor: { rgb: "001a52" }
+                    }
+                }
+            },
+            {
+                v: `SBC`,
+                t: "s",
+                s: {
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    font: {
+                        bold: true,
+
+                        color: {
+                            rgb: "ffffff"
+                        }
+                    },
+                    fill: {
+                        fgColor: { rgb: "001a52" }
+                    }
+                }
+            },
+            {
+                v: `OV`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "D8E4BC" }
+                    }
+                }
+            },
+            {
+                v: `NOTNV`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "D8E4BC" }
+                    }
                 }
             }
-        },
-        {
-            v: `OV`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "D8E4BC" }
+            ,
+            {
+                v: `OA`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "FCD5B4" }
+                    }
+                }
+            },
+            {
+                v: `NOTNA`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "FCD5B4" }
+                    }
                 }
             }
-        },
-        {
-            v: `NOTNV`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "D8E4BC" }
+            ,
+            {
+                v: `OOV`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "46D7DE" }
+                    }
+                }
+            },
+            {
+                v: `NOTNOV`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "46D7DE" }
+                    }
                 }
             }
-        }
-        ,
-        {
-            v: `OA`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "FCD5B4" }
+            ,
+            {
+                v: `OUD`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "F247FF" }
+                    }
+                }
+            },
+            {
+                v: `NOTUD`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "F247FF" }
+                    }
                 }
             }
-        },
-        {
-            v: `NOTNA`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "FCD5B4" }
-                }
-            }
-        }
-        ,
-        {
-            v: `OOV`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "46D7DE" }
-                }
-            }
-        },
-        {
-            v: `NOTNOV`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "46D7DE" }
-                }
-            }
-        }
-        ,
-        {
-            v: `OUD`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "F247FF" }
-                }
-            }
-        },
-        {
-            v: `NOTUD`,
-            t: "s",
-            s: {
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: 'center'
-                },
-                fill: {
-                    fgColor: { rgb: "F247FF" }
-                }
-            }
-        }
 
 
-    ]], { origin: { r: 2, c: (3 + hulpVal_Days_Of_month.length) } });
+        ],
+        [
+
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10,
+                        color: {
+                            rgb: "ffffff"
+                        },
+                    },
+                    fill: {
+                        fgColor: { rgb: "001a52" }
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    }
+                }
+            },
+            {
+                v: ` `,
+                t: "s",
+                s: {
+                    alignment: {
+                        horizontal: "center"
+                    },
+                    fill: {
+                        fgColor: { rgb: "001a52" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    },
+                    fill: {
+                        fgColor: { rgb: "D8E4BC" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    fill: {
+                        fgColor: { rgb: "D8E4BC" }
+                    }
+                }
+            }
+            ,
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    },
+                    fill: {
+                        fgColor: { rgb: "FCD5B4" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    fill: {
+                        fgColor: { rgb: "FCD5B4" }
+                    }
+                }
+            }
+            ,
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    },
+                    fill: {
+                        fgColor: { rgb: "46D7DE" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    fill: {
+                        fgColor: { rgb: "46D7DE" }
+                    }
+                }
+            }
+            ,
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    },
+                    fill: {
+                        fgColor: { rgb: "F247FF" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    fill: {
+                        fgColor: { rgb: "F247FF" }
+                    }
+                }
+            }
+        ],
+        [
+
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ededed" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center'
+                    },
+                    fill: {
+                        fgColor: { rgb: "ffffff" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10,
+                        color: {
+                            rgb: "ffffff"
+                        },
+                    },
+                    fill: {
+                        fgColor: { rgb: "001a52" }
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    }
+                }
+            },
+            {
+                v: ` `,
+                t: "s",
+                s: {
+                    alignment: {
+                        horizontal: "center"
+                    },
+                    fill: {
+                        fgColor: { rgb: "001a52" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    },
+                    fill: {
+                        fgColor: { rgb: "D8E4BC" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    fill: {
+                        fgColor: { rgb: "D8E4BC" }
+                    }
+                }
+            }
+            ,
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    },
+                    fill: {
+                        fgColor: { rgb: "FCD5B4" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    fill: {
+                        fgColor: { rgb: "FCD5B4" }
+                    }
+                }
+            }
+            ,
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    },
+                    fill: {
+                        fgColor: { rgb: "46D7DE" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    fill: {
+                        fgColor: { rgb: "46D7DE" }
+                    }
+                }
+            }
+            ,
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true,
+                        underline: true,
+                        sz: 10
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: 'center',
+                        wrapText: true
+                    },
+                    fill: {
+                        fgColor: { rgb: "F247FF" }
+                    }
+                }
+            },
+            {
+                v: ``,
+                t: "s",
+                s: {
+                    fill: {
+                        fgColor: { rgb: "F247FF" }
+                    }
+                }
+            }
+        ]
+    ], { origin: { r: 2, c: (3 + hulpVal_Days_Of_month.length) } });
 
     //INFO LINKS CAN HEADER BOVEN WERKNEMER
     XLSX.utils.sheet_add_aoa(ws, [
