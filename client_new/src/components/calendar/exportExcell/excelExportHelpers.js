@@ -3,6 +3,7 @@ import { getCalendarMoments_ArrayWithMoments } from '../helpers';
 import * as XLSX from 'xlsx-js-style';
 import moment from 'moment';
 
+
 const init = [{}]
 
 const tempData = [
@@ -25,13 +26,13 @@ const tempData = [
 ];
 
 const makeOverzichtSheet = () => {
-    let ws = XLSX.utils.aoa_to_sheet([tempData, tempData, tempData]);
+    let ws = XLSX.utils.aoa_to_sheet([[{}]]);
+
+
 
     XLSX.utils.sheet_add_aoa(ws, [tempData, tempData, tempData], { origin: `F13` });
 
     return ws;
-
-
 }
 
 const makeMonthWorkSheet = (monthYearString, yearlyStatsObject, calendarObject, shiftTypes, Employees) => {
@@ -39,6 +40,8 @@ const makeMonthWorkSheet = (monthYearString, yearlyStatsObject, calendarObject, 
     let hulpVal_Days_Of_month = getCalendarMoments_ArrayWithMoments(monthYearString);
     let hulpValAlleShiftTypesOpCal = [];
     console.log(calendarObject);
+
+    console.log(monthYearString);
 
     //init
     let ws = XLSX.utils.aoa_to_sheet([init]);
@@ -50,14 +53,176 @@ const makeMonthWorkSheet = (monthYearString, yearlyStatsObject, calendarObject, 
     //de individuele planningen toevoegen
     for (let index = 0; index < calendarObject.length; index++) {
         ws = makeIndividualScheduleROWInCalendarInSheet(ws, calendarObject[index], shiftTypes, index, Employees);
+        ws = addMarioStats(ws, yearlyStatsObject[`${calendarObject[index].employeeId}`], shiftTypes, index, monthYearString, hulpVal_Days_Of_month)
         hulpValAlleShiftTypesOpCal = checkForShiftTypes(calendarObject[index], hulpValAlleShiftTypesOpCal);
+
     }
 
     //De geselecteerde shifttypes in legende toevoegen
     ws = addSelectedShiftTypesInfoInSheet(ws, calendarObject, shiftTypes, hulpValAlleShiftTypesOpCal, hulpVal_Days_Of_month);
 
+    //Mario Statistieken toevoegen 
+
+
     return ws;
 
+}
+
+const translateOriginToLocationText = (rowNumber, colomnNumber) => {
+    const hulpArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+    if (colomnNumber <= 25) {
+        console.log(`${hulpArr[colomnNumber]}${rowNumber + 1}`);
+        return `${hulpArr[colomnNumber]}${rowNumber + 1}`
+    } else {
+        console.log(`${hulpArr[Math.floor(colomnNumber / 26) - 1]}${hulpArr[colomnNumber % 26]}${rowNumber + 1}`);
+        return `${hulpArr[Math.floor(colomnNumber / 26) - 1]}${hulpArr[colomnNumber % 26]}${rowNumber + 1}`
+    }
+
+}
+
+const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_month) => {
+
+
+    const currMonthMoment = moment(currMonth, "MM-YYYY");
+
+
+    //UREN DEZE MAAND  
+    let STAT1_totaalUrenOpKalender = Math.round(stats.maand[currMonth].cumul.totaalUrenOpKalender * 100) / 100;
+    let STAT1_urenUitVorigeMaand = Math.round(stats.maand[currMonth].cumul.urenUitVorigeMaand * 100) / 100;
+
+    let STAT1 = [{
+
+        v: (STAT1_totaalUrenOpKalender + STAT1_urenUitVorigeMaand) | 'error',
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "ededed" }
+            }
+        }
+    }];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT1], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length) } });
+
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length)))}`].c = [];
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length)))}`].c.hidden = true;
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length)))}`].c.push({
+        a: "PRAxIS_Planningstool", t: `VM: ${STAT1_urenUitVorigeMaand}\nHM: ${STAT1_totaalUrenOpKalender}\nTOTAAL: ${STAT1_totaalUrenOpKalender + STAT1_urenUitVorigeMaand} `
+    });
+
+
+    //TOTAAL OPERATORUREN
+    let STAT2_dag_operator_urenUitVorigeMaand = Math.round(stats.maand[currMonth].dag_operator.urenUitVorigeMaand * 100) / 100;
+    let STAT2_dag_operator_totaalUrenOpKalender = Math.round(stats.maand[currMonth].dag_operator.totaalUrenOpKalender * 100) / 100;
+    let STAT2_nacht_operator_urenUitVorigeMaand = Math.round(stats.maand[currMonth].nacht_operator.urenUitVorigeMaand * 100) / 100;
+    let STAT2_nacht_operator_totaalUrenOpKalender = Math.round(stats.maand[currMonth].nacht_operator.totaalUrenOpKalender * 100) / 100;
+    let STAT2_coopman_totaalUrenOpKalender = Math.round(stats.maand[currMonth].coopman.totaalUrenOpKalender * 100) / 100;
+    let STAT2_Totaal = STAT2_coopman_totaalUrenOpKalender + STAT2_dag_operator_totaalUrenOpKalender + STAT2_dag_operator_urenUitVorigeMaand + STAT2_nacht_operator_totaalUrenOpKalender + STAT2_nacht_operator_urenUitVorigeMaand;
+
+
+    let STAT2 = [{
+
+        v: (STAT2_Totaal) | 'error',
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "FFFFFF" }
+            }
+        }
+    }];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT2], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 1) } });
+
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 1)))}`].c = [];
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 1)))}`].c.hidden = true;
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 1)))}`].c.push({
+        a: "PRAxIS_Planningstool", t: `Dag VM: ${STAT2_dag_operator_urenUitVorigeMaand}\nNACHT VM: ${STAT2_nacht_operator_urenUitVorigeMaand}\nDag HM: ${STAT2_dag_operator_totaalUrenOpKalender}\nNACHT HM: ${STAT2_nacht_operator_totaalUrenOpKalender}\nTOTAAL: ${STAT2_Totaal} `
+    });
+
+
+    //TOTAAL DAGEN DEZE MAAND
+
+    let STAT3_Totaal = stats.maand[currMonth].cumul.totaalAantalShiften - stats.maand[currMonth].standby.totaalAantalShiften;
+
+    let STAT3_Object = {};
+
+    for (let STAT3_LOOPER = 0; STAT3_LOOPER < stats.maand[currMonth].cumul.shiftDb.length; STAT3_LOOPER++) {
+        let STAT3_LOOPER_Shift = shiftTypes.find(x => x.id === stats.maand[currMonth].cumul.shiftDb[STAT3_LOOPER].shifttype_id);
+        if (STAT3_LOOPER_Shift.categorie === 'standby') {
+            continue;
+        }
+        if (STAT3_Object[`${stats.maand[currMonth].cumul.shiftDb[STAT3_LOOPER].shifttypes_naam}`] === undefined) {
+            STAT3_Object[`${stats.maand[currMonth].cumul.shiftDb[STAT3_LOOPER].shifttypes_naam}`] = 1;
+        } else {
+            STAT3_Object[`${stats.maand[currMonth].cumul.shiftDb[STAT3_LOOPER].shifttypes_naam}`]++;
+        }
+    }
+
+    let STAT3_TEXT = "";
+
+    Object.keys(STAT3_Object).forEach(key => { STAT3_TEXT = STAT3_TEXT.concat(`${key}: ${STAT3_Object[`${key}`]}\n`); });
+
+    Object.keys(STAT3_Object).forEach(key => console.log(`${key}: ${STAT3_Object[`${key}`]}\n`));
+
+    let STAT3 = [{
+
+        v: (STAT3_Totaal) | 'error',
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "ededed" }
+            }
+        }
+    }];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT3], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 2) } });
+
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 2)))}`].c = [];
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 2)))}`].c.hidden = true;
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 2)))}`].c.push({
+        a: "PRAxIS_Planningstool", t: `Totaal: ${STAT3_Totaal}\n${STAT3_TEXT} `
+    });
+
+
+
+
+
+
+
+
+
+
+    return ws;
 }
 
 const addSelectedShiftTypesInfoInSheet = (ws, calendarObject, shiftTypes, hulpValAlleShiftTypesOpCal, hulpVal_Days_Of_month) => {
@@ -98,8 +263,15 @@ const addSelectedShiftTypesInfoInSheet = (ws, calendarObject, shiftTypes, hulpVa
     }
 
     let merges = [
-        { s: { r: 1, c: 1 }, e: { r: 1, c: (1 + hulpVal_Days_Of_month.length) } },
-        { s: { r: 2, c: 1 }, e: { r: 2, c: (1 + hulpVal_Days_Of_month.length) } }
+        { s: { r: 1, c: 2 }, e: { r: 1, c: (1 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 2, c: 2 }, e: { r: 2, c: (1 + hulpVal_Days_Of_month.length) } },
+
+        { s: { r: 1, c: (13 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (14 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 1, c: (15 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (16 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 1, c: (17 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (18 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 1, c: (19 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (20 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 1, c: (21 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (22 + hulpVal_Days_Of_month.length) } }
+
     ];
 
 
@@ -339,10 +511,10 @@ const makeIndividualScheduleROWInCalendarInSheet = (ws, individualCalendar, shif
                                 vertical: "center"
                             },
                             border: {
-                                bottom: { style: 'thin', color: '#D3D3D3' },
-                                top: { style: 'thin', color: '#D3D3D3' },
-                                left: { style: 'thin', color: '#D3D3D3' },
-                                right: { style: 'thin', color: '#D3D3D3' }
+                                bottom: { style: 'dashed', color: '#D3D3D3' },
+                                top: { style: 'dashed', color: '#D3D3D3' },
+                                left: { style: 'dashed', color: '#D3D3D3' },
+                                right: { style: 'dashed', color: '#D3D3D3' }
                             }
                         }
                     }
@@ -353,10 +525,10 @@ const makeIndividualScheduleROWInCalendarInSheet = (ws, individualCalendar, shif
                     t: "s",
                     s: {
                         border: {
-                            bottom: { style: 'thin', color: '#D3D3D3' },
-                            top: { style: 'thin', color: '#D3D3D3' },
-                            left: { style: 'thin', color: '#D3D3D3' },
-                            right: { style: 'thin', color: '#D3D3D3' }
+                            bottom: { style: 'dashed', color: '#D3D3D3' },
+                            top: { style: 'dashed', color: '#D3D3D3' },
+                            left: { style: 'dashed', color: '#D3D3D3' },
+                            right: { style: 'dashed', color: '#D3D3D3' }
                         }
                     }
                 });
@@ -400,10 +572,11 @@ const makeIndividualScheduleROWInCalendarInSheet = (ws, individualCalendar, shif
 
 const changeWidthColomnsAndHeightRowsInSheet = (ws, hulpVal_Days_Of_month, calendarObject) => {
 
-    let wscols = Array(hulpVal_Days_Of_month.length + 2).fill({ wpx: 35 });
+    let wscols = Array(hulpVal_Days_Of_month.length + 3).fill({ wpx: 35 });
 
     wscols[0] = { wpx: 10 };
-    wscols[1] = { wpx: 75 };
+    wscols[1] = { wpx: 200 };
+    wscols[wscols.length - 1] = { wpx: 10 }
 
     let wsrows = Array(5 + calendarObject.length).fill({ hpx: 22 })
 
@@ -420,20 +593,25 @@ const changeWidthColomnsAndHeightRowsInSheet = (ws, hulpVal_Days_Of_month, calen
 
     return ws;
 
-
 }
 
 const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString) => {
 
 
     const merge = [
-        { s: { r: 1, c: 1 }, e: { r: 1, c: (1 + hulpVal_Days_Of_month.length) } },
-        { s: { r: 2, c: 1 }, e: { r: 2, c: (1 + hulpVal_Days_Of_month.length) } }
+        { s: { r: 1, c: 2 }, e: { r: 1, c: (1 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 2, c: 2 }, e: { r: 2, c: (1 + hulpVal_Days_Of_month.length) } },
+
+        { s: { r: 1, c: (13 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (14 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 1, c: (15 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (16 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 1, c: (17 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (18 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 1, c: (19 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (20 + hulpVal_Days_Of_month.length) } },
+        { s: { r: 1, c: (21 + hulpVal_Days_Of_month.length) }, e: { r: 1, c: (22 + hulpVal_Days_Of_month.length) } }
     ];
 
     ws["!merges"] = merge;
 
-    //PLANNING MAAND-JAAR - PRAxIS GROUP NV
+    //PLANNING MAAND-JAAR - PRAxIS GROUP NV 
     XLSX.utils.sheet_add_aoa(ws, [[
         {
             v: `PLANNING ${monthYearString} - PRAxIS Group NV`,
@@ -444,11 +622,337 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     sz: 24
                 },
                 alignment: {
-                    horizontal: "center"
+                    horizontal: "center",
+                    vertical: "center"
+
                 }
             }
-        }]], { origin: "B2" });
-    //MAANDNAAM MET RODE ACHTERKANT
+        }
+    ]], { origin: "C2" });
+    //STAT-TITELS NAAST HEADER
+    XLSX.utils.sheet_add_aoa(ws, [[
+        {
+            v: `Uren\ndeze\nmaand`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "ededed" }
+                }
+            }
+        },
+        {
+            v: `Operator\nuren`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Totaal\ndagen\ndeze\nmaand`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Totaal\ndagen\ncumul`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Uren\nvorige\nmaanden`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Tot.\nUren\ncumul\njaar`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Uren\nvorige\nmaanden\nkwartaal`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Tot.\nUren\ncumul\nkwartaal`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Gewerkte\nweekends\ndeze\nmaand`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Totaal\ngewerkte\nweekends`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 8
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: `Standby`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 10,
+                    color: {
+                        rgb: "ffffff"
+                    },
+                },
+                fill: {
+                    fgColor: { rgb: "001a52" }
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                }
+            }
+        },
+        {
+            v: ` `,
+            t: "s",
+            s: {
+                alignment: {
+                    horizontal: "center"
+                },
+                fill: {
+                    fgColor: { rgb: "001a52" }
+                }
+            }
+        },
+        {
+            v: `Verlof`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 10
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "D8E4BC" }
+                }
+            }
+        },
+        {
+            v: ``,
+            t: "s",
+            s: {
+                fill: {
+                    fgColor: { rgb: "D8E4BC" }
+                }
+            }
+        }
+        ,
+        {
+            v: `Anciënniteit`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 10
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "FCD5B4" }
+                }
+            }
+        },
+        {
+            v: ``,
+            t: "s",
+            s: {
+                fill: {
+                    fgColor: { rgb: "FCD5B4" }
+                }
+            }
+        }
+        ,
+        {
+            v: `Onbetaald verlof`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 10
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "46D7DE" }
+                }
+            }
+        },
+        {
+            v: ``,
+            t: "s",
+            s: {
+                fill: {
+                    fgColor: { rgb: "46D7DE" }
+                }
+            }
+        }
+        ,
+        {
+            v: `Uitzonderingsdagen`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true,
+                    underline: true,
+                    sz: 10
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center',
+                    wrapText: true
+                },
+                fill: {
+                    fgColor: { rgb: "F247FF" }
+                }
+            }
+        },
+        {
+            v: ``,
+            t: "s",
+            s: {
+                fill: {
+                    fgColor: { rgb: "F247FF" }
+                }
+            }
+        }
+
+
+
+
+
+
+
+    ]], { origin: { r: 1, c: (3 + hulpVal_Days_Of_month.length) } });
+
+    //MAANDNAAM MET RODE ACHTERKANT + STATS AFKORTINGEN
     XLSX.utils.sheet_add_aoa(ws, [[
         {
             v: `${moment(monthYearString, "MM-YYYY").format("MMMM")}`,
@@ -467,40 +971,372 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
                     horizontal: "center"
                 }
             }
-        }]], { origin: "B3" });
-    //DATUM HULPTEXT
+        }
+    ]], { origin: "C3" });
+
+    //STATS AFKORTINGEN NAAST HEADER
     XLSX.utils.sheet_add_aoa(ws, [[
+
         {
-            v: `datum`,
+            v: `UDM`,
             t: "s",
             s: {
                 font: {
                     bold: true
                 },
                 alignment: {
-                    horizontal: "right"
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "ededed" }
                 }
             }
-        }]], { origin: "B4" });
-    //DAG HULPTEXT
-    XLSX.utils.sheet_add_aoa(ws, [[
+        },
         {
-            v: `dag`,
+            v: `OU`,
             t: "s",
             s: {
                 font: {
                     bold: true
                 },
                 alignment: {
-                    horizontal: "right"
+                    horizontal: "center",
+                    vertical: 'center'
                 }
             }
-        }]], { origin: "B5" });
+        },
+        {
+            v: `TDDM`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                }
+            }
+        },
+        {
+            v: `TDC`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                }
+            }
+        },
+        {
+            v: `UVM`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                }
+            }
+        },
+        {
+            v: `TUC`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                }
+            }
+        },
+        {
+            v: `UVMkw`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                }
+            }
+        },
+        {
+            v: `TuKw`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                }
+            }
+        },
+        {
+            v: `GWDM`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                }
+            }
+        },
+        {
+            v: `TGW`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                }
+            }
+        },
+        {
+            v: `SB`,
+            t: "s",
+            s: {
+
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                font: {
+                    bold: true,
+
+                    color: {
+                        rgb: "ffffff"
+                    }
+                },
+                fill: {
+                    fgColor: { rgb: "001a52" }
+                }
+            }
+        },
+        {
+            v: `SBC`,
+            t: "s",
+            s: {
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                font: {
+                    bold: true,
+
+                    color: {
+                        rgb: "ffffff"
+                    }
+                },
+                fill: {
+                    fgColor: { rgb: "001a52" }
+                }
+            }
+        },
+        {
+            v: `OV`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "D8E4BC" }
+                }
+            }
+        },
+        {
+            v: `NOTNV`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "D8E4BC" }
+                }
+            }
+        }
+        ,
+        {
+            v: `OA`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "FCD5B4" }
+                }
+            }
+        },
+        {
+            v: `NOTNA`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "FCD5B4" }
+                }
+            }
+        }
+        ,
+        {
+            v: `OOV`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "46D7DE" }
+                }
+            }
+        },
+        {
+            v: `NOTNOV`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "46D7DE" }
+                }
+            }
+        }
+        ,
+        {
+            v: `OUD`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "F247FF" }
+                }
+            }
+        },
+        {
+            v: `NOTUD`,
+            t: "s",
+            s: {
+                font: {
+                    bold: true
+                },
+                alignment: {
+                    horizontal: "center",
+                    vertical: 'center'
+                },
+                fill: {
+                    fgColor: { rgb: "F247FF" }
+                }
+            }
+        }
+
+
+    ]], { origin: { r: 2, c: (3 + hulpVal_Days_Of_month.length) } });
+
+    //INFO LINKS CAN HEADER BOVEN WERKNEMER
+    XLSX.utils.sheet_add_aoa(ws, [
+
+        [
+            {
+                v: `FOD 0478243652`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center"
+                    }
+                }
+            }
+
+        ],
+        [
+            {
+                v: `datum`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "right"
+                    }
+                }
+            }
+        ],
+        [
+            {
+                v: `dag`,
+                t: "s",
+                s: {
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "right"
+                    }
+                }
+            }
+        ]
+    ], { origin: "B3" });
+
 
     //m-d-w-d-v-z-z
     //28-29-30-31-1-2-.....-30-1-2
-
-
     let hulpValHeaderNames = [];
     let hulpValHeaderDates = []
 
@@ -634,7 +1470,6 @@ const shiftLayOutForCell = (shift) => {
     }
 }
 
-
 const shiftDayLayOutForCell = (shiftDay, shiftTypes) => {
 
     let shift = shiftTypes.find(x => x.id == shiftDay.shift);
@@ -658,10 +1493,10 @@ const shiftDayLayOutForCell = (shiftDay, shiftTypes) => {
         left: { style: 'thick', color: '#000000' },
         right: { style: 'thick', color: '#000000' }
     } : {
-        bottom: { style: 'thin', color: '#000000' },
-        top: { style: 'thin', color: '#000000' },
-        left: { style: 'thin', color: '#000000' },
-        right: { style: 'thin', color: '#000000' }
+        bottom: { style: 'dashed', color: '#000000' },
+        top: { style: 'dashed', color: '#000000' },
+        left: { style: 'dashed', color: '#000000' },
+        right: { style: 'dashed', color: '#000000' }
     };
 
 

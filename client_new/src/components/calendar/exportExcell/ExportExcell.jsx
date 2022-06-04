@@ -26,55 +26,57 @@ const ExportExcell = ({ setShowExportExcell, Shifttypes, Employees }) => {
 
     for (let index = 1; index <= 12; index++) {
 
-      const DBshifts = await axios.get(`http://localhost:3001/api/calendar/global/year/${year}/calendarmonth/${index}`);
-      const employees = await axios.get(`http://127.0.0.1:3001/api/employee/calendaremployees/${year}/${index}`);
-      const calendar = mapShiftsFromDbToCalendar(`${index}-${year}`, DBshifts.data, employees.data);
+      let month = ('0' + index).slice(-2);
+
+    const DBshifts = await axios.get(`http://localhost:3001/api/calendar/global/year/${year}/calendarmonth/${month}`);
+    const employees = await axios.get(`http://127.0.0.1:3001/api/employee/calendaremployees/${year}/${month}`);
+    const calendar = mapShiftsFromDbToCalendar(`${month}-${year}`, DBshifts.data, employees.data);
 
 
-      XLSX.utils.book_append_sheet(WorkBook, makeMonthWorkSheet(`${index}-${year}`, YearlyStats, calendar, Shifttypes,Employees), `${moment(index, "MM").format('MMMM')}`);
-    }
-
-    XLSX.writeFile(WorkBook, `PLANNING_${year}_EXPORTED_${moment().format('DD_MM_YYYY_HH_mm')}.xlsx`);
+    XLSX.utils.book_append_sheet(WorkBook, makeMonthWorkSheet(`${month}-${year}`, YearlyStats, calendar, Shifttypes, Employees), `${moment(month, "MM").format('MMMM')}`);
   }
 
-  const fetchData = async () => {
+  XLSX.writeFile(WorkBook, `PLANNING_${year}_EXPORTED_${moment().format('DD_MM_YYYY_HH_mm')}.xlsx`);
+}
 
-    await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').subtract(1, 'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").endOf('year').format('DD-MM-YYYY')}`)
-      .then(response => setYearlyStats(makeObjectForIndividualStats(response.data, Shifttypes, year))).finally(setLoading(false));
+const fetchData = async () => {
 
+  await axios.get(`http://localhost:3001/api/calendar/global/custom/${moment(`${year}`, 'YYYY').startOf('year').subtract(1, 'day').format("DD-MM-YYYY")}/${moment(`${month}-${year}`, "MM-YYYY").endOf('year').format('DD-MM-YYYY')}`)
+    .then(response => setYearlyStats(makeObjectForIndividualStats(response.data, Shifttypes, year))).finally(setLoading(false));
+
+
+}
+
+
+useEffect(() => {
+  fetchData();
+
+  return () => {
 
   }
+}, [])
 
 
-  useEffect(() => {
-    fetchData();
+return (
+  <React.Fragment>
+    {Loading ? <LoadingSpinner /> :
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
 
-    return () => {
+        <div >
+          ExportExcell
+        </div>
 
-    }
-  }, [])
+        <div >
+          <button onClick={() => setShowExportExcell(false)}>Keer terug</button>
+        </div>
 
+        <div >
+          <button onClick={(e) => handleOnExport(e)}>export</button>
+        </div>
 
-  return (
-    <React.Fragment>
-      {Loading ? <LoadingSpinner /> :
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
-
-          <div >
-            ExportExcell
-          </div>
-
-          <div >
-            <button onClick={() => setShowExportExcell(false)}>Keer terug</button>
-          </div>
-
-          <div >
-            <button onClick={(e) => handleOnExport(e)}>export</button>
-          </div>
-
-        </div>}
-    </React.Fragment>
-  )
+      </div>}
+  </React.Fragment>
+)
 }
 
 export default ExportExcell
