@@ -1,11 +1,116 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
-import FPSStats from "react-fps-stats";
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+
+
+
+const Header = () => {
+
+  // eslint-disable-next-line no-restricted-globals
+  const [CurrentScreen, setCurrentScreen] = useState(location.pathname.split('/'));
+
+  useHistory().listen((location) => setCurrentScreen(location.pathname.split('/')));
+
+  const [HeaderText, setHeaderText] = useState("XXX")
+
+  // eslint-disable-next-line no-restricted-globals
+  console.log(location.pathname.split('/'));
+
+  useEffect(() => {
+
+    switch (CurrentScreen[1]) {
+      case "planningen":
+        if (CurrentScreen[4] !== undefined) {
+          setHeaderText(`Planning ${moment(parseInt(CurrentScreen[3]), "MM").format('MMMM').charAt(0).toUpperCase()}${moment(parseInt(CurrentScreen[3]), "MM").format('MMMM').slice(1)} ${CurrentScreen[2]} - Versie ${CurrentScreen[4]} aanpassen `)
+        } else {
+          setHeaderText(`Planning voor ${CurrentScreen[2]}`)
+        }
+
+        break;
+
+      case "werknemers":
+        if (CurrentScreen[2] !== undefined) {
+
+          if (CurrentScreen[2] === 'new') {
+            setHeaderText(`Nieuwe werknemer toevoegen `)
+          } else {
+            setHeaderText(`Werknemer met ID: ${CurrentScreen[2]} aanpassen`)
+          }
+        } else {
+          setHeaderText(`Werknemers overzicht`)
+        }
+        break;
+
+
+        case "shifttypes":
+          if (CurrentScreen[2] !== undefined) {
+  
+            if (CurrentScreen[2] === 'new') {
+              setHeaderText(`Nieuwe shift type toevoegen`)
+            } else {
+              setHeaderText(`Shift type  met ID: ${CurrentScreen[2]} aanpassen`)
+            }
+          } else {
+            setHeaderText(`Shift types overzicht`)
+          }
+          break;
+
+          
+        case "contracttypes":
+          if (CurrentScreen[2] !== undefined) {
+  
+            if (CurrentScreen[2] === 'new') {
+              setHeaderText(`Nieuwe contract type toevoegen`)
+            } else {
+              setHeaderText(`Contract type  met ID: ${CurrentScreen[2]} aanpassen`)
+            }
+          } else {
+            setHeaderText(`Contract types overzicht`)
+          }
+          break;
+
+          case "weekstructuren":
+            if (CurrentScreen[2] !== undefined) {
+    
+              if (CurrentScreen[2] === 'new') {
+                setHeaderText(`Nieuwe week structuur toevoegen`)
+              } else {
+                setHeaderText(`Week structuur  met ID: ${CurrentScreen[2]} aanpassen`)
+              }
+            } else {
+              setHeaderText(`Week structuren overzicht`)
+            }
+            break;
+
+            case "feestdagen":
+              if (CurrentScreen[3] !== undefined) {
+      
+                if (CurrentScreen[3] === 'new') {
+                  setHeaderText(`Nieuwe feestdag toevoegen voor ${CurrentScreen[2]}`)
+                } else {
+                  setHeaderText(`Feestdag met ID: ${CurrentScreen[3]} aanpassen`)
+                }
+              } else {
+                setHeaderText(`Feestdagen overzicht voor ${CurrentScreen[2]}`)
+              }
+              break;
+
+      case "historie":
+        setHeaderText(`Planning ${moment(parseInt(CurrentScreen[3]), "MM").format('MMMM').charAt(0).toUpperCase()}${moment(parseInt(CurrentScreen[3]), "MM").format('MMMM').slice(1)} ${CurrentScreen[2]} - Saved Versie ${CurrentScreen[4]} READ-ONLY `)
+        break;
+
+      default:
+        setHeaderText('Server status')
+        break;
+    }
 
 
 
 
-const header = () => {
+  }, [CurrentScreen])
+
+
+
   return (
     <nav className="main-header navbar navbar-expand navbar-white navbar-light">
       {/* Left navbar links */}
@@ -14,7 +119,7 @@ const header = () => {
           <a className="nav-link" data-widget="pushmenu" role="button"><i className="fas fa-bars" /></a>
         </li>
         <li className="nav-item d-none d-sm-inline-block">
-          <a className="nav-link">Home</a>
+          <a className="nav-link">{HeaderText}</a>
         </li>
         {/* <li className="nav-item d-none d-sm-inline-block"><FPSStats top={'5px'} left={'700px'} /></li> */}
 
@@ -22,34 +127,6 @@ const header = () => {
       {/* Right navbar links */}
       <ul className="navbar-nav ml-auto">
 
-
-        {/* Notifications Dropdown Menu */}
-        <li className="nav-item dropdown">
-          <a className="nav-link" data-toggle="dropdown">
-            <i className="far fa-bell" />
-            <span className="badge badge-warning navbar-badge">5</span>
-          </a>
-          <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-            <span className="dropdown-item dropdown-header">5 Meldingen</span>
-            <div className="dropdown-divider" />
-            <a className="dropdown-item">
-              <i className="fas fa-envelope mr-2" /> 2 Wissel aanvragen
-              <span className="float-right text-muted text-sm">3 dagen</span>
-            </a>
-            <div className="dropdown-divider" />
-            <a className="dropdown-item">
-              <i className="fas fa-users mr-2" />1 Verlof aanvragen
-              <span className="float-right text-muted text-sm">1 dag</span>
-            </a>
-            <div className="dropdown-divider" />
-            <a className="dropdown-item">
-              <i className="fas fa-file mr-2" /> 2 Opmerkingen
-              <span className="float-right text-muted text-sm">1 week</span>
-            </a>
-            <div className="dropdown-divider" />
-            <a className="dropdown-item dropdown-footer">Zie alle meldingen</a>
-          </div>
-        </li>
         <li className="nav-item">
           <a className="nav-link" data-widget="fullscreen" role="button">
             <i className="fas fa-expand-arrows-alt" />
@@ -61,4 +138,4 @@ const header = () => {
   )
 }
 
-export default header
+export default Header

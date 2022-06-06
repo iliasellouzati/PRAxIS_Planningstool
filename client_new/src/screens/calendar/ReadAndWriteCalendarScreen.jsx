@@ -13,9 +13,8 @@ import { mapReduxCalendarToDb } from '../../mappers/calendar/ReduxToDatabaseMapp
 import moment from 'moment';
 import SaveCalendarConfig from '../../components/calendar/SaveCalendarConfig';
 import Automatisation from '../../components/calendar/automatisation/Automatisation';
-import ExportExcell from '../../components/calendar/exportExcell/ExportExcell';
 
-const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INIT_StartUpMainWorkerForAutomatisation }) => {
+const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal, INIT_StartUpMainWorkerForAutomatisation }) => {
 
   let { year, month, version } = useParams();
 
@@ -30,7 +29,6 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INI
   const [Shifttypes, setShifttypes] = useState([]);
   const [ShowFinalComment, setShowFinalComment] = useState(false);
   const [ShowAutomatisation, setShowAutomatisation] = useState(false);
-  const [ShowExportExcell, setShowExportExcell] = useState(false);
 
   const saveShiftsToDb = async () => {
     let calendarForDb = mapReduxCalendarToDb(calendar);
@@ -91,64 +89,62 @@ const ReadAndWriteCalendarScreen = ({ setShowDangerModal, setShowSuccesModal,INI
                   {ShowFinalComment ?
                     <SaveCalendarConfig setShowSuccesModal={setShowSuccesModal} employees={Employees} shifttypes={Shifttypes} setShowFinalComment={setShowFinalComment} />
 
-                    :ShowAutomatisation?
-                    <Automatisation INIT_StartUpMainWorkerForAutomatisation={INIT_StartUpMainWorkerForAutomatisation} setShowAutomatisation={setShowAutomatisation}/>
-                    : ShowExportExcell?
-                    <ExportExcell setShowExportExcell={setShowExportExcell} Shifttypes={Shifttypes} Employees={Employees}/>:
-                    
-                    <React.Fragment>
-                      <div className="col-4">
-                        <ShiftSelector />
-                      </div>
-                      <div className="col-6">
+                    : ShowAutomatisation ?
+                      <Automatisation INIT_StartUpMainWorkerForAutomatisation={INIT_StartUpMainWorkerForAutomatisation} setShowAutomatisation={setShowAutomatisation} />
+                      :
 
-                        <RulesChecker setHighlightDay={setHighlightDay} setHighlightCustom={setHighlightCustom} />
+                      <React.Fragment>
+                        <div className="col-4">
+                          <ShiftSelector />
+                        </div>
+                        <div className="col-6">
 
-                      </div>
-                      <div className="col-2" style={{ display: "flex", justifyContent: "space-around", height: "150px" }}>
+                          <RulesChecker setHighlightDay={setHighlightDay} setHighlightCustom={setHighlightCustom} />
 
-                        <div className="btn-group-vertical" style={{ width: "100px" }}>
-                          <button type="button" className="btn btn-danger">UNDO</button>
-                          {false && <button type="button" className="btn btn-danger">REDO</button>}
-                          <div className="btn-group">
-                            <button type="button" className="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                              <i className='nav-icon fas fa-robot' />
+                        </div>
+                        <div className="col-2" style={{ display: "flex", justifyContent: "space-around", height: "150px" }}>
+
+                          <div className="btn-group-vertical" style={{ width: "100px" }}>
+                            <button type="button" className="btn btn-danger">UNDO</button>
+                            {false && <button type="button" className="btn btn-danger">REDO</button>}
+                            <div className="btn-group">
+                              <button type="button" className="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                                <i className='nav-icon fas fa-robot' />
+                                <ul className="dropdown-menu">
+                                  {Employees && Employees.map(emp =>
+                                    <li className="dropdown-item" id={emp.id} >Reset {emp.voornaam}</li>)}
+                                </ul>
+                              </button>
+                            </div>
+
+                            <div className="btn-group">
+                              <button type="button" className="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                              </button>
                               <ul className="dropdown-menu">
-                                {Employees && Employees.map(emp =>
-                                  <li className="dropdown-item" id={emp.id} >Reset {emp.voornaam}</li>)}
+                                <li className="dropdown-item">Reset all</li>
+                                <li className="dropdown-item">Reset Operator</li>
+                                <li className="dropdown-item">Reset Non-Operator</li>
+                                <li className="dropdown-item">Reset Coopman</li>
+                                <li className="dropdown-item">Reset Standby</li>
                               </ul>
-                            </button>
+                            </div>
                           </div>
 
-                          <div className="btn-group">
-                            <button type="button" className="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                            </button>
-                            <ul className="dropdown-menu">
-                              <li className="dropdown-item">Reset all</li>
-                              <li className="dropdown-item">Reset Operator</li>
-                              <li className="dropdown-item">Reset Non-Operator</li>
-                              <li className="dropdown-item">Reset Coopman</li>
-                              <li className="dropdown-item">Reset Standby</li>
-                            </ul>
-                          </div>
-                        </div>
+                          <div className="btn-group-vertical" style={{ width: "100px" }}>
+                            <button type="button" className="btn btn-success" onClick={() => saveShiftsToDb()}>Tijdelijk opslaan</button>
+                            <button type="button" className="btn btn-success" onClick={() => setShowFinalComment(true)} >Afwerken</button>
+                            <div className="btn-group">
+                              <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                              </button>
+                              <ul className="dropdown-menu">
+                                <li className='dropdown-item' onClick={() => { setShowAutomatisation(true); }}>Automatiseer</li>
+                                <li className='dropdown-item'>...</li>
 
-                        <div className="btn-group-vertical" style={{ width: "100px" }}>
-                          <button type="button" className="btn btn-success" onClick={() => saveShiftsToDb()}>Tijdelijk opslaan</button>
-                          <button type="button" className="btn btn-success" onClick={() => setShowFinalComment(true)} >Afwerken</button>
-                          <div className="btn-group">
-                            <button type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown">
-                            </button>
-                            <ul className="dropdown-menu">
-                              <li className='dropdown-item' onClick={()=>{setShowAutomatisation(true);}}>Automatiseer</li>
-                              <li className='dropdown-item' onClick={()=>{setShowExportExcell(true);}}>exporteer excell</li>
-                              <li className='dropdown-item'>...</li>
-
-                            </ul>
+                              </ul>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </React.Fragment>
+                      </React.Fragment>
                   }
                 </div>
               </div>

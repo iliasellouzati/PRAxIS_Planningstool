@@ -240,7 +240,7 @@ const AllShifttypes = () => {
                                        <ReadOnlyShift shiftDay={false} shift={shift}  />
                                       </td>
                                       <td>
-                                        <Link to={"/Shifttypes/" + shift.naam}>
+                                        <Link to={"/shifttypes/" + shift.naam}>
                                           <i class="fas fa-edit"></i>
                                         </Link>
 

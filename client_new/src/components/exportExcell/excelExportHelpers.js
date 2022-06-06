@@ -1,41 +1,43 @@
-import { getCalendarMoments_ArrayWithMoments } from '../helpers';
+import { getCalendarMoments_ArrayWithMoments } from '../calendar/helpers';
 
 import * as XLSX from 'xlsx-js-style';
 import moment from 'moment';
 
 
-const init = [{}]
-
-const tempData = [
-    { v: "Courier: 24", t: "s", s: { font: { name: "Courier", sz: 24 } } },
-    { v: "bold & color", t: "s", s: { font: { bold: true, color: { rgb: "FF0000" } } } },
-    { v: "fill: color", t: "s", s: { fill: { fgColor: { rgb: "E9E9E9" } } } },
-    {
-        v: "line\nbreak",
+const makeOverzichtSheet = () => {
+    let ws = XLSX.utils.aoa_to_sheet([[{
+        v: `PLANNING UIT PRAXISTOOL, DEZE SHEET : NOT IMPLEMENTED YET ( data ? )`,
         t: "s",
         s: {
-            alignment: { wrapText: true },
-            border: {
-                bottom: { style: 'thin', color: '#000000' },
-                top: { style: 'thick', color: '#000000' },
-                left: { style: 'medium', color: '#000000' },
-                right: { style: 'thick', color: '#000000' }
+            font: {
+                bold: true,
+                sz: 24,
+                underline: true,
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+
+            },
+            fill: {
+                fgColor: { rgb: "F247FF" }
             }
         }
-    },
-];
+    }]]);
 
-const makeOverzichtSheet = () => {
-    let ws = XLSX.utils.aoa_to_sheet([[{}]]);
-
+    let merges = [
+        { s: { r: 0, c: 0 }, e: { r: 3, c: (20) } },
 
 
-    XLSX.utils.sheet_add_aoa(ws, [tempData, tempData, tempData], { origin: `F13` });
+    ];
+    ws["!merges"] = merges;
+
+
 
     return ws;
 }
 
-const makeMonthWorkSheet = (monthYearString, yearlyStatsObject, calendarObject, shiftTypes, Employees) => {
+const makeMonthWorkSheet = (monthYearString, yearlyStatsObject, calendarObject, shiftTypes, Employees, Holidays) => {
 
     let hulpVal_Days_Of_month = getCalendarMoments_ArrayWithMoments(monthYearString);
     let hulpValAlleShiftTypesOpCal = [];
@@ -44,11 +46,11 @@ const makeMonthWorkSheet = (monthYearString, yearlyStatsObject, calendarObject, 
     console.log(monthYearString);
 
     //init
-    let ws = XLSX.utils.aoa_to_sheet([init]);
+    let ws = XLSX.utils.aoa_to_sheet([[{}]]);
     //de grote van kolommen aanpassen
     ws = changeWidthColomnsAndHeightRowsInSheet(ws, hulpVal_Days_Of_month, calendarObject);
     //de calendertitels toevoegen
-    ws = makeHeaderForCalendarInSheet(ws, hulpVal_Days_Of_month, monthYearString);
+    ws = makeHeaderForCalendarInSheet(ws, hulpVal_Days_Of_month, monthYearString, Holidays);
 
     //de individuele planningen toevoegen
     for (let index = 0; index < calendarObject.length; index++) {
@@ -296,19 +298,21 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
 
     let STAT6_TEXT = {};
 
-    let STAT6_Total = Object.keys(stats.maand).reduce((accumulator, currVal,index) => {
+    let STAT6_Total = Object.keys(stats.maand).reduce((accumulator, currVal, index) => {
         let totalThisMonth = Math.round((stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand + Number.EPSILON) * 100) / 100;
-        if(STAT6_TEXT[`${Math.floor(index/3)+1}`]===undefined){
-            STAT6_TEXT[`${Math.floor(index/3)+1}`]=totalThisMonth;
-        }else{
-            STAT6_TEXT[`${Math.floor(index/3)+1}`]+=totalThisMonth;
+        if (STAT6_TEXT[`${Math.floor(index / 3) + 1}`] === undefined) {
+            STAT6_TEXT[`${Math.floor(index / 3) + 1}`] = totalThisMonth;
+        } else {
+            STAT6_TEXT[`${Math.floor(index / 3) + 1}`] += totalThisMonth;
         }
         return accumulator += totalThisMonth;
     }, 0);
 
+    STAT6_Total = Math.round(100 * STAT6_Total + Number.EPSILON) / 100
+
     let STAT6 = [{
 
-        v: Math.round(STAT6_Total * 100) / 100,
+        v: STAT6_Total,
         t: "s",
         s: {
             alignment: {
@@ -337,6 +341,425 @@ const addMarioStats = (ws, stats, shiftTypes, index, currMonth, hulpVal_Days_Of_
 
     // #endregion
 
+
+    // #region 7 UREN VORIGE MAANDEN KWARTAAL
+
+    let STAT7_Totaal = lastMonth === false ? 'To-Do' : Math.round((stats.maand[lastMonth].cumul.totaalUrenOpKalender + stats.maand[lastMonth].cumul.urenUitVorigeMaand) * 100) / 100;
+
+    <td style={{ padding: "1px" }}>{Math.round((Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (moment(currVal, "MM-YYYY").isSame(currMonthMoment, 'quarter') && moment(currVal, "MM-YYYY").isBefore(currMonthMoment, 'month') ? (stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand) : 0), 0)) * 100) / 100}</td>
+
+
+    let STAT7 = [{
+
+        v: STAT7_Totaal,
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "ededed" }
+            }
+        }
+    }];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT7], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 6) } });
+
+
+
+    // #endregion
+
+
+    // #region 8 TOTAAL UREN KWARTAAL CUMUL
+
+    let STAT8_Totaal = Math.round((Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (moment(currVal, "MM-YYYY").isSame(currMonthMoment, 'quarter') ? (stats.maand[currVal].cumul.totaalUrenOpKalender + stats.maand[currVal].cumul.urenUitVorigeMaand) : 0), 0)) * 100) / 100;
+
+
+    let STAT8 = [{
+
+        v: STAT8_Totaal,
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "FFFFFF" }
+            }
+        }
+    }];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT8], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 7) } });
+
+    // #endregion
+
+
+
+    // #region 9 GEWERKTE WEEKENDS DEZE MAAND
+
+
+    let STAT9_TEXT = {
+        vrij: stats.maand[currMonth].weekends.volledig_vrij.length,
+        standby: stats.maand[currMonth].weekends.gepland_met_standby.length,
+        shift: stats.maand[currMonth].weekends.gepland_met_shifts.length
+    };
+
+    let STAT9_Totaal = stats.maand[currMonth].weekends.gepland_met_shifts.length;
+
+
+    let STAT9 = [{
+
+        v: STAT9_Totaal,
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "ededed" }
+            }
+        }
+    }];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT9], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 8) } });
+
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 8)))}`].c = [];
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 8)))}`].c.hidden = true;
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 8)))}`].c.push({
+        a: "PRAxIS_Planningstool", t: `VRIJ: ${STAT9_TEXT['vrij']}\nSB: ${STAT9_TEXT.standby}\nSHIFT: ${STAT9_TEXT.shift}`
+    });
+
+
+    // #endregion
+
+
+    // #region 10 TOTAAL GEWERKTE WEEKENDS
+
+    let STAT10_TEXT = {
+        vrij: 0,
+        standby: 0,
+        shift: 0
+    };
+
+    let STAT10_Totaal = Object.keys(stats.maand).reduce((accumulator, currVal) => {
+
+        STAT10_TEXT.vrij += stats.maand[currVal].weekends.volledig_vrij.length;
+        STAT10_TEXT.standby += stats.maand[currVal].weekends.gepland_met_standby.length;
+        STAT10_TEXT.shift += stats.maand[currVal].weekends.gepland_met_shifts.length;
+
+        return accumulator += stats.maand[currVal].weekends.gepland_met_shifts.length
+    }, 0);
+
+    let STAT10 = [{
+
+        v: STAT10_Totaal,
+        t: "s",
+        s: {
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            fill: {
+                fgColor: { rgb: "FFFFFF" }
+            }
+        }
+    }];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT10], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 9) } });
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 9)))}`].c = [];
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 9)))}`].c.hidden = true;
+    ws[`${translateOriginToLocationText((5 + index), ((3 + hulpVal_Days_Of_month.length + 9)))}`].c.push({
+        a: "PRAxIS_Planningstool", t: `VRIJ: ${STAT10_TEXT['vrij']}\nSB: ${STAT10_TEXT.standby}\nSHIFT: ${STAT10_TEXT.shift}`
+    });
+
+
+
+    // #endregion
+
+
+
+    // #region 11 STANDY
+
+
+    let STAT11_TOTAAL = Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].standby.totaalAantalShiften), 0);
+
+    let STAT11_MAAND = stats.maand[currMonth].standby.totaalAantalShiften;
+
+
+    let STAT11 = [{
+        v: STAT11_MAAND,
+        t: "s",
+        s: {
+            font: {
+                color: {
+                    rgb: "ffffff"
+                },
+            },
+            fill: {
+                fgColor: { rgb: "001a52" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    },
+    {
+        v: STAT11_TOTAAL,
+        t: "s",
+        s: {
+            font: {
+                color: {
+                    rgb: "ffffff"
+                },
+            },
+            fill: {
+                fgColor: { rgb: "001a52" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    }
+    ];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT11], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 10) } });
+
+    // #endregion
+
+
+    // #region 12 VERLOF
+
+    let STAT12_TOTAAL = Math.round((Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].verlof.shiftDb.filter(x => shiftTypes.find(y => y.id === x.shifttype_id).naam.includes('verlof')).reduce((acc, val) => acc += calcHoursShift(val, shiftTypes), 0)), 0)) * 100) / 100;
+
+
+
+    let STAT12 = [{
+        v: STAT12_TOTAAL,
+        t: "s",
+        s: {
+
+            fill: {
+                fgColor: { rgb: "D8E4BC" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    },
+    {
+        v: 'ToDo',
+        t: "s",
+        s: {
+
+            fill: {
+                fgColor: { rgb: "D8E4BC" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    }
+    ];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT12], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 12) } });
+
+    // #endregion
+
+
+
+    // #region 13 ANCIENNITEIT
+    let STAT13_TOTAAL = Math.round((Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].verlof.shiftDb.filter(x => shiftTypes.find(y => y.id === x.shifttype_id).naam.includes('ancienniteit')).reduce((acc, val) => acc += calcHoursShift(val, shiftTypes), 0)), 0)) * 100) / 100;
+
+
+
+    let STAT13 = [{
+        v: STAT13_TOTAAL,
+        t: "s",
+        s: {
+
+            fill: {
+                fgColor: { rgb: "FCD5B4" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    },
+    {
+        v: 'ToDo',
+        t: "s",
+        s: {
+
+            fill: {
+                fgColor: { rgb: "FCD5B4" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    }
+    ];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT13], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 14) } });
+
+    // #endregion
+
+
+    // #region 14 ONBETAALD VERLOF
+    let STAT14_TOTAAL = (Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].verlof.shiftDb.filter(x => shiftTypes.find(y => y.id === x.shifttype_id).naam.includes('onbetaald')).length), 0));
+
+
+
+    let STAT14 = [{
+        v: STAT14_TOTAAL,
+        t: "s",
+        s: {
+
+            fill: {
+                fgColor: { rgb: "46D7DE" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    },
+    {
+        v: 'ToDo',
+        t: "s",
+        s: {
+
+            fill: {
+                fgColor: { rgb: "46D7DE" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    }
+    ];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT14], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 16) } });
+
+    // #endregion
+
+
+
+    // #region 15 UITZONDERINGSDAGEN
+    let STAT15_TOTAAL = Object.keys(stats.maand).reduce((accumulator, currVal) => accumulator += (stats.maand[currVal].verlof.shiftDb.filter(x => shiftTypes.find(y => y.id === x.shifttype_id).naam.includes('uitzonderingsdag')).length), 0)
+
+
+
+    let STAT15 = [{
+        v: STAT15_TOTAAL,
+        t: "s",
+        s: {
+            fill: {
+                fgColor: { rgb: "F247FF" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    },
+    {
+        v: 'ToDo',
+        t: "s",
+        s: {
+            fill: {
+                fgColor: { rgb: "F247FF" }
+            },
+            border: {
+                bottom: { style: 'thick', color: '#000000' },
+                top: { style: 'thick', color: '#000000' }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: 'center'
+            }
+        }
+    }
+    ];
+
+
+    XLSX.utils.sheet_add_aoa(ws, [STAT15], { origin: { r: (5 + index), c: (3 + hulpVal_Days_Of_month.length + 18) } });
+
+    // #endregion
 
 
     return ws;
@@ -587,7 +1010,7 @@ const makeIndividualScheduleROWInCalendarInSheet = (ws, individualCalendar, shif
 
     let history = [
         {
-            v: `${employee.voornaam.toUpperCase()} ${employee.familienaam.substring(0, 2).toUpperCase()}.`,
+            v: `${employee.voornaam.toUpperCase()} ${employee.familienaam.toUpperCase()}`,
             t: "s",
             s: {
                 alignment: {
@@ -692,7 +1115,7 @@ const changeWidthColomnsAndHeightRowsInSheet = (ws, hulpVal_Days_Of_month, calen
     let wscols = Array(hulpVal_Days_Of_month.length + 3).fill({ wpx: 35 });
 
     wscols[0] = { wpx: 10 };
-    wscols[1] = { wpx: 200 };
+    wscols[1] = { wpx: 170 };
     wscols[wscols.length - 1] = { wpx: 10 }
 
     let wsrows = Array(5 + calendarObject.length).fill({ hpx: 22 })
@@ -712,7 +1135,7 @@ const changeWidthColomnsAndHeightRowsInSheet = (ws, hulpVal_Days_Of_month, calen
 
 }
 
-const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString) => {
+const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString, Holidays) => {
 
 
     const merge = [
@@ -2097,7 +2520,7 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
         ],
         [
             {
-                v: `datum`,
+                v: `datum  `,
                 t: "s",
                 s: {
                     font: {
@@ -2111,7 +2534,7 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
         ],
         [
             {
-                v: `dag`,
+                v: `dag  `,
                 t: "s",
                 s: {
                     font: {
@@ -2132,7 +2555,49 @@ const makeHeaderForCalendarInSheet = (ws, hulpVal_Days_Of_month, monthYearString
     let hulpValHeaderDates = []
 
     for (let index = 0; index < hulpVal_Days_Of_month.length; index++) {
-        if ([6, 7].includes(hulpVal_Days_Of_month[index].isoWeekday())) {
+        if (Holidays.some(x => moment(x.datum, "YYYY-MM-DD").isSame(hulpVal_Days_Of_month[index], 'day'))) {
+            hulpValHeaderNames.push(
+                {
+                    v: `${hulpVal_Days_Of_month[index].format("dd")}`,
+                    t: "s",
+                    s: {
+                        fill: {
+                            fgColor: { rgb: "4bacc6" }
+                        },
+                        alignment: {
+                            horizontal: "center"
+                        },
+                        font: {
+                            bold: true,
+                            color: {
+                                rgb: "df0024"
+                            }
+                        }
+                    }
+                }
+            );
+            hulpValHeaderDates.push(
+                {
+                    v: `${hulpVal_Days_Of_month[index].format("DD")}`,
+                    t: "n",
+                    s: {
+                        fill: {
+                            fgColor: { rgb: "4bacc6" }
+                        },
+                        font: {
+                            bold: true,
+                            color: {
+                                rgb: "df0024"
+                            }
+                        },
+                        alignment: {
+                            horizontal: "center"
+                        }
+                    }
+                }
+            );
+        }
+        else if ([6, 7].includes(hulpVal_Days_Of_month[index].isoWeekday())) {
             hulpValHeaderNames.push(
                 {
                     v: `${hulpVal_Days_Of_month[index].format("dd")}`,
@@ -2311,6 +2776,18 @@ const shiftDayLayOutForCell = (shiftDay, shiftTypes) => {
             border: border
         }
     }
+}
+
+const calcHoursShift = (shiftDay, shifttypes) => {
+
+    let shift = shifttypes.find(x => x.id === shiftDay.shifttype_id);
+
+
+    let duratie = moment.duration(moment((shiftDay.einduur ? `${shiftDay.datum}-${shiftDay.einduur}` : `${shiftDay.datum}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.beginuur ? `${shiftDay.datum}-${shiftDay.beginuur}` : `${shiftDay.datum}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() >= 0 ?
+        moment.duration(moment((shiftDay.einduur ? `${shiftDay.datum}-${shiftDay.einduur}` : `${shiftDay.datum}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").diff(moment((shiftDay.beginuur ? `${shiftDay.datum}-${shiftDay.beginuur}` : `${shiftDay.datum}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours() :
+        moment.duration(moment((shiftDay.einduur ? `${shiftDay.datum}-${shiftDay.einduur}` : `${shiftDay.datum}-${shift.einduur}`), "DD-MM-YYYY-hh:mm").add(1, "day").diff(moment((shiftDay.beginuur ? `${shiftDay.datum}-${shiftDay.beginuur}` : `${shiftDay.datum}-${shift.beginuur}`), "DD-MM-YYYY-hh:mm"))).asHours()
+
+    return duratie;
 }
 
 

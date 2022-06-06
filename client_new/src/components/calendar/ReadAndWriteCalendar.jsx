@@ -31,15 +31,22 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
     const [ExtraHistoryCurrentYearEmployees, setExtraHistoryCurrentYearEmployees] = useState([]);
     const [ExtraHistoryLastMonth, setExtraHistoryLastMonth] = useState([]);
     const [ContractTypes, setContractTypes] = useState([]);
+    const [Holidays, setHolidays] = useState([])
+    //#4bacc6 hexcolor voor feestdag
 
     const calendarMonthHelper = getCalendarMoments_ArrayWithMoments(`${month}-${year}`);
-    const cssWidthDay = (92 / (calendarMonthHelper.length+2)) + "%";
+    const cssWidthDay = (92 / (calendarMonthHelper.length + 2)) + "%";
 
     const fetchData = async () => {
         let shifttypes = [];
 
         await axios.get('http://127.0.0.1:3001/api/employee')
             .then(response => { setEmployees(response.data); setShowExtraInforEmployees(response.data.map((x) => ({ 'id': x.id, 'show': false }))) })
+            .catch(error => setHttp500([true, error]));
+
+
+        await axios.get(`http://localhost:3001/api/holiday/custom/start/${moment(`${month}-${year}`, 'MM-YYYY').startOf('month').startOf('isoWeek').format("DD-MM-YYYY")}/end/${moment(`${month}-${year}`, 'MM-YYYY').endOf('month').endOf('isoWeek').format("DD-MM-YYYY")}`)
+            .then(response => response.data ? setHolidays(response.data) : setHolidays([]))
             .catch(error => setHttp500([true, error]));
 
         await axios.get('http://127.0.0.1:3001/api/shifttype')
@@ -79,14 +86,23 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
             {Loading ? <LoadingSpinner /> : Http500[0] ? <Http4XXAnd5XXError error={Http500[1]} setHttp4XXAnd5XX={setHttp500} /> : (
                 <React.Fragment>
                     {ContextMenu[0] && <ReadAndWriteShiftContextMenu employees={Employees} setContextMenu={setContextMenu} content={ContextMenu[1]} />}
-                    <table className="table table-bordered table-hover " style={{width:"100%"}}>
+                    <table className="table table-bordered table-hover " style={{ width: "100%" }}>
 
                         {/* BOVENSTE INFORMATIEVE TABELRIJ MET DAGEN */}
                         <thead style={{ textAlign: 'center' }}>
                             <tr >
                                 <th rowSpan="2" style={{ padding: "0px", width: "8%" }}>Werknemers</th>
                                 {calendarMonthHelper.map((element, index) =>
-                                    <th key={index} style={HighlightDay[0] && HighlightDay[1].isSame(element, 'day') ? { outline: "2px solid red", padding: "1px", width: { cssWidthDay } } : (element.isoWeekday() === 6 || element.isoWeekday() === 7) ? { outline: '1px solid darkgreen', padding: "1px", width: { cssWidthDay } } : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')} </th>
+                                    <th key={index} style={
+                                        HighlightDay[0] && HighlightDay[1].isSame(element, 'day') ?
+                                            { outline: "2px solid red", padding: "1px", width: { cssWidthDay } }
+                                            : (Holidays && Holidays.some(x=>moment(x.datum,'YYYY-MM-DD').isSame(element, 'day'))) ?
+                                                { backgroundColor: '#4bacc6', color: 'red', padding: "1px", width: { cssWidthDay } }
+                                                :
+                                                (element.isoWeekday() === 6 || element.isoWeekday() === 7)
+                                                    ? { outline: '1px solid darkgreen', padding: "1px", width: { cssWidthDay } }
+                                                    : { padding: "1px", width: { cssWidthDay } }}> {element.format('dd')
+                                        } </th>
                                 )}
                                 <th rowSpan="2" style={{ padding: "1px", minWidth: "38px" }}>{moment(month, "MM").subtract(1, 'month').format("MM")}<p style={{ padding: "0px", margin: "0px" }}>&#x027EA;</p></th>
                                 <th rowSpan="2" style={{ padding: "1px", minWidth: "38px", }}>{month}<p style={{ padding: "0px", margin: "0px" }}>&#x021D3;</p></th>
@@ -148,14 +164,14 @@ const ReadAndWriteCalendar = ({ HighlightDay, HighlightCustom }) => {
                                                                 ||
                                                                 (HighlightCustom[0] && HighlightCustom[1].employeeId === individueleCalendar.employeeId && HighlightCustom[1].start.clone().subtract(1, 'day').isBefore(moment(shiftDay.day, 'DD-MM-YYYY'), 'day') && HighlightCustom[1].end.clone().add(1, 'day').isAfter(moment(shiftDay.day, 'DD-MM-YYYY'), 'day'))
                                                             )
-                                                            ? {width:cssWidthDay, outline: "2px solid red", padding: "0px", margin: "0px" }
-                                                            : (moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 7) ? {width:cssWidthDay, outline: '1px solid darkgreen', padding: "0px", margin: "0px" } :
-                                                                {width:cssWidthDay, padding: "0px", margin: "0px" }}>
+                                                            ? { width: cssWidthDay, outline: "2px solid red", padding: "0px", margin: "0px" }
+                                                            : (moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 6 || moment(shiftDay.day, "DD/MM/YYYY").isoWeekday() === 7) ? { width: cssWidthDay, outline: '1px solid darkgreen', padding: "0px", margin: "0px" } :
+                                                                { width: cssWidthDay, padding: "0px", margin: "0px" }}>
                                                     <ReadAndWriteShift setContextMenu={setContextMenu} shiftDay={shiftDay} shifttypes={ShiftTypes} employeeId={individueleCalendar.employeeId} />
                                                 </td>
                                         )}
-                                        <td style={{ padding: "1px", width:cssWidthDay , textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
-                                        <td style={{ padding: "1px",  width:cssWidthDay, textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} shifttypes={ShiftTypes} /></td>
+                                        <td style={{ padding: "1px", width: cssWidthDay, textAlign: 'center' }}><LastMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} extrahistory={ExtraHistoryLastMonth[`${individueleCalendar.employeeId}`]} shifttypes={ShiftTypes} /></td>
+                                        <td style={{ padding: "1px", width: cssWidthDay, textAlign: 'center' }}><CurrentMonthHours employeeId={individueleCalendar.employeeId} employees={Employees} contracttypes={ContractTypes} shifttypes={ShiftTypes} /></td>
                                     </tr>
 
                                     {ShowExtraInforEmployees.find(x => x.id === individueleCalendar.employeeId).show &&

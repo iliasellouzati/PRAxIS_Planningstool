@@ -16,6 +16,8 @@ import EditWeeklyStructure from './screens/weeklystructure/EditWeeklyStructure';
 import Automatic from './screens/automatic/Automatic';
 import AllCalendarStatusForYear from './screens/statuscalendar/AllCalendarStatusForYear';
 import ReadOnlyCalendarScreen from './screens/calendar/ReadOnlyCalendarScreen';
+import AllHolidays from './screens/holiday/AllHolydaysScreen';
+import EditHoliday from './screens/holiday/EditHolidayScreen';
 import ReadAndWriteCalendarScreen from './screens/calendar/ReadAndWriteCalendarScreen';
 
 import WebWorkersModule from './screens/WebWorkersModule';
@@ -43,7 +45,7 @@ function App() {
     "setShowProgressBar": setShowProgressBar,
     "incrementProgress": incrementProgress
   })
-  
+
   useEffect(() => {
     setShowSuccesModal([false, []]);
     setShowDangerModal([false, []]);
@@ -65,20 +67,15 @@ function App() {
 
       <Header />
       <Sidebar />
-      
+
       <Route path="/historie/:year/:month/:version" >
-        <ReadOnlyCalendarScreen setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal}  />
+        <ReadOnlyCalendarScreen setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} />
       </Route>
       <Route path="/planningen/:year/:month/:version" >
-        <ReadAndWriteCalendarScreen setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} INIT_StartUpMainWorkerForAutomatisation={WebWorkerModule.INIT_StartUpMainWorkerForAutomatisation}  />
+        <ReadAndWriteCalendarScreen setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} INIT_StartUpMainWorkerForAutomatisation={WebWorkerModule.INIT_StartUpMainWorkerForAutomatisation} />
       </Route>
 
-    <Route path="/planningen/:year" component={AllCalendarStatusForYear} exact={true}/>
-
-      <Route path="/automatisatie/:year/:month" >
-        <Automatic setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} INIT_StartUpMainWorkerForAutomatisation={WebWorkerModule.INIT_StartUpMainWorkerForAutomatisation} />
-      </Route>
-
+      <Route path="/planningen/:year" component={AllCalendarStatusForYear} exact={true} />
 
       <Route path="/weekstructuren/:id" >
         <EditWeeklyStructure setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} />
@@ -104,6 +101,11 @@ function App() {
       </Route>
       <Route path="/contracttypes" component={AllContractType} exact={true} />
 
+
+      <Route path="/feestdagen/:year/:id" >
+        <EditHoliday setShowSuccesModal={setShowSuccesModal} setShowDangerModal={setShowDangerModal} />
+      </Route>
+      <Route path="/feestdagen/:year" component={AllHolidays} exact={true} />
 
       <Route path="/" component={ServerStatus} exact={true} />
 

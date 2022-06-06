@@ -8,6 +8,7 @@ import Http4XXAnd5XXError from '../../components/general/Http4XXAnd5XXError';
 import BadRequest400Error from '../../components/general/BadRequest400Error';
 
 import moment from '../../helpers/moment';
+import ExportExcell from '../../components/exportExcell/ExportExcell';
 
 const AllCalendarStatusForYear = () => {
 
@@ -31,17 +32,17 @@ const AllCalendarStatusForYear = () => {
         let versionsForMonth = CalendarStatus.filter(x => x.month === month);
         if (versionsForMonth.length === 0) {
             version = 1;
-            progress=0;
+            progress = 0;
         } else {
             version = versionsForMonth.reduce((prev, curr) => (prev.version > curr.version) ? prev : curr).version + 1;
-            progress=1;
+            progress = 1;
         }
         await axios.post(
             `http://127.0.0.1:3001/api/statuscalendar/${year}/${moment(month, "MM-YYYY").format("MM")}`,
             {
                 "timestamp": moment().format("DD/MM/YYYY HH:MM"),
                 "version": version,
-                'progress':progress
+                'progress': progress
             })
             .then(() => { fetchData(); })
             .catch(error => { setHttp500([true, error]); setLoading(false); });
@@ -172,7 +173,7 @@ const AllCalendarStatusForYear = () => {
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            {CalendarStatus.filter(x => x.month === month).sort((a,b) => a.version > b.version?1:-1).map(status =>
+                                                                            {CalendarStatus.filter(x => x.month === month).sort((a, b) => a.version > b.version ? 1 : -1).map(status =>
                                                                                 <tr>
                                                                                     <td>{status.month}</td>
                                                                                     <td>{status.version}</td>
@@ -185,7 +186,7 @@ const AllCalendarStatusForYear = () => {
                                                                                         }[status.progress]
                                                                                     }
                                                                                     <td>{status.time_saved || "N.V.T."}</td>
-                                                                                    <td style={{ cursor:'default'}} title={status.comment|| "N.V.T."}>{status.comment?.substring(0, 15) || "N.V.T."}</td>
+                                                                                    <td style={{ cursor: 'default' }} title={status.comment || "N.V.T."}>{status.comment?.substring(0, 15) || "N.V.T."}</td>
                                                                                     <td>{status.affected_employees || "N.V.T."}</td>
                                                                                     {status.added_shifts ? <td title={'Nieuwe shiften'} style={{ color: 'green' }}>{status.added_shifts || "x"}</td> : <td colSpan={4}>N.V.T.</td>}
                                                                                     {status.added_shifts && <td title={'Verwijderde shiften'} style={{ color: 'red' }}>{status.deleted_shifts || "x"}</td>}
@@ -237,10 +238,20 @@ const AllCalendarStatusForYear = () => {
                                                         </tr>
                                                     </React.Fragment>
                                                 )}
+                                                <tr>
+                                                    <td colSpan={4} >
+                                                    <ExportExcell />
+
+                                                    </td>
+
+                                                </tr>
                                         </tbody>
                                     </table>
                                 </div>
+
                             </div>
+
+
                         </div>
                     )}
         </div>

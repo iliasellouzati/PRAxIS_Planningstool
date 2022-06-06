@@ -32,14 +32,9 @@ const SideBarLinks = [
         "link": "/weekstructuren"
     },
     {
-        "naam": "instellingen",
+        "naam": "feestdagen",
         "icon": "fas fa-cogs",
-        "link": "/instellingen"
-    },
-    {
-        "naam": "rapporten",
-        "icon": "fas fa-file-excel",
-        "link": "/rapporten"
+        "link": "/feestdagen/"+moment().format("YYYY")
     }
 ]
 
